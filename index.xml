@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="7130449cc64d811fd198fd9eaeb9c0c6e17fa0aa">
+<index version="1" name="CCI" commit="4d3c19288eb3023de27670f5747be7d59984bb33">
   <category name="Utility">
     <reapack name="RL_CreatePreFaderSend.lua" type="script" desc="RL_CreatePreFaderSend">
       <version name="1.0" author="Roc Lee" time="2023-04-14T17:12:54Z">
@@ -7,12 +7,43 @@
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/eb788f6a2288bbae81f8cc9350dfcdf67216ee27/Utility/RL_CreatePreFaderSend.lua</source>
       </version>
     </reapack>
-    <reapack name="wnlowe_AddVolumePoints.lua" type="script" desc="wnlowe_AddVolumePoints">
+    <reapack name="wnlowe_AddVolumePoints.lua" type="script" desc="Add Volume Points">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Add Volume Points\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Sets a point at edit cursor for selected item or first item under edit cursor. Then sets a point before and after. Uses the GUI companion script to set new times.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Must have this and GUI script in same folder\par}
+}
+]]></description>
+      </metadata>
       <version name="0.5" author="William N. Lowe" time="2023-04-25T14:51:38Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/18a6551d835dd0059e267269eae909d6dde01202/Utility/wnlowe_AddVolumePoints.lua</source>
       </version>
       <version name="0.6" author="William N. Lowe" time="2023-04-25T15:11:28Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/7130449cc64d811fd198fd9eaeb9c0c6e17fa0aa/Utility/wnlowe_AddVolumePoints.lua</source>
+      </version>
+      <version name="0.8" author="William N. Lowe" time="2023-04-25T15:55:18Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/4d3c19288eb3023de27670f5747be7d59984bb33/Utility/wnlowe_AddVolumePoints.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_AddVolumePoints_GUI.lua" type="script" desc="Add Volume Points GUI">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Add Volume Points GUI\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Sets pre and post times for Add Volume Points script. Can also execute function script from this script.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Must have GUI and function script in same folder\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Must install rtk dependency\par}
+}
+]]></description>
+      </metadata>
+      <version name="0.5" author="William N. Lowe" time="2023-04-25T15:55:18Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/4d3c19288eb3023de27670f5747be7d59984bb33/Utility/wnlowe_AddVolumePoints_GUI.lua</source>
       </version>
     </reapack>
   </category>
