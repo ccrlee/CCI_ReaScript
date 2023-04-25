@@ -1,6 +1,6 @@
 -- @description Add Volume Points
 -- @author William N. Lowe
--- @version 0.8
+-- @version 0.9
 -- @about
 --   # Add Volume Points
 --   Sets a point at edit cursor for selected item or first item under edit cursor. Then sets a point before and after. Uses the GUI companion script to set new times. 
@@ -131,10 +131,6 @@ local itemRate = reaper.GetMediaItemTakeInfo_Value( take, "D_PLAYRATE")
 reaper.SetMediaItemTakeInfo_Value( take, "D_PLAYRATE", 1 )
 local time = reaper.GetCursorPosition() - itemPosition
 local numPoints = reaper.CountEnvelopePoints(volumeEnvelope)
-local preValue = tonumber(pre.value)
-local postValue = tonumber(post.value)
-if preValue ~= nil then preTime = preValue end
-if postValue ~= nil then postTime = postValue end
 
 if numPoints > 1 then
     pointTimes = {}

@@ -1,6 +1,6 @@
 -- @description Add Volume Points GUI
 -- @author William N. Lowe
--- @version 0.5
+-- @version 0.6
 -- @about
 --   # Add Volume Points GUI
 --   Sets pre and post times for Add Volume Points script. Can also execute function script from this script. 
@@ -122,13 +122,14 @@ local defaultCheck = defaultCheckContainer:add(rtk.CheckBox{value='unchecked'})
 local complete = vert:add(rtk.Button{label='Execute', fontscale=2})
 complete.onclick = function()
     reaper.PreventUIRefresh( 1 )
+    local preValue = tonumber(pre.value)
+    local postValue = tonumber(post.value)
+    if preValue ~= nil then preTime = preValue end
+    if postValue ~= nil then postTime = postValue end
+    local file = assert(io.open(csv, "w"))
+    file:write(tostring(preTime) .. ',' .. tostring(postTime))
+    file:close()
     dofile(script_path().."/wnlowe_AddVolumePoints.lua")
-    if defaultCheck.value == rtk.CheckBox.CHECKED or needNew then
-        local file = assert(io.open(csv, "w"))
-        file:write(tostring(preTime) .. ',' .. tostring(postTime))
-        file:close()
-        needNew = false
-    end
     reaper.PreventUIRefresh( -1 )
 end
 
