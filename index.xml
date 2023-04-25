@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="eb788f6a2288bbae81f8cc9350dfcdf67216ee27">
+<index version="1" name="CCI" commit="18a6551d835dd0059e267269eae909d6dde01202">
   <category name="Utility">
     <reapack name="RL_CreatePreFaderSend.lua" type="script" desc="RL_CreatePreFaderSend">
       <version name="1.0" author="Roc Lee" time="2023-04-14T17:12:54Z">
         <changelog><![CDATA[+ Initial Release]]></changelog>
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/eb788f6a2288bbae81f8cc9350dfcdf67216ee27/Utility/RL_CreatePreFaderSend.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_AddVolumePoints.lua" type="script" desc="Uses GUI and CSV to place three volume envelope points to the selected item">
+      <version name="0.5" author="William N. Lowe" time="2023-04-25T14:51:38Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/18a6551d835dd0059e267269eae909d6dde01202/Utility/wnlowe_AddVolumePoints.lua</source>
       </version>
     </reapack>
   </category>
