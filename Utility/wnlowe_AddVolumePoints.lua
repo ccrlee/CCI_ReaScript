@@ -1,6 +1,18 @@
--- @description Uses GUI and CSV to place three volume envelope points to the selected item
--- @author William N. Lowe
 -- @version 0.5
+--[[
+ * ReaScript Name: wnlowe_AddVolumePoints
+ * Author: William N. Lowe
+ * Licence: GPL v3
+ * REAPER: 6.78
+ * Extensions: rtk
+ * Version: 0.5
+--]]
+ 
+--[[
+ * Changelog:
+ * v0.5 (2023-04-25)
+ 	+ Initial Release
+--]]
 
 ----------------------------------------------------------------
 ----------------------------------------------------------------
