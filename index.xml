@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="980e48b72a9d543814dcabd50f0d9eababa2bc58">
+<index version="1" name="CCI" commit="7130449cc64d811fd198fd9eaeb9c0c6e17fa0aa">
   <category name="Utility">
     <reapack name="RL_CreatePreFaderSend.lua" type="script" desc="RL_CreatePreFaderSend">
       <version name="1.0" author="Roc Lee" time="2023-04-14T17:12:54Z">
@@ -10,6 +10,9 @@
     <reapack name="wnlowe_AddVolumePoints.lua" type="script" desc="wnlowe_AddVolumePoints">
       <version name="0.5" author="William N. Lowe" time="2023-04-25T14:51:38Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/18a6551d835dd0059e267269eae909d6dde01202/Utility/wnlowe_AddVolumePoints.lua</source>
+      </version>
+      <version name="0.6" author="William N. Lowe" time="2023-04-25T15:11:28Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/7130449cc64d811fd198fd9eaeb9c0c6e17fa0aa/Utility/wnlowe_AddVolumePoints.lua</source>
       </version>
     </reapack>
   </category>
