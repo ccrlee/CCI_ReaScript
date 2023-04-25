@@ -1,15 +1,17 @@
--- @version 0.5
+-- @version 0.6
 --[[
  * ReaScript Name: wnlowe_AddVolumePoints
  * Author: William N. Lowe
  * Licence: GPL v3
  * REAPER: 6.78
  * Extensions: rtk
- * Version: 0.5
+ * Version: 0.6
 --]]
  
 --[[
  * Changelog:
+ * v0.6 (2023-04-25)
+  + Updated Metadata
  * v0.5 (2023-04-25)
  	+ Initial Release
 --]]
