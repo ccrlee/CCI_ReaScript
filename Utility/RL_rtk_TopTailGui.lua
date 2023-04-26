@@ -27,7 +27,7 @@ function convertToLogarithmic(linearValue)
     return logarithmicValue
 end
 
-local path = reaper.GetResourcePath()..'/Scripts/RL Scripts/RL_HelperFunctions/'
+local path = reaper.GetResourcePath()..'/Scripts/CCI/HelperFunctions/'
 
 -- Check if config.ini file exists
 local file = io.open(path.."FileTest.ini", "r")

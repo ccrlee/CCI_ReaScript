@@ -2,8 +2,8 @@
 -- @author Roc Lee
 -- @version 0.5
 
-dofile(reaper.GetResourcePath()..'/Scripts/RL Scripts/RL_HelperFunctions/RL_SampleBufferReader.lua' )
-local path = reaper.GetResourcePath()..'/Scripts/RL Scripts/RL_HelperFunctions/'
+dofile(reaper.GetResourcePath()..'/Scripts/CCI/HelperFunctions/RL_SampleBufferReader.lua' )
+local path = reaper.GetResourcePath()..'/Scripts/CCI/HelperFunctions/'
 
 
 local file = io.open(path.."FileTest.ini", "r")
