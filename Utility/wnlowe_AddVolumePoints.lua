@@ -129,7 +129,13 @@ reaper.Undo_BeginBlock()
 local itemPosition = reaper.GetMediaItemInfo_Value( item, "D_POSITION" )
 local itemRate = reaper.GetMediaItemTakeInfo_Value( take, "D_PLAYRATE")
 reaper.SetMediaItemTakeInfo_Value( take, "D_PLAYRATE", 1 )
-local time = reaper.GetCursorPosition() - itemPosition
+
+--[OLD, using Edit Cursor] local time = reaper.GetCursorPosition() - itemPosition
+
+Msg(reaper.BR_PositionAtMouseCursor())
+
+local time = reaper.BR_PositionAtMouseCursor() - itemPosition
+
 local numPoints = reaper.CountEnvelopePoints(volumeEnvelope)
 
 if numPoints > 1 then
@@ -142,17 +148,27 @@ if numPoints > 1 then
     middlePointReference = closestPoints(pointTimes, numPoints, time)
     prePointReference = closestPoints(pointTimes, numPoints, time - tonumber(preTime))
     postPointReference = closestPoints(pointTimes, numPoints, time + tonumber(postTime))
+
+    reaper.PreventUIRefresh(1)
+
     reaper.InsertEnvelopePoint(volumeEnvelope, middlePointReference[1], middlePointReference[2], shape, ten, true, true)
     reaper.InsertEnvelopePoint(volumeEnvelope, prePointReference[1], prePointReference[2], shape, ten, false, true)
     reaper.InsertEnvelopePoint(volumeEnvelope, postPointReference[1], postPointReference[2], shape, ten, false, true)
     reaper.Envelope_SortPoints(volumeEnvelope)
+
+    reaper.PreventUIRefresh(-1)
 else
     ret, pointTime, level, shape, ten, sel = reaper.GetEnvelopePoint(volumeEnvelope, 0)
     if sel then reaper.SetEnvelopePoint( volumeEnvelope, 0, pointTime, level, shape, ten, false) end
+
+    reaper.PreventUIRefresh(1)
+
     reaper.InsertEnvelopePoint(volumeEnvelope, time, level, shape, ten, true, true)
     reaper.InsertEnvelopePoint(volumeEnvelope, time - tonumber(preTime), level, shape, ten, false, true)
     reaper.InsertEnvelopePoint(volumeEnvelope, time + tonumber(postTime), level, shape, ten, false, true)
     reaper.Envelope_SortPoints(volumeEnvelope)
+
+    reaper.PreventUIRefresh(-1)
 end
 
 reaper.SetMediaItemTakeInfo_Value( take, "D_PLAYRATE", itemRate)
