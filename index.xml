@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="03d4b3c9b438a7053f8ffb9838928f7bb1588247">
+<index version="1" name="CCI" commit="9ae09a7d2bffa073bd747ba92e5ce1ede47a3d0c">
   <category name="HelperFunctions">
     <reapack name="RL_SampleBufferReader.lua" type="script" desc="Helper Functions for Top Tail Script">
       <version name="0.5" author="Roc Lee" time="2023-04-26T16:51:06Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/a5d23c30e49ca31cc353135ccc7d20bdb331265e/HelperFunctions/RL_SampleBufferReader.lua</source>
       </version>
+      <version name="0.6" author="Roc Lee" time="2023-04-26T17:08:49Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/9ae09a7d2bffa073bd747ba92e5ce1ede47a3d0c/HelperFunctions/RL_SampleBufferReader.lua</source>
+      </version>
     </reapack>
     <reapack name="RL_VariableTopTail.lua" type="script" desc="Helper Functions for Top Tail Script 2">
       <version name="0.5" author="Roc Lee" time="2023-04-26T16:51:06Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/a5d23c30e49ca31cc353135ccc7d20bdb331265e/HelperFunctions/RL_VariableTopTail.lua</source>
+      </version>
+      <version name="0.6" author="Roc Lee" time="2023-04-26T17:08:49Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/9ae09a7d2bffa073bd747ba92e5ce1ede47a3d0c/HelperFunctions/RL_VariableTopTail.lua</source>
       </version>
     </reapack>
   </category>
@@ -22,6 +28,9 @@
     <reapack name="RL_rtk_TopTailGui.lua" type="script" desc="Top Tail Gui">
       <version name="0.5" author="Roc Lee" time="2023-04-26T16:59:14Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/03d4b3c9b438a7053f8ffb9838928f7bb1588247/Utility/RL_rtk_TopTailGui.lua</source>
+      </version>
+      <version name="0.6" author="Roc Lee" time="2023-04-26T17:08:49Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/9ae09a7d2bffa073bd747ba92e5ce1ede47a3d0c/Utility/RL_rtk_TopTailGui.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_AddVolumePoints.lua" type="script" desc="Add Volume Points">
