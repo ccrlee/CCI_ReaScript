@@ -1,6 +1,6 @@
 -- @description Add Volume Points
 -- @author William N. Lowe
--- @version 0.9
+-- @version 0.91
 -- @about
 --   # Add Volume Points
 --   Sets a point at edit cursor for selected item or first item under edit cursor. Then sets a point before and after. Uses the GUI companion script to set new times. 
