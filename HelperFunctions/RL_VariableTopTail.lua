@@ -1,6 +1,6 @@
 -- @description Helper Functions for Top Tail Script 2
 -- @author Roc Lee
--- @version 0.5
+-- @version 0.6
 
 dofile(reaper.GetResourcePath()..'/Scripts/CCI/HelperFunctions/RL_SampleBufferReader.lua' )
 local path = reaper.GetResourcePath()..'/Scripts/CCI/HelperFunctions/'

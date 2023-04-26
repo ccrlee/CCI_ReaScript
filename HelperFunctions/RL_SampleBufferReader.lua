@@ -1,6 +1,6 @@
 -- @description Helper Functions for Top Tail Script
 -- @author Roc Lee
--- @version 0.5
+-- @version 0.6
 
 --[[
 Read a set of samples from a Reaper Array and return into a table
