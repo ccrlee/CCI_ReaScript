@@ -132,9 +132,9 @@ reaper.SetMediaItemTakeInfo_Value( take, "D_PLAYRATE", 1 )
 
 --[OLD, using Edit Cursor] local time = reaper.GetCursorPosition() - itemPosition
 
-Msg(reaper.BR_PositionAtMouseCursor())
+Msg(reaper.BR_PositionAtMouseCursor(false))
 
-local time = reaper.BR_PositionAtMouseCursor() - itemPosition
+local time = reaper.BR_PositionAtMouseCursor(false) - itemPosition
 
 local numPoints = reaper.CountEnvelopePoints(volumeEnvelope)
 
