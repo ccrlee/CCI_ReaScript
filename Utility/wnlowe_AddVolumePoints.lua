@@ -1,6 +1,6 @@
 -- @description Add Volume Points
 -- @author William N. Lowe
--- @version 0.93
+-- @version 0.95
 -- @about
 --   # Add Volume Points
 --   Sets a point at edit cursor for selected item or first item under edit cursor. Then sets a point before and after. Uses the GUI companion script to set new times. 
@@ -152,12 +152,11 @@ if numPoints > 1 then
     reaper.PreventUIRefresh(1)
 
     reaper.InsertEnvelopePoint(volumeEnvelope, middlePointReference[1], middlePointReference[2], shape, ten, true, true)
+        reaper.Envelope_SortPoints(volumeEnvelope)
     reaper.InsertEnvelopePoint(volumeEnvelope, prePointReference[1], prePointReference[2], shape, ten, false, true)
+        reaper.Envelope_SortPoints(volumeEnvelope)
     reaper.InsertEnvelopePoint(volumeEnvelope, postPointReference[1], postPointReference[2], shape, ten, false, true)
     reaper.Envelope_SortPoints(volumeEnvelope)
-
-    reaper.Main_OnCommand(reaper.NamedCommandLookup("_SWS_UNSELALL"), 0)
-    reaper.SetMediaItemSelected( item, true)
 
     reaper.PreventUIRefresh(-1)
 else
@@ -171,11 +170,11 @@ else
     reaper.InsertEnvelopePoint(volumeEnvelope, time + tonumber(postTime), level, shape, ten, false, true)
     reaper.Envelope_SortPoints(volumeEnvelope)
 
-    reaper.Main_OnCommand(reaper.NamedCommandLookup("_SWS_UNSELALL"), 0)
-    reaper.SetMediaItemSelected( item, true)
-
     reaper.PreventUIRefresh(-1)
 end
+
+    reaper.Main_OnCommand(40769, 0)
+    reaper.SetMediaItemSelected( item, true)
 
 reaper.SetMediaItemTakeInfo_Value( take, "D_PLAYRATE", itemRate)
 reaper.Undo_EndBlock("Add Volume Points", 0)
