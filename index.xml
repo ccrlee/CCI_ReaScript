@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="a5d23c30e49ca31cc353135ccc7d20bdb331265e">
+<index version="1" name="CCI" commit="03d4b3c9b438a7053f8ffb9838928f7bb1588247">
   <category name="HelperFunctions">
     <reapack name="RL_SampleBufferReader.lua" type="script" desc="Helper Functions for Top Tail Script">
       <version name="0.5" author="Roc Lee" time="2023-04-26T16:51:06Z">
@@ -17,6 +17,11 @@
       <version name="1.0" author="Roc Lee" time="2023-04-14T17:12:54Z">
         <changelog><![CDATA[+ Initial Release]]></changelog>
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/eb788f6a2288bbae81f8cc9350dfcdf67216ee27/Utility/RL_CreatePreFaderSend.lua</source>
+      </version>
+    </reapack>
+    <reapack name="RL_rtk_TopTailGui.lua" type="script" desc="Top Tail Gui">
+      <version name="0.5" author="Roc Lee" time="2023-04-26T16:59:14Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/03d4b3c9b438a7053f8ffb9838928f7bb1588247/Utility/RL_rtk_TopTailGui.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_AddVolumePoints.lua" type="script" desc="Add Volume Points">
