@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="f45325bed6998d51ccdd32c5c5ea3aeed8439225">
+<index version="1" name="CCI" commit="66224008e333d3321a33234ccc0e87b58ed82aa1">
   <category name="HelperFunctions">
     <reapack name="RL_SampleBufferReader.lua" type="script" desc="Helper Functions for Top Tail Script">
       <version name="0.5" author="Roc Lee" time="2023-04-26T16:51:06Z">
@@ -19,6 +19,11 @@
     </reapack>
   </category>
   <category name="Utility">
+    <reapack name="RL - DeselectFirstItemInSelection.lua" type="script" desc="Deselect First Item">
+      <version name="1.0" author="Roc Lee" time="2023-04-26T20:28:36Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/66224008e333d3321a33234ccc0e87b58ed82aa1/Utility/RL%20-%20DeselectFirstItemInSelection.lua</source>
+      </version>
+    </reapack>
     <reapack name="RL_CreatePreFaderSend.lua" type="script" desc="RL_CreatePreFaderSend">
       <version name="1.0" author="Roc Lee" time="2023-04-14T17:12:54Z">
         <changelog><![CDATA[+ Initial Release]]></changelog>
