@@ -1,6 +1,6 @@
 -- @description Add Volume Points
 -- @author William N. Lowe
--- @version 0.95
+-- @version 0.97
 -- @about
 --   # Add Volume Points
 --   Sets a point at edit cursor for selected item or first item under edit cursor. Then sets a point before and after. Uses the GUI companion script to set new times. 
@@ -132,7 +132,7 @@ reaper.SetMediaItemTakeInfo_Value( take, "D_PLAYRATE", 1 )
 
 --[OLD, using Edit Cursor] local time = reaper.GetCursorPosition() - itemPosition
 
-Msg(reaper.BR_PositionAtMouseCursor(false))
+--Msg(reaper.BR_PositionAtMouseCursor(false))
 
 local time = reaper.BR_PositionAtMouseCursor(false) - itemPosition
 
@@ -152,11 +152,28 @@ if numPoints > 1 then
     reaper.PreventUIRefresh(1)
 
     reaper.InsertEnvelopePoint(volumeEnvelope, middlePointReference[1], middlePointReference[2], shape, ten, true, true)
-        reaper.Envelope_SortPoints(volumeEnvelope)
-    reaper.InsertEnvelopePoint(volumeEnvelope, prePointReference[1], prePointReference[2], shape, ten, false, true)
-        reaper.Envelope_SortPoints(volumeEnvelope)
-    reaper.InsertEnvelopePoint(volumeEnvelope, postPointReference[1], postPointReference[2], shape, ten, false, true)
     reaper.Envelope_SortPoints(volumeEnvelope)
+
+    reaper.InsertEnvelopePoint(volumeEnvelope, prePointReference[1], prePointReference[2], shape, ten, false, true)
+    reaper.Envelope_SortPoints(volumeEnvelope)
+        
+    -- check if point btween this point and mid point
+    midPtIndex = reaper.GetEnvelopePointByTime(volumeEnvelope, middlePointReference[1])
+    ret, pointTime, level, shape, ten, sel = reaper.GetEnvelopePoint(volumeEnvelope, midPtIndex-1)
+    if pointTime > prePointReference[1] then reaper.DeleteEnvelopePointEx(volumeEnvelope, -1, reaper.GetEnvelopePointByTime(volumeEnvelope, prePointReference[1])) end
+
+    -- reset pt index
+    midPtIndex = reaper.GetEnvelopePointByTime(volumeEnvelope, middlePointReference[1])
+
+    Msg(midPtIndex)
+    -- Msg(pointTime)
+    Msg(reaper.GetEnvelopePointByTime(volumeEnvelope, postPointReference[1]))
+
+    -- check if there is a point between midpoint and post point
+    if reaper.GetEnvelopePointByTime(volumeEnvelope, postPointReference[1]) <= midPtIndex then
+        reaper.InsertEnvelopePoint(volumeEnvelope, postPointReference[1], postPointReference[2], shape, ten, false, true)
+        reaper.Envelope_SortPoints(volumeEnvelope)
+    end
 
     reaper.PreventUIRefresh(-1)
 else
