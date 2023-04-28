@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="692f1465b0070fe7f5a7a141de35c8468b17eed8">
+<index version="1" name="CCI" commit="a0c98b1850e8747b24e58e8224be40d5f8feb48d">
   <category name="HelperFunctions">
     <reapack name="RL_SampleBufferReader.lua" type="script" desc="Helper Functions for Top Tail Script">
       <version name="0.5" author="Roc Lee" time="2023-04-26T16:51:06Z">
@@ -76,6 +76,9 @@
       </version>
       <version name="0.97" author="William N. Lowe" time="2023-04-27T21:16:17Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/692f1465b0070fe7f5a7a141de35c8468b17eed8/Utility/wnlowe_AddVolumePoints.lua</source>
+      </version>
+      <version name="0.98" author="William N. Lowe" time="2023-04-28T14:04:59Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/a0c98b1850e8747b24e58e8224be40d5f8feb48d/Utility/wnlowe_AddVolumePoints.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_AddVolumePoints_GUI.lua" type="script" desc="Add Volume Points GUI">
