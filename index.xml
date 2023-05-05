@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="a0c98b1850e8747b24e58e8224be40d5f8feb48d">
+<index version="1" name="CCI" commit="6f339257135e8d228b1b1e863f1f141767b25197">
   <category name="HelperFunctions">
     <reapack name="RL_SampleBufferReader.lua" type="script" desc="Helper Functions for Top Tail Script">
       <version name="0.5" author="Roc Lee" time="2023-04-26T16:51:06Z">
@@ -99,6 +99,23 @@
       </version>
       <version name="0.6" author="William N. Lowe" time="2023-04-25T16:49:54Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/7f1c4627e3ec96b605938351545b8e3fb6f4e132/Utility/wnlowe_AddVolumePoints_GUI.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_renderStereoDraft.lua" type="script" desc="Fast Render Window">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Fast Render Window\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Script to render audio in a more streamlined manner for very specific workflows.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Must have RTK installed\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 wnlsounddesign.com\par}
+}
+]]></description>
+      </metadata>
+      <version name="0.5" author="William N. Lowe" time="2023-05-05T18:39:40Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/6f339257135e8d228b1b1e863f1f141767b25197/Utility/wnlowe_renderStereoDraft.lua</source>
       </version>
     </reapack>
   </category>
