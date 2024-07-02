@@ -23,16 +23,16 @@ dofile(reaper.GetResourcePath().."/UserPlugins/ultraschall_api.lua")
 
 local file_path_table = {}
 
---_, PATH = reaper.JS_Dialog_BrowseForFolder("select a folder", "C:\\")
+--_, PATH = reaper.JS_Dialog_BrowseForFolder("select a folder", "C:\\") --GET DIR FROM USER INPUT
 
 -- TEMP HARDCODE FOR TESTING:
 PATH = "P:/ZZ_NBA_TEST"
 
 timelinePosition = 0 -- initial timeline position
 
-found_dirs, dirs_array, found_files, files_array = ultraschall.GetAllRecursiveFilesAndSubdirectories(PATH, "audio")
+trackexists = false
 
---Msg(found_dirs)
+found_dirs, dirs_array, found_files, files_array = ultraschall.GetAllRecursiveFilesAndSubdirectories(PATH, "audio")
 
 -- add entry to dictionary of filepath + files in file path
 for k, v in pairs(dirs_array) do
@@ -46,15 +46,40 @@ for k, v in pairs(dirs_array) do
 
     for i, f in pairs(files) do
         
-        -- Split name to get actor inits
+        -- Split name to get actor initials
         splitname = split(f, ".")
         splitname = split(splitname[1], "_")
 
-        reaper.InsertTrackAtIndex(0, false)
-        track = reaper.GetTrack(0, 0)
-        _, _ = reaper.GetSetMediaTrackInfo_String(track, "P_NAME", splitname[#splitname], true)
-        reaper.SetTrackSelected(track, true)
-        reaper.InsertMedia(f, 0)
+        -- check if track already exists
+        trackCount = reaper.CountTracks(0)
+        
+        if trackCount ~= 0 then
+            for i = 0, trackCount-1 do
+                print(i)
+                track = reaper.GetTrack(0, i)
+                _, trackname = reaper.GetTrackName(track)
+                --            _, trackname = reaper.GetSetMediaTrackInfo_String(track, "P_NAME", "trackname", false)
+                if trackname == splitname[#splitname] then
+                    trackexists = true
+                    -- reaper.SetTrackSelected(track, true)
+                    -- print(trackname)
+                    reaper.SetOnlyTrackSelected(track)
+                    reaper.InsertMedia(f, 0)
+                    break
+                else
+                    trackexists = false
+                end
+            end
+        end
+
+        if trackexists == false then
+            reaper.InsertTrackAtIndex(0, false)
+            track = reaper.GetTrack(0, 0)
+            _, _ = reaper.GetSetMediaTrackInfo_String(track, "P_NAME", splitname[#splitname], true)
+            -- reaper.SetTrackSelected(track, true)
+            reaper.SetOnlyTrackSelected(track)
+            reaper.InsertMedia(f, 0)
+        end
 
         -- check if last file in folder and set timeline position accordingly  
         if i == #file_path_table[v] then
@@ -76,4 +101,7 @@ for p, l in pairs(file_path_table) do
 end
 
 
--- todo:  Only have tracks for max number of files, pattern match to get track names, add to track based on file name
+-- todo:  Only have tracks for max number of files, pattern match to get track names, 
+-- add to track based on file name
+-- marker for file path
+-- be able to render back to file path
