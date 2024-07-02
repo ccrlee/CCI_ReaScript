@@ -34,8 +34,6 @@ found_dirs, dirs_array, found_files, files_array = ultraschall.GetAllRecursiveFi
 
 --Msg(found_dirs)
 
-
-
 -- add entry to dictionary of filepath + files in file path
 for k, v in pairs(dirs_array) do
     local _, files = ultraschall.GetAllFilenamesInPath(v)
@@ -44,13 +42,27 @@ for k, v in pairs(dirs_array) do
     local pathnameT = split(v, "/")
     --printtable(pathnameT)
     local length = #pathnameT
-    print(pathnameT[length - 1])
+    print(pathnameT[length - 1]) -- this gets the name of the folder for each stack
 
     for i, f in pairs(files) do
-        -- local fileext = f:match('.-%.(.*)')
-        -- if reaper.IsMediaExtension(f, false) then
-            reaper.InsertMedia(f, 1)
-        -- end
+        
+        -- Split name to get actor inits
+        splitname = split(f, ".")
+        splitname = split(splitname[1], "_")
+
+        reaper.InsertTrackAtIndex(0, false)
+        track = reaper.GetTrack(0, 0)
+        _, _ = reaper.GetSetMediaTrackInfo_String(track, "P_NAME", splitname[#splitname], true)
+        reaper.SetTrackSelected(track, true)
+        reaper.InsertMedia(f, 0)
+
+        -- check if last file in folder and set timeline position accordingly  
+        if i == #file_path_table[v] then
+            print(#file_path_table[v])
+            timelinePosition = reaper.GetCursorPosition() + 1
+        end
+        
+        reaper.SetEditCurPos(timelinePosition, true, true)
     end
 
 end
@@ -62,3 +74,6 @@ for p, l in pairs(file_path_table) do
         print(v)
     end
 end
+
+
+-- todo:  Only have tracks for max number of files, pattern match to get track names, add to track based on file name
