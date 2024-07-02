@@ -49,7 +49,9 @@ for k, v in pairs(dirs_array) do
     local pathnameT = split(v, "/")
     --printtable(pathnameT)
     local length = #pathnameT
-    print(pathnameT[length - 1]) -- this gets the name of the folder for each stack
+    -- print(pathnameT[length - 1]) -- this gets the name of the folder for each stack
+
+    reaper.AddProjectMarker(0, false, timelinePosition, timelinePosition+1, pathnameT[length - 1], k)
 
     reaper.Undo_BeginBlock()
 
