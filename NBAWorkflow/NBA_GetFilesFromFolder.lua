@@ -21,20 +21,27 @@ end
 
 dofile(reaper.GetResourcePath().."/UserPlugins/ultraschall_api.lua")
 
-local file_path_table = {}
-
---_, PATH = reaper.JS_Dialog_BrowseForFolder("select a folder", "C:\\") --GET DIR FROM USER INPUT
 
 -- TEMP HARDCODE FOR TESTING:
 PATH = "P:/ZZ_NBA_TEST"
 
-timelinePosition = 0 -- initial timeline position
 
-trackexists = false
+-- GET USER INPUT for repository
+--_, PATH = reaper.JS_Dialog_BrowseForFolder("select a folder", "C:\\") --GET DIR FROM USER INPUT
+
+-- INITIALIZE TIMELINE AND VARIABLES
+local file_path_table = {}
+local timelinePosition = 0 -- initial timeline position
+reaper.SetEditCurPos(timelinePosition, true, true)
+local trackexists = false
+
+-- BEGIN SCANNING
 
 found_dirs, dirs_array, found_files, files_array = ultraschall.GetAllRecursiveFilesAndSubdirectories(PATH, "audio")
 
 -- add entry to dictionary of filepath + files in file path
+
+reaper.PreventUIRefresh(1)
 for k, v in pairs(dirs_array) do
     local _, files = ultraschall.GetAllFilenamesInPath(v)
     file_path_table[v] = files
@@ -43,6 +50,8 @@ for k, v in pairs(dirs_array) do
     --printtable(pathnameT)
     local length = #pathnameT
     print(pathnameT[length - 1]) -- this gets the name of the folder for each stack
+
+    reaper.Undo_BeginBlock()
 
     for i, f in pairs(files) do
         
@@ -58,11 +67,8 @@ for k, v in pairs(dirs_array) do
                 print(i)
                 track = reaper.GetTrack(0, i)
                 _, trackname = reaper.GetTrackName(track)
-                --            _, trackname = reaper.GetSetMediaTrackInfo_String(track, "P_NAME", "trackname", false)
                 if trackname == splitname[#splitname] then
                     trackexists = true
-                    -- reaper.SetTrackSelected(track, true)
-                    -- print(trackname)
                     reaper.SetOnlyTrackSelected(track)
                     reaper.InsertMedia(f, 0)
                     break
@@ -76,7 +82,6 @@ for k, v in pairs(dirs_array) do
             reaper.InsertTrackAtIndex(0, false)
             track = reaper.GetTrack(0, 0)
             _, _ = reaper.GetSetMediaTrackInfo_String(track, "P_NAME", splitname[#splitname], true)
-            -- reaper.SetTrackSelected(track, true)
             reaper.SetOnlyTrackSelected(track)
             reaper.InsertMedia(f, 0)
         end
@@ -90,18 +95,20 @@ for k, v in pairs(dirs_array) do
         reaper.SetEditCurPos(timelinePosition, true, true)
     end
 
+    reaper.Undo_EndBlock("insert NBA file stack", -1)
+
 end
+reaper.PreventUIRefresh(-1)
 
 -- print the table for each entry in the dictionary
-for p, l in pairs(file_path_table) do
-    print(p)
-    for k, v in pairs(l) do
-        print(v)
-    end
-end
+-- for p, l in pairs(file_path_table) do
+--     print(p)
+--     for k, v in pairs(l) do
+--         print(v)
+--     end
+-- end
 
 
--- todo:  Only have tracks for max number of files, pattern match to get track names, 
--- add to track based on file name
+-- todo:
 -- marker for file path
 -- be able to render back to file path
