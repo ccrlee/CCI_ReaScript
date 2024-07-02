@@ -69,7 +69,6 @@ for k, v in pairs(dirs_array) do
         
         if trackCount ~= 0 then
             for i = 0, trackCount-1 do
-                print(i)
                 track = reaper.GetTrack(0, i)
                 _, trackname = reaper.GetTrackName(track)
                 if trackname == splitname[#splitname] then
@@ -103,6 +102,9 @@ for k, v in pairs(dirs_array) do
     reaper.Undo_EndBlock("insert NBA file stack", -1)
 
 end
+
+reaper.AddProjectMarker(0, true, 0, timelinePosition+1, PATH, 0)
+
 reaper.PreventUIRefresh(-1)
 
 --print the table for each entry in the dictionary
