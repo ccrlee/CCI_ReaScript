@@ -23,11 +23,14 @@ dofile(reaper.GetResourcePath().."/UserPlugins/ultraschall_api.lua")
 
 
 -- TEMP HARDCODE FOR TESTING:
-PATH = "P:/ZZ_NBA_TEST"
+-- PATH = "P:/ZZ_NBA_TEST"
 
 
 -- GET USER INPUT for repository
---_, PATH = reaper.JS_Dialog_BrowseForFolder("select a folder", "C:\\") --GET DIR FROM USER INPUT
+_, PATH = reaper.JS_Dialog_BrowseForFolder("select a folder", "C:\\") --GET DIR FROM USER INPUT
+
+_, _ = reaper.GetSetProjectInfo_String(0, "RENDER_FILE", PATH, true)
+_, _ = reaper.GetSetProjectInfo_String(0, "RENDER_PATTERN", "$marker/audio/$item", true)
 
 -- INITIALIZE TIMELINE AND VARIABLES
 local file_path_table = {}
@@ -90,7 +93,7 @@ for k, v in pairs(dirs_array) do
 
         -- check if last file in folder and set timeline position accordingly  
         if i == #file_path_table[v] then
-            print(#file_path_table[v])
+            --print(#file_path_table[v])
             timelinePosition = reaper.GetCursorPosition() + 1
         end
         
@@ -102,7 +105,7 @@ for k, v in pairs(dirs_array) do
 end
 reaper.PreventUIRefresh(-1)
 
--- print the table for each entry in the dictionary
+--print the table for each entry in the dictionary
 -- for p, l in pairs(file_path_table) do
 --     print(p)
 --     for k, v in pairs(l) do
@@ -114,3 +117,9 @@ reaper.PreventUIRefresh(-1)
 -- todo:
 -- marker for file path
 -- be able to render back to file path
+-- cut off marker name before date
+
+-- For each file
+-- Set Project File path
+-- $marker/$item
+
