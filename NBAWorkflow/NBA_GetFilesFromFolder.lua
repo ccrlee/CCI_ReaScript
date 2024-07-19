@@ -22,12 +22,24 @@ end
 dofile(reaper.GetResourcePath().."/UserPlugins/ultraschall_api.lua")
 
 
+function CreateZXRegion(tname, fname, start)
+
+--Msg(tname)
+
+    if tname == nil then return end
+
+    if string.lower(tname) == "zx" or string.lower(tname) == "ref" then
+        -- gettakename(take)
+        reaper.AddProjectMarker(0, true, start, reaper.GetCursorPosition(), fname, -1)
+    end
+end
+
 -- TEMP HARDCODE FOR TESTING:
--- PATH = "P:/ZZ_NBA_TEST"
+PATH = "P:/ZZ_NBA_TEST"
 
 
 -- GET USER INPUT for repository
-_, PATH = reaper.JS_Dialog_BrowseForFolder("select a folder", "C:\\") --GET DIR FROM USER INPUT
+-- _, PATH = reaper.JS_Dialog_BrowseForFolder("select a folder", "C:\\") --GET DIR FROM USER INPUT
 
 _, _ = reaper.GetSetProjectInfo_String(0, "RENDER_FILE", PATH, true)
 _, _ = reaper.GetSetProjectInfo_String(0, "RENDER_PATTERN", "$marker/audio/$item", true)
@@ -45,6 +57,7 @@ found_dirs, dirs_array, found_files, files_array = ultraschall.GetAllRecursiveFi
 -- add entry to dictionary of filepath + files in file path
 
 reaper.PreventUIRefresh(1)
+
 for k, v in pairs(dirs_array) do
     local _, files = ultraschall.GetAllFilenamesInPath(v)
     file_path_table[v] = files
@@ -62,6 +75,9 @@ for k, v in pairs(dirs_array) do
         
         -- Split name to get actor initials
         splitname = split(f, ".")
+
+        regname = split(splitname[1], "/")
+
         splitname = split(splitname[1], "_")
 
         -- check if track already exists
@@ -75,6 +91,9 @@ for k, v in pairs(dirs_array) do
                     trackexists = true
                     reaper.SetOnlyTrackSelected(track)
                     reaper.InsertMedia(f, 0)
+
+-- CHECK IF IS ZX OR REF
+                    CreateZXRegion(trackname, regname[#regname], timelinePosition)
                     break
                 else
                     trackexists = false
@@ -85,9 +104,11 @@ for k, v in pairs(dirs_array) do
         if trackexists == false then
             reaper.InsertTrackAtIndex(0, false)
             track = reaper.GetTrack(0, 0)
-            _, _ = reaper.GetSetMediaTrackInfo_String(track, "P_NAME", splitname[#splitname], true)
+            _, trackname = reaper.GetSetMediaTrackInfo_String(track, "P_NAME", splitname[#splitname], true)
             reaper.SetOnlyTrackSelected(track)
             reaper.InsertMedia(f, 0)
+            -- CHECK IF IS ZX OR REF
+            CreateZXRegion(trackname, regname[#regname], timelinePosition)
         end
 
         -- check if last file in folder and set timeline position accordingly  
@@ -103,7 +124,7 @@ for k, v in pairs(dirs_array) do
 
 end
 
-reaper.AddProjectMarker(0, true, 0, timelinePosition+1, PATH, 0)
+reaper.AddProjectMarker2(0, true, 0, timelinePosition+1, PATH, 0, reaper.ColorToNative(0, 0, 244)|0x1000000)
 
 reaper.PreventUIRefresh(-1)
 
