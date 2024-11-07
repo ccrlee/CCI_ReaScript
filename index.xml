@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="f0f555c62ac9a120ff90aaf60b62d264c2de11df">
+<index version="1" name="CCI" commit="4e2277524f9968c7ddcd6d4f85577b22799c16f7">
   <category name="HelperFunctions">
     <reapack name="RL_SampleBufferReader.lua" type="script" desc="Helper Functions for Top Tail Script">
       <version name="0.5" author="Roc Lee" time="2023-04-26T16:51:06Z">
@@ -155,6 +155,9 @@
     <reapack name="RL_PrepSessionFromCSV.lua" type="script" desc="DISC Session Prep script">
       <version name="0.9" author="Roc Lee / William Loewe" time="2024-11-07T14:39:17Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/b6af3f8a92477df302f0af52caf85b06f722ecb0/VOWorkflow/RL_PrepSessionFromCSV.lua</source>
+      </version>
+      <version name="0.9a" author="Roc Lee / William Loewe" time="2024-11-07T14:59:15Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/4e2277524f9968c7ddcd6d4f85577b22799c16f7/VOWorkflow/RL_PrepSessionFromCSV.lua</source>
       </version>
     </reapack>
   </category>
