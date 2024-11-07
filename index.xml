@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="b6af3f8a92477df302f0af52caf85b06f722ecb0">
+<index version="1" name="CCI" commit="f0f555c62ac9a120ff90aaf60b62d264c2de11df">
   <category name="HelperFunctions">
     <reapack name="RL_SampleBufferReader.lua" type="script" desc="Helper Functions for Top Tail Script">
       <version name="0.5" author="Roc Lee" time="2023-04-26T16:51:06Z">
@@ -15,6 +15,23 @@
       </version>
       <version name="0.6" author="Roc Lee" time="2023-04-26T17:08:49Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/9ae09a7d2bffa073bd747ba92e5ce1ede47a3d0c/HelperFunctions/RL_VariableTopTail.lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="NBAWorkflow">
+    <reapack name="NBA_ConsolidateItemsOnSameTrackKeepingName.lua" type="script" desc="NBA Consolidate Items on Same Track Keeping Name">
+      <version name="0.9" author="Roc Lee" time="2024-11-07T14:43:19Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/f0f555c62ac9a120ff90aaf60b62d264c2de11df/NBAWorkflow/NBA_ConsolidateItemsOnSameTrackKeepingName.lua</source>
+      </version>
+    </reapack>
+    <reapack name="NBA_ConsolidateSelectedInRegionKeepingTakeName.lua" type="script" desc="NBA Consolidate Selected In Region Keeping Take Name">
+      <version name="0.9" author="Roc Lee" time="2024-11-07T14:43:19Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/f0f555c62ac9a120ff90aaf60b62d264c2de11df/NBAWorkflow/NBA_ConsolidateSelectedInRegionKeepingTakeName.lua</source>
+      </version>
+    </reapack>
+    <reapack name="NBA_GetFilesFromFolder.lua" type="script" desc="NBA Get Files From Folder">
+      <version name="0.9" author="Roc Lee" time="2024-11-07T14:43:19Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/f0f555c62ac9a120ff90aaf60b62d264c2de11df/NBAWorkflow/NBA_GetFilesFromFolder.lua</source>
       </version>
     </reapack>
   </category>
