@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="6f339257135e8d228b1b1e863f1f141767b25197">
+<index version="1" name="CCI" commit="b6af3f8a92477df302f0af52caf85b06f722ecb0">
   <category name="HelperFunctions">
     <reapack name="RL_SampleBufferReader.lua" type="script" desc="Helper Functions for Top Tail Script">
       <version name="0.5" author="Roc Lee" time="2023-04-26T16:51:06Z">
@@ -22,6 +22,21 @@
     <reapack name="RL - DeselectFirstItemInSelection.lua" type="script" desc="Deselect First Item">
       <version name="1.0" author="Roc Lee" time="2023-04-26T20:28:36Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/66224008e333d3321a33234ccc0e87b58ed82aa1/Utility/RL%20-%20DeselectFirstItemInSelection.lua</source>
+      </version>
+    </reapack>
+    <reapack name="RL - SelectDummyTrack.lua" type="script" desc="Select Dummy Track">
+      <version name="0.1" author="Roc Lee" time="2024-06-05T21:04:41Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/ed16bac9749ad7c2e0c202090a755ba073c4f64a/Utility/RL%20-%20SelectDummyTrack.lua</source>
+      </version>
+    </reapack>
+    <reapack name="RL - SelectNextEmptyTrack.lua" type="script" desc="Select Next Empty Track">
+      <version name="0.1" author="Roc Lee" time="2024-06-05T21:04:41Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/ed16bac9749ad7c2e0c202090a755ba073c4f64a/Utility/RL%20-%20SelectNextEmptyTrack.lua</source>
+      </version>
+    </reapack>
+    <reapack name="RL - SetSelectionToItemsAndInsertEmptyItem.lua" type="script" desc="Set Selection to Items and INsert Empty Item">
+      <version name="0.1" author="Roc Lee" time="2024-06-05T21:04:41Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/ed16bac9749ad7c2e0c202090a755ba073c4f64a/Utility/RL%20-%20SetSelectionToItemsAndInsertEmptyItem.lua</source>
       </version>
     </reapack>
     <reapack name="RL_CreatePreFaderSend.lua" type="script" desc="RL_CreatePreFaderSend">
@@ -116,6 +131,13 @@
       </metadata>
       <version name="0.5" author="William N. Lowe" time="2023-05-05T18:39:40Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/6f339257135e8d228b1b1e863f1f141767b25197/Utility/wnlowe_renderStereoDraft.lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="VOWorkflow">
+    <reapack name="RL_PrepSessionFromCSV.lua" type="script" desc="DISC Session Prep script">
+      <version name="0.9" author="Roc Lee / William Loewe" time="2024-11-07T14:39:17Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/b6af3f8a92477df302f0af52caf85b06f722ecb0/VOWorkflow/RL_PrepSessionFromCSV.lua</source>
       </version>
     </reapack>
   </category>

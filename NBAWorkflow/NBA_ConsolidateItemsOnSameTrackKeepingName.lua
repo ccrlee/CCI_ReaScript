@@ -1,3 +1,7 @@
+-- @description NBA Consolidate Items on Same Track Keeping Name
+-- @author Roc Lee
+-- @version 0.9
+
 function Msg (param)
     if debug then
       reaper.ShowConsoleMsg(tostring (param).."\n")

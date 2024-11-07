@@ -1,3 +1,7 @@
+-- @description NBA Get Files From Folder
+-- @author Roc Lee
+-- @version 0.9
+
 function Msg (param)
     reaper.ShowConsoleMsg(tostring (param).."\n")
 end

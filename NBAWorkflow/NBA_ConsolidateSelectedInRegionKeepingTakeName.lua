@@ -1,3 +1,7 @@
+-- @description NBA Consolidate Selected In Region Keeping Take Name
+-- @author Roc Lee
+-- @version 0.9
+
 function Msg (param)
     if debug then
       reaper.ShowConsoleMsg(tostring (param).."\n")
