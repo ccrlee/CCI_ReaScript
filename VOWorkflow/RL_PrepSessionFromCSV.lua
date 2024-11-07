@@ -64,15 +64,13 @@ end
 
 
 for row = 2, #CsvTable do
--- for row = 2, 5 do
-    Msg("Row "..row)
+    -- Msg("Row "..row)
     local takeCount = 1
     for cell = 1, #CsvTable[row] do
         local takeNumber = CsvTable[row][cell]
         if takeNumber ~= nil then takeNumber = takeNumber:sub(1,-2) end
-        if tonumber(takeNumber) == nil then goto continue end
         
-        -- Msg(takeNumber)
+        if tonumber(takeNumber) == nil then goto continue end
 
             for i = 0, numItems - 1 do
                 local item = reaper.GetMediaItem( 0, i )
@@ -85,15 +83,16 @@ for row = 2, #CsvTable do
                 selectTakeNum = selectTakeNum[#selectTakeNum]
 
                 if tonumber(takeNumber) == tonumber(selectTakeNum) then
-                    -- Msg(selectTakeNum)
                      -- Make region with name
+                    local paddingDigit = ""
+                    if takeCount < 10 then paddingDigit = "0" end
+
                     length = reaper.GetMediaItemInfo_Value(item, "D_LENGTH")
-                    reaper.AddProjectMarker(0, true, start, start + length, CsvTable[row][1].."_"..takeCount, 0)
+                    reaper.AddProjectMarker(0, true, start, start + length, CsvTable[row][1].."_"..paddingDigit..takeCount, 0)
                     reaper.AddProjectMarker(0, false, start, start, CsvTable[row][cell], 0)
                     takeCount = takeCount + 1
+                    
                     -- ((add note with line?))
-                    -- if row == -1 then goto final end
-
                     note = CsvTable[row][cell+1]
                     _, note = reaper.GetSetMediaItemInfo_String( item, "P_NOTES", note, true )
                 end
@@ -105,41 +104,3 @@ end
 
 reaper.PreventUIRefresh(-1)
 reaper.Undo_EndBlock( "Prep Session from CSV", 0)
-
-
--- Find corresponding row
---name = name:sub(1, -4)
---     local row = -1
---     for rowIndex = 1, #CsvTable do
---         sourcename = CsvTable[rowIndex][1]:gsub(".wav", "")
-
---         if sourcename == nil then reaper.ReaScriptError( "Empty Filename" ) goto continue end
-
---         sourcename = sourcename:gsub(".WAV", "")
---         sourcename = sourcename:sub(1,-4)
---         Msg(sourcename)
---         if sourcename == name:sub(1, -4) then
---             row = rowIndex
---             goto continue
---         end
---     end
---     reaper.ReaScriptError( "No row match was found for file " .. i .. ", continuing" )
---     goto final
---     ::continue::
-
---     -- Make region with name
---     length = reaper.GetMediaItemInfo_Value(item, "D_LENGTH")
---     takeNum = name:split("_")
---     reaper.AddProjectMarker(0, true, start, start + length, CsvTable[row][2].."_"..takeNum[#takeNum], i)
-
---     -- ((add note with line?))
---     if row == -1 then goto final end
-
---     --takeNum = sourcename:split("_")
---     Msg(takeNum[#takeNum])
-
---     note = CsvTable[row][tonumber(takeNum[#takeNum])+2]
---     _, note = reaper.GetSetMediaItemInfo_String( item, "P_NOTES", note, true )
-
---     ::final::
--- end
