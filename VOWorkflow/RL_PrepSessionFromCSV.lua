@@ -1,6 +1,6 @@
 -- @description DISC Session Prep script
 -- @author Roc Lee / William Loewe
--- @version 0.9a
+-- @version 1.0
 
 function string:split(sSeparator, nMax, bRegexp)
     if sSeparator == '' then sSeparator = ',' end
