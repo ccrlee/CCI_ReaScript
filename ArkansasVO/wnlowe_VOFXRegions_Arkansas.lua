@@ -1,5 +1,5 @@
 --[[
-Description: VOFX Regions Script for Project Arkansas
+Description: Project Arkansas VO Pipeline
 Version: 1.5
 Author: William N. Lowe
 ]]
