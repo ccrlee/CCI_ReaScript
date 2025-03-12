@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="21430cab8eb86c618e2d0309bd27ed405ca41e84">
+<index version="1" name="CCI" commit="67fa1be517be89da37e9e45b8744def6c162770c">
+  <category name="ArkansasVO">
+    <reapack name="wnlowe_VOFXRegions_Arkansas.lua" type="script" desc="VOFX Regions Script for Project Arkansas">
+      <version name="1.5" author="William N. Lowe" time="2025-03-12T20:36:30Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/67fa1be517be89da37e9e45b8744def6c162770c/ArkansasVO/wnlowe_VOFXRegions_Arkansas.lua</source>
+      </version>
+    </reapack>
+  </category>
   <category name="HelperFunctions">
     <reapack name="RL_SampleBufferReader.lua" type="script" desc="Helper Functions for Top Tail Script">
       <version name="0.5" author="Roc Lee" time="2023-04-26T16:51:06Z">
