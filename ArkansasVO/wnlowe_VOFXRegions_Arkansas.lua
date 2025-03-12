@@ -1,6 +1,6 @@
 --[[
 Description: Project Arkansas VO Pipeline
-Version: 1.5.1
+Version: 1.5.2
 Author: William N. Lowe
 Provides:
     [main] wnlowe_noItemOverrun.lua
