@@ -120,7 +120,7 @@ local function handleAlts(row, rowcharacter, sourceFiles)
                 local marker = reaper.AddProjectMarker( 0, true, itemStart, itemEnd, baseName .. "_v" .. a .. suffix, -1 )
                 local track = reaper.GetSelectedTrack(0, 0)
                 reaper.SetRegionRenderMatrix( 0, marker, track, 1 )
-                local retval, stringNeedBig = reaper.GetSetMediaTrackInfo_String( track, "P_NAME", rowcharacter, true )
+                if rowcharacter ~= nil then local retval, stringNeedBig = reaper.GetSetMediaTrackInfo_String( track, "P_NAME", rowcharacter, true ) end
                 local retval, stringNeedBig = reaper.GetSetMediaItemInfo_String( item, "P_NOTES", row[lineIdx], true )
                 reaper.AddProjectMarker( 0, false, itemStart, itemEnd, alts[a], -1 )
             end
