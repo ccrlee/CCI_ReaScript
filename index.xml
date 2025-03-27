@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="67ad7f6f536e5d7bf85354a701d0474b78d65f41">
+<index version="1" name="CCI" commit="16b87683977c2cbb5ddbe063ef6d79c5a6e32321">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/39263363dcda8508b267603e94fe3d42025a3c84/ArkansasVO/wnlowe_createArkansasVOSession.lua</source>
+      </version>
+      <version name="2.3.1" author="William N. Lowe" time="2025-03-27T14:09:45Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/16b87683977c2cbb5ddbe063ef6d79c5a6e32321/ArkansasVO/wnlowe_createArkansasVOSession.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_VOFXRegions_Arkansas.lua" type="script" desc="Project Arkansas VO Pipeline">
