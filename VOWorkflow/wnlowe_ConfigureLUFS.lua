@@ -1,8 +1,8 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.01
+-- @version 1.02
 
--- local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
 
 local USEROSWIN = reaper.GetOS():match("Win")
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
@@ -49,6 +49,11 @@ function LUFSManager:new()
     instance.YelledLUFSAction = nil
     instance.ShoutedLUFSAction = nil
 
+    instance.folders = {}
+    instance.files = {}
+    instance.referenceTrack = nil
+    instance.character = "All"
+
     return instance
 end
 
@@ -73,16 +78,26 @@ function LUFSManager:LoadMetadata()
     end
 
     local metadata = nil
+    local directories = nil
     local status, result = pcall(function()
-        metadata = dofile(filePath)
+        metadata, directories = dofile(filePath)
     end)
-    if not status then self.unsavedSession = true end
+    if not status then self.unsavedSession = true Msg(result) end
     if metadata then
         local m = metadata
         self.WhisperedOffset = m["Offsets"][1]
         self.SpokenOffset = m["Offsets"][2]
         self.YelledOffset = m["Offsets"][3]
         self.CutoffTime = m["CutoffTime"]
+        self.WhisperedTargetI, self.SpokenTargetI, self.YelledTargetI = table.unpack(m["TargetsI"])
+        self.WhisperedTargetM, self.SpokenTargetM, self.YelledTargetM = table.unpack(m["TargetsM"])
+    end
+    if directories then
+        local d = directories
+        self.folders = d["folders"]
+        self.files = d["files"]
+        self.referenceTrack = d["referenceTrack"]
+        self.character = d["character"]
     end
     self:FindActions()
 end
@@ -113,6 +128,16 @@ function LUFSManager:SerializeMetadata()
     return metadata
 end
 
+function LUFSManager:SerializeDirectories()
+    local directories = {
+        folders = self.folders,
+        files = self.files,
+        referenceTrack = self.referenceTrack,
+        character = self.character
+    }
+    return directories
+end
+
 function LUFSManager:SerializeTable(tbl, indent)
     indent = indent or 0
     local spaces = string.rep("     ", indent)
@@ -127,7 +152,12 @@ function LUFSManager:SerializeTable(tbl, indent)
         elseif type(value) == "number" then
             valStr = tostring(value)
         elseif type(value) == "string" then
-            valStr = string.format('"%s"', value)
+            local escaped = value:gsub("\\", "\\\\")
+            valStr = string.format('"%s"', escaped)
+        elseif value == nil then
+            valStr = "nil"
+        else
+            valStr = "nil"
         end
 
         table.insert(lines, string.format("%s   %s = %s,", spaces, keyStr, valStr))
@@ -138,15 +168,7 @@ end
 
 function LUFSManager:SaveMetadata()
     if self.unsavedSession then return end
-    local metadata = self:SerializeMetadata()
-    local metadataStr = self:SerializeTable(metadata)
-    local outputStr = string.format("local metadata = %s return metadata", metadataStr)
-    if self.MetadataFilePath then
-        local file = io.open(self.MetadataFilePath, "w")
-        if not file then return false end
-        file:write(outputStr)
-        file:close()
-    else
+    if not self.MetadataFilePath then
         local projectPath = reaper.GetProjectPath("")
         local dir = nil
         if projectPath ~= "" then dir = projectPath
@@ -154,8 +176,16 @@ function LUFSManager:SaveMetadata()
 
         self.MetadataFilePath = dir.."/LoudnessSettings.lua"
         self:SaveMetadata()
-        return
     end
+    local metadata = self:SerializeMetadata()
+    local directories = self:SerializeDirectories() --
+    local metadataStr = self:SerializeTable(metadata)
+    local directoriesStr = self:SerializeTable(directories)
+    local outputStr = string.format("local metadata = %s local directories = %s return metadata, directories", metadataStr, directoriesStr)
+    local file = io.open(self.MetadataFilePath, "w")
+    if not file then return false end
+    file:write(outputStr)
+    file:close()
 end
 
 Gui = {}
@@ -281,6 +311,15 @@ function Gui:DrawSettingsWindow()
         imgui.SetNextItemWidth(CTX, 100)
         local c, newV = imgui.InputDouble(CTX, "Cutoff Time between LUFS-M and LUFS-I ##CT", manager.CutoffTime, 0.5, 1.0, "%.2f")
         if c then manager.CutoffTime = newV manager:SaveMetadata() end
+
+        if #manager.folders > 3 then
+            local folderCharacters = {"All"}
+            for k, v in pairs(manager.folders["characters"]) do
+                table.insert(folderCharacters, k)
+            end
+            local c, v = imgui.Combo(CTX, "Character Match Selection ##CMS", 0, table.concat(folderCharacters, "\0") .. "\0")
+            if c then manager.character = v end
+        end
     end
     imgui.End(CTX)
     if not open then self.showSettings = false manager:SaveMetadata() self.maintainFocus = false end
