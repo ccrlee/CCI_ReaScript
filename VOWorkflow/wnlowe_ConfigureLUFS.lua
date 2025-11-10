@@ -1,6 +1,6 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.05
+-- @version 1.06
 
 local USEROSWIN = reaper.GetOS():match("Win")
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
@@ -420,7 +420,7 @@ function App:Run()
     if self.manager.open then
         reaper.defer(function() self:Run() end)
     end
-    if self.gui.refreshMatch then reaper.Main_OnCommand(self.manager.RefreshMatchAction, 0) end
+    if self.gui.refreshMatch then reaper.Main_OnCommand(self.manager.RefreshMatchAction, 0) self.gui.refreshMatch = false end
 end
 
 local app = App:new()
