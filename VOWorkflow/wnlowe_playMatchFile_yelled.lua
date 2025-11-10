@@ -1,6 +1,8 @@
--- @description Plays a match file from an assigned folder's "Shouted" subdirectory
+-- @description Plays a match file from an assigned folder's "Yelled" subdirectory
 -- @author William N. Lowe
--- @version 0.9
+-- @version 0.95
+
+-- local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
 
 local LOUDNESS = "yelled"
 local PROJECT = reaper.GetProjectPath("")
@@ -11,7 +13,7 @@ local FOLDERS, FULL_FILES, REF_TRACK, FILES
 
 
 --HELPER FUNCTIONS
-local ifdebug = false
+local ifdebug = true
 function Msg(variable) if ifdebug then reaper.ShowConsoleMsg(tostring(variable) .. "\n") end end
 
 --
@@ -49,13 +51,37 @@ local function loadData()
 
 end
 
-
+reaper.CF_Preview_StopAll()
 loadData()
 
 local lineSelection = math.random(#FILES)
 
+Msg("Selected file: " .. FILES[lineSelection])
+
+Msg("File exists: " .. tostring(reaper.file_exists(FILES[lineSelection])))
+
 local source = reaper.PCM_Source_CreateFromFile( FILES[lineSelection] )
+Msg("Source: " .. tostring(source))
+
+if not source then
+    reaper.ShowMessageBox("Failed to create PCM source from file!", "Error", 0)
+    return
+end
+
 local preview = reaper.CF_CreatePreview( source )
-local r = reaper.CF_Preview_SetOutputTrack( preview, 0, REF_TRACK )
-r = reaper.CF_Preview_Play( preview )
-Msg(r)
+Msg("Preview: " .. tostring(preview))
+
+if not preview then
+    reaper.ShowMessageBox("Failed to create preview!", "Error", 0)
+    return
+end
+
+Msg("REF_TRACK: " .. tostring(REF_TRACK))
+
+if REF_TRACK then
+    local r = reaper.CF_Preview_SetOutputTrack( preview, 0, REF_TRACK )
+    Msg("SetOutputTrack result: " .. tostring(r))
+end
+
+-- local r = reaper.CF_Preview_SetOutputTrack( preview, 0, track )
+local r = reaper.CF_Preview_Play( preview )

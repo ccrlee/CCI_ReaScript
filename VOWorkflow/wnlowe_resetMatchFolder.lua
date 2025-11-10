@@ -97,7 +97,7 @@ local function FindFiles(directory)
 
     while file ~= nil do
         local ext = file:match("^.+(%..+)$")
-        if ext ~= ".ini" then table.insert(fileList, directory .. file) end
+        if ext ~= ".ini" then table.insert(fileList, directory .. SLASH .. file) end
         idx = idx + 1
         file = reaper.EnumerateFiles(directory, idx)
     end
@@ -136,7 +136,7 @@ FULL_FILES = getFiles()
 
 LoadMetadata()
 
-local directory_info = {folders = FOLDERS, files = FULL_FILES, referenceTrack = findRefTrack()}
+local directory_info = {folders = FOLDERS, files = FULL_FILES, referenceTrack = findRefTrack(), character = "All"}
 
 local strDirectory = SerializeTable(directory_info)
 
