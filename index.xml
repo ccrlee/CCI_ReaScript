@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="135540280d86cca0c4d087a39790f346db484b9c">
+<index version="1" name="CCI" commit="1e45f6a400b3aa699e223d71a7cd3beb97fd009c">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -189,10 +189,58 @@
       <version name="1.01" author="William N. Lowe" time="2025-11-06T21:36:09Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/135540280d86cca0c4d087a39790f346db484b9c/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
       </version>
+      <version name="1.02" author="William N. Lowe" time="2025-11-10T16:38:09Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/1e45f6a400b3aa699e223d71a7cd3beb97fd009c/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
+      </version>
     </reapack>
     <reapack name="wnlowe_HandleBreath.lua" type="script" desc="Clip Gain Drop by specified ammount based on time selection">
       <version name="1.01" author="William N. Lowe" time="2025-11-06T21:36:09Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/135540280d86cca0c4d087a39790f346db484b9c/VOWorkflow/wnlowe_HandleBreath.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_lufsSet__shouted.lua" type="script" desc="Sets clip gain on selected item to specified LUFS level in metadata file with offset">
+      <version name="0.9" author="William N. Lowe" time="2025-11-10T16:38:09Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/1e45f6a400b3aa699e223d71a7cd3beb97fd009c/VOWorkflow/wnlowe_lufsSet__shouted.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_lufsSet__spoken.lua" type="script" desc="Sets clip gain on selected item to specified LUFS level in metadata file with offset">
+      <version name="0.9" author="William N. Lowe" time="2025-11-10T16:38:09Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/1e45f6a400b3aa699e223d71a7cd3beb97fd009c/VOWorkflow/wnlowe_lufsSet__spoken.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_lufsSet__whisper.lua" type="script" desc="Sets clip gain on selected item to specified LUFS level in metadata file with offset">
+      <version name="0.9" author="William N. Lowe" time="2025-11-10T16:38:09Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/1e45f6a400b3aa699e223d71a7cd3beb97fd009c/VOWorkflow/wnlowe_lufsSet__whisper.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_lufsSet__yelled.lua" type="script" desc="Sets clip gain on selected item to specified LUFS level in metadata file with offset">
+      <version name="0.9" author="William N. Lowe" time="2025-11-10T16:38:09Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/1e45f6a400b3aa699e223d71a7cd3beb97fd009c/VOWorkflow/wnlowe_lufsSet__yelled.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_playMatchFile_shouted.lua" type="script" desc="Plays a match file from an assigned folder's &quot;Shouted&quot; subdirectory">
+      <version name="0.9" author="William N. Lowe" time="2025-11-10T16:38:09Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/1e45f6a400b3aa699e223d71a7cd3beb97fd009c/VOWorkflow/wnlowe_playMatchFile_shouted.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_playMatchFile_spoken.lua" type="script" desc="Plays a match file from an assigned folder's &quot;Shouted&quot; subdirectory">
+      <version name="0.9" author="William N. Lowe" time="2025-11-10T16:38:09Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/1e45f6a400b3aa699e223d71a7cd3beb97fd009c/VOWorkflow/wnlowe_playMatchFile_spoken.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_playMatchFile_whispered.lua" type="script" desc="Plays a match file from an assigned folder's &quot;Shouted&quot; subdirectory">
+      <version name="0.9" author="William N. Lowe" time="2025-11-10T16:38:09Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/1e45f6a400b3aa699e223d71a7cd3beb97fd009c/VOWorkflow/wnlowe_playMatchFile_whispered.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_playMatchFile_yelled.lua" type="script" desc="Plays a match file from an assigned folder's &quot;Shouted&quot; subdirectory">
+      <version name="0.9" author="William N. Lowe" time="2025-11-10T16:38:09Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/1e45f6a400b3aa699e223d71a7cd3beb97fd009c/VOWorkflow/wnlowe_playMatchFile_yelled.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_resetMatchFolder.lua" type="script" desc="Constructs Folder and File tables for play mattch file scripts">
+      <version name="0.9" author="William N. Lowe" time="2025-11-10T16:38:09Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/1e45f6a400b3aa699e223d71a7cd3beb97fd009c/VOWorkflow/wnlowe_resetMatchFolder.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_VoiceEditSessionCreator.lua" type="script" desc="Universal Import Script for VO Configuration">
