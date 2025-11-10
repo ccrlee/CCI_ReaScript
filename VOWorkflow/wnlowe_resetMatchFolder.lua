@@ -1,8 +1,8 @@
 -- @description Constructs Folder and File tables for play mattch file scripts
 -- @author William N. Lowe
--- @version 0.91
+-- @version 0.92
 
-local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+-- local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
 
 local PROJECT = reaper.GetProjectPath("")
 local META_PATH = PROJECT.."/LoudnessSettings.lua"
