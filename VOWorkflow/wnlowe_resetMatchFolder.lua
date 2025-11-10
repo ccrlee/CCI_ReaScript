@@ -1,6 +1,6 @@
 -- @description Constructs Folder and File tables for play mattch file scripts
 -- @author William N. Lowe
--- @version 0.9
+-- @version 0.91
 
 local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
 
@@ -62,7 +62,7 @@ end
 local function findDirectory(dir)
     local directory = nil
     if dir == nil then
-        local r, d = reaper.JS_Dialog_BrowseForFolder( "Match Files Parent Directory", PROJECT )
+        local r, d = reaper.JS_Dialog_BrowseForFolder( "Match Files Parent Directory", "G:\\My Drive\\Erebus\\Ref Files" or PROJECT )
         if d == "" then return end
         directory = d
     else
@@ -131,7 +131,7 @@ local function findRefTrack()
     end
 end
 
-FOLDERS = findDirectory("G:\\My Drive\\Erebus\\Ref Files")
+FOLDERS = findDirectory()
 FULL_FILES = getFiles()
 
 LoadMetadata()
