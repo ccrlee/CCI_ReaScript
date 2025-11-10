@@ -1,6 +1,6 @@
 -- @description Plays a match file from an assigned folder's "Spoken" subdirectory
 -- @author William N. Lowe
--- @version 0.95
+-- @version 0.96
 
 -- local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
 
@@ -13,7 +13,7 @@ local FOLDERS, FULL_FILES, REF_TRACK, FILES
 
 
 --HELPER FUNCTIONS
-local ifdebug = true
+local ifdebug = false
 function Msg(variable) if ifdebug then reaper.ShowConsoleMsg(tostring(variable) .. "\n") end end
 
 --
