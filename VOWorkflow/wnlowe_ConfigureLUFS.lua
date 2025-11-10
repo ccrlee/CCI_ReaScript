@@ -49,6 +49,14 @@ function LUFSManager:new()
     instance.YelledLUFSAction = nil
     instance.ShoutedLUFSAction = nil
 
+    instance.WhisperedMatchAction = nil
+    instance.SpokenMatchAction = nil
+    instance.YelledMatchAction = nil
+    instance.ShoutedMatchAction = nil
+
+    instance.RefreshMatchAction = nil
+    instance.StopMatchAction = nil
+
     instance.folders = {}
     instance.files = {}
     instance.referenceTrack = nil
@@ -107,7 +115,13 @@ function LUFSManager:FindActions()
         ["Script: wnlowe_lufsSet__shouted.lua"] = function(id) self.ShoutedLUFSAction = id end,
         ["Script: wnlowe_lufsSet__spoken.lua"] = function(id) self.SpokenLUFSAction = id end,
         ["Script: wnlowe_lufsSet__whisper.lua"] = function(id) self.WhisperedLUFSAction = id end,
-        ["Script: wnlowe_lufsSet__yelled.lua"] = function(id) self.YelledLUFSAction = id end
+        ["Script: wnlowe_lufsSet__yelled.lua"] = function(id) self.YelledLUFSAction = id end,
+        ["Script: wnlowe_playMatchFile_shouted.lua"] = function(id) self.ShoutedMatchAction = id end,
+        ["Script: wnlowe_playMatchFile_spoken.lua"] = function(id) self.SpokenMatchAction = id end,
+        ["Script: wnlowe_playMatchFile_whispered.lua"] = function(id) self.WhisperedMatchAction = id end,
+        ["Script: wnlowe_playMatchFile_yelled.lua"] = function(id) self.YelledMatchAction = id end,
+        ["Script: wnlowe_resetMatchFolder.lua"] = function(id) self.RefreshMatchAction = id end,
+        ["Script: wnlowe_stopAllPreviews.lua"] = function(id) self.StopMatchAction = id end
     }
     local section = 0
     local i = 0
@@ -230,7 +244,7 @@ function Gui:DrawMainSection()
 
     imgui.SameLine(CTX)
     if imgui.Button(CTX, "Stop Match", 70, 25) then
-        self.stopMatch = true
+        reaper.Main_OnCommand(manager.StopMatchAction, 0)
     end
 
     if manager.unsavedSession then
@@ -276,6 +290,29 @@ function Gui:DrawMainSection()
             if manager.ScreamedLUFSAction then reaper.Main_OnCommand(manager.ScreamedLUFSAction, 0)
             else reaper.ShowMessageBox("Action Not Found!", "Script Error", 0) end
             self.maintainFocus = false
+        end
+    end
+
+    -- MATCH BUTTONS
+    imgui.SameLine(CTX)
+    if imgui.Button(CTX, "Match Whispered", buttonWidth + 10, 25) then
+        reaper.Main_OnCommand(manager.WhisperedMatchAction, 0)
+    end
+
+    imgui.SameLine(CTX)
+    if imgui.Button(CTX, "Match Spoken", buttonWidth - 5, 25) then
+        reaper.Main_OnCommand(manager.SpokenMatchAction, 0)
+    end
+
+    imgui.SameLine(CTX)
+    if imgui.Button(CTX, "Match Yelled", buttonWidth - 5, 25) then
+        reaper.Main_OnCommand(manager.YelledMatchAction, 0)
+    end
+
+    if self.includeScreamed then
+        imgui.SameLine(CTX)
+        if imgui.Button(CTX, "Match Screamed", buttonWidth, 25) then
+            reaper.Main_OnCommand(manager.ScreamedLUFSAction, 0)
         end
     end
 
@@ -385,6 +422,7 @@ function App:Run()
     if self.manager.open then
         reaper.defer(function() self:Run() end)
     end
+    if self.gui.refreshMatch then reaper.Main_OnCommand(self.manager.RefreshMatchAction, 0) end
 end
 
 local app = App:new()
