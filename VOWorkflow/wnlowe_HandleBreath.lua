@@ -1,6 +1,6 @@
 -- @description Clip Gain Drop by specified ammount based on time selection
 -- @author William N. Lowe
--- @version 1.01
+-- @version 1.02
 
 -- local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
 
@@ -48,6 +48,14 @@ local item = reaper.GetSelectedMediaItem(0, 0)
 if not item then return end
 local take = reaper.GetActiveTake(item)
 local envelope = reaper.GetTakeEnvelopeByName(take, "Volume")
+--_S&M_TAKEENVSHOW9
+if envelope == nil then 
+  reaper.Main_OnCommand(reaper.NamedCommandLookup('_S&M_TAKEENVSHOW9'), 0) 
+  envelope = reaper.GetTakeEnvelopeByName(take, "Volume")
+
+  if envelope == nil then return end
+end
+
 local OffsetStart = reaper.GetMediaItemInfo_Value(item, "D_POSITION")
 
 -- Evaluate at project time
@@ -67,7 +75,14 @@ local fadeDownDB = startDB - DB_DROP  -- reduce by 10dB
 local startTime = startT - OffsetStart
 local endTime = endT - OffsetStart
 
+
+reaper.PreventUIRefresh(1)
+
 reaper.InsertEnvelopePoint(envelope, startTime, startValue, 0, 0, false, true)
 reaper.InsertEnvelopePoint(envelope, startTime + .05, DBToEnvelopeValue(envelope, fadeDownDB), 0, 0, false, true)
 reaper.InsertEnvelopePoint(envelope, endTime - .05, DBToEnvelopeValue(envelope, fadeDownDB), 0, 0, false, true)
 reaper.InsertEnvelopePoint(envelope, endTime, endValue, 0, 0, false, true)
+reaper.Envelope_SortPoints(envelope)
+
+reaper.PreventUIRefresh(-1)
+reaper.UpdateArrange()
