@@ -1,6 +1,6 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.08
+-- @version 1.09
 
 local USEROSWIN = reaper.GetOS():match("Win")
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
@@ -293,7 +293,7 @@ function Gui:DrawMainSection()
 
     -- MATCH BUTTONS
     imgui.SameLine(CTX)
-    if imgui.Button(CTX, "Match Whispered", buttonWidth + 20, 25) then
+    if imgui.Button(CTX, "Match Whispered", buttonWidth + 15, 25) then
         reaper.Main_OnCommand(manager.WhisperedMatchAction, 0)
     end
 

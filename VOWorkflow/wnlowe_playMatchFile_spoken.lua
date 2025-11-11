@@ -1,6 +1,6 @@
 -- @description Plays a match file from an assigned folder's "Spoken" subdirectory
 -- @author William N. Lowe
--- @version 0.96
+-- @version 0.97
 
 -- local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
 
@@ -62,7 +62,7 @@ Msg("File exists: " .. tostring(reaper.file_exists(FILES[lineSelection])))
 
 local source = reaper.PCM_Source_CreateFromFile( FILES[lineSelection] )
 Msg("Source: " .. tostring(source))
-
+if not FILES[lineSelection] then return end
 if not source then
     reaper.ShowMessageBox("Failed to create PCM source from file!", "Error", 0)
     return

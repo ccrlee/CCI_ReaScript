@@ -1,6 +1,6 @@
 -- @description Plays a match file from an assigned folder's "Shouted" subdirectory
 -- @author William N. Lowe
--- @version 0.95
+-- @version 0.97
 
 -- local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
 
@@ -59,7 +59,7 @@ local lineSelection = math.random(#FILES)
 Msg("Selected file: " .. FILES[lineSelection])
 
 Msg("File exists: " .. tostring(reaper.file_exists(FILES[lineSelection])))
-
+if not FILES[lineSelection] then return end
 local source = reaper.PCM_Source_CreateFromFile( FILES[lineSelection] )
 Msg("Source: " .. tostring(source))
 
