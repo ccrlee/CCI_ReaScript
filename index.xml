@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="796fc850dba1b0dc586bb5bc789ef09fdf8bed73">
+<index version="1" name="CCI" commit="3a26da74cb5fda6d1cfe6232074589c92d8a1933">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -218,6 +218,9 @@
       </version>
       <version name="1.11" author="William N. Lowe" time="2025-11-13T17:29:17Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/796fc850dba1b0dc586bb5bc789ef09fdf8bed73/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
+      </version>
+      <version name="1.12" author="William N. Lowe" time="2025-11-13T20:33:29Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/3a26da74cb5fda6d1cfe6232074589c92d8a1933/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_HandleBreath.lua" type="script" desc="Clip Gain Drop by specified ammount based on time selection">
