@@ -1,8 +1,12 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.11
+-- @version 1.12
 -- Todo: Make it detect project change so on open the VOFX mode tracks
-local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+
+local VSDEBUG
+local s, r = pcall(function()
+        VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+    end)
 
 local USEROSWIN = reaper.GetOS():match("Win")
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
@@ -15,6 +19,7 @@ local imgui = require 'imgui' '0.10'
 local CTX
 local WINDOW_SIZE = { width = 400, height = 100 }
 local combo_flags = { current_selected = 1 }
+
 local items = {
     {
         itemText = 'Letters',
@@ -329,24 +334,28 @@ function Gui:DrawMainSection()
 
     -- MATCH BUTTONS
     imgui.SameLine(CTX)
-    if imgui.Button(CTX, "Match Whispered", buttonWidth + 10, 25) then
+    if imgui.Button(CTX, "Match Whispered", buttonWidth + 15, 25) then
         reaper.Main_OnCommand(manager.WhisperedMatchAction, 0)
+        self.maintainFocus = false
     end
 
     imgui.SameLine(CTX)
-    if imgui.Button(CTX, "Match Spoken", buttonWidth - 5, 25) then
+    if imgui.Button(CTX, "Match Spoken", buttonWidth, 25) then
         reaper.Main_OnCommand(manager.SpokenMatchAction, 0)
+        self.maintainFocus = false
     end
 
     imgui.SameLine(CTX)
     if imgui.Button(CTX, "Match Yelled", buttonWidth - 5, 25) then
         reaper.Main_OnCommand(manager.YelledMatchAction, 0)
+        self.maintainFocus = false
     end
 
     if self.includeScreamed then
         imgui.SameLine(CTX)
         if imgui.Button(CTX, "Match Screamed", buttonWidth, 25) then
             reaper.Main_OnCommand(manager.ScreamedLUFSAction, 0)
+            self.maintainFocus = false
         end
     end
 
@@ -495,7 +504,10 @@ function App:Run()
     if self.manager.open then
         reaper.defer(function() self:Run() end)
     end
-    if self.gui.refreshMatch then reaper.Main_OnCommand(self.manager.RefreshMatchAction, 0) end
+    if self.gui.refreshMatch then
+        self.gui.refreshMatch = false
+        reaper.Main_OnCommand(self.manager.RefreshMatchAction, 0)
+        end
 end
 
 local app = App:new()
