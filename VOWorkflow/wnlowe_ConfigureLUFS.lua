@@ -1,6 +1,8 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.09
+-- @version 1.1
+-- Todo: Make it detect project change so on open the VOFX mode tracks
+local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
 
 local USEROSWIN = reaper.GetOS():match("Win")
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
@@ -12,6 +14,35 @@ package.path = package.path .. ";" .. reaper.ImGui_GetBuiltinPath() .. '/?.lua'
 local imgui = require 'imgui' '0.10'
 local CTX
 local WINDOW_SIZE = { width = 400, height = 100 }
+local combo_flags = { current_selected = 1 }
+local items = {
+    {
+        itemText = 'Letters',
+        item_selected_idx = 1,
+        item_is_selected = true,
+        func = function(fileName, index) 
+            -- Msg( 'hi' ) 
+            return string.format("%s_%s", fileName, string.char(64 + index + 1))
+        end
+    }, 
+    {
+        itemText = 'Numbers',
+        item_selected_idx = 2,
+        item_is_selected = false,
+        func = function(fileName, index) 
+            -- Msg( 'hi2' ) 
+            return string.format("%s_%02d", fileName, index + 1)
+        end
+    },
+    {
+        itemText = 'Num_Char',
+        item_selected_idx = 3,
+        item_is_selected = false,
+        func = function () 
+            -- Msg('hi3')        
+        end
+    }
+}
 
 function Msg(msg)
     debug = true
@@ -60,11 +91,13 @@ function LUFSManager:new()
     instance.referenceTrack = nil
     instance.character = "All"
 
+    instance.VOFXAction = nil
+    instance.VOFXMode = nil
     return instance
 end
 
 function LUFSManager:LoadMetadata()
-    local projectPath = reaper.GetProjectPath("")
+    local projectPath = reaper.GetProjectPath()
     local dir = nil
     if projectPath ~= "" and projectPath ~= "C:\\Users\\ccuts\\Documents\\REAPER Media" then
         dir = projectPath
@@ -97,6 +130,7 @@ function LUFSManager:LoadMetadata()
         self.CutoffTime = m["CutoffTime"]
         self.WhisperedTargetI, self.SpokenTargetI, self.YelledTargetI = table.unpack(m["TargetsI"])
         self.WhisperedTargetM, self.SpokenTargetM, self.YelledTargetM = table.unpack(m["TargetsM"])
+        self.VOFXMode = m['VOFXMode']
     end
     if directories then
         local d = directories
@@ -119,7 +153,8 @@ function LUFSManager:FindActions()
         ["Script: wnlowe_playMatchFile_whispered.lua"] = function(id) self.WhisperedMatchAction = id end,
         ["Script: wnlowe_playMatchFile_yelled.lua"] = function(id) self.YelledMatchAction = id end,
         ["Script: wnlowe_resetMatchFolder.lua"] = function(id) self.RefreshMatchAction = id end,
-        ["Script: wnlowe_stopAllPreviews.lua"] = function(id) self.StopMatchAction = id end
+        ["Script: wnlowe_stopAllPreviews.lua"] = function(id) self.StopMatchAction = id end,
+        ["Script: wnlowe_VOFXRegions_Illusion.lua"] = function(id) self.VOFXAction = id end,
     }
     local section = 0
     local i = 0
@@ -135,7 +170,8 @@ function LUFSManager:SerializeMetadata()
         TargetsI = {self.WhisperedTargetI, self.SpokenTargetI, self.YelledTargetI},
         TargetsM = {self.WhisperedTargetM, self.SpokenTargetM, self.YelledTargetM},
         Offsets = {self.WhisperedOffset, self.SpokenOffset, self.YelledOffset},
-        CutoffTime = self.CutoffTime
+        CutoffTime = self.CutoffTime,
+        VOFXMode = self.VOFXMode
     }
     return metadata
 end
@@ -181,7 +217,7 @@ end
 function LUFSManager:SaveMetadata()
     if self.unsavedSession then return end
     if not self.MetadataFilePath then
-        local projectPath = reaper.GetProjectPath("")
+        local projectPath = reaper.GetProjectPath()
         local dir = nil
         if projectPath ~= "" then dir = projectPath
         else reaper.ShowMessageBox("Project is not saved!", "Script Error", 0) return false end
@@ -293,12 +329,12 @@ function Gui:DrawMainSection()
 
     -- MATCH BUTTONS
     imgui.SameLine(CTX)
-    if imgui.Button(CTX, "Match Whispered", buttonWidth + 15, 25) then
+    if imgui.Button(CTX, "Match Whispered", buttonWidth + 10, 25) then
         reaper.Main_OnCommand(manager.WhisperedMatchAction, 0)
     end
 
     imgui.SameLine(CTX)
-    if imgui.Button(CTX, "Match Spoken", buttonWidth, 25) then
+    if imgui.Button(CTX, "Match Spoken", buttonWidth - 5, 25) then
         reaper.Main_OnCommand(manager.SpokenMatchAction, 0)
     end
 
@@ -313,6 +349,44 @@ function Gui:DrawMainSection()
             reaper.Main_OnCommand(manager.ScreamedLUFSAction, 0)
         end
     end
+
+    imgui.SameLine(CTX)
+    if imgui.Button(CTX, "VOFX", buttonWidth - 5, 25) then
+        reaper.Main_OnCommand(manager.VOFXAction, 0)
+        Msg(items[combo_flags.current_selected]['func']('test', 1))
+        self.maintainFocus = false
+    end
+
+------------COMBO BOX
+
+    imgui.SameLine(CTX)
+    -- Define your list items
+
+    -- local current_item = 1  -- Index of currently selected item (1-based in Lua)
+    local preview = items[combo_flags.current_selected].item_selected_idx
+    reaper.ImGui_SetNextItemWidth(CTX, 85)
+    if reaper.ImGui_BeginCombo(CTX, '##My Combo', items[preview].itemText) then
+      -- Loop through all items
+        for i = 1, #items do
+            is_selected = ( combo_flags.current_selected == i )
+            
+            if reaper.ImGui_Selectable(CTX, items[i].itemText, is_selected) then
+                combo_flags.current_selected = i
+                items[combo_flags.current_selected].item_is_selected = true -- Update selection
+                manager.VOFXMode = i
+                manager:SaveMetadata()
+                self.maintainFocus = false
+            end
+        
+        -- Set initial focus on selected item
+            if is_selected then
+                reaper.ImGui_SetItemDefaultFocus(CTX)
+            end
+        end
+      
+      reaper.ImGui_EndCombo(CTX)
+    end
+------------------------
 
     ------------ Settings Boxes
     imgui.SameLine(CTX)
@@ -366,7 +440,7 @@ function Gui:Draw()
     imgui.SetNextWindowSize(CTX, WINDOW_SIZE.width, WINDOW_SIZE.height, imgui.Cond_FirstUseEver)
     local flags = 0 --2048 | imgui.WindowFlags_NoCollapse
     local visible, open = imgui.Begin(CTX, "LUFS Manager", true, flags)
-
+    
     if visible then
         self:DrawMainSection()
         if self.showSettings then
@@ -374,6 +448,7 @@ function Gui:Draw()
         end
         if self.firstRun then
             manager:LoadMetadata()
+            current_selected = manager.VOFXMode
             self.firstRun = false
         end
     end
@@ -420,10 +495,7 @@ function App:Run()
     if self.manager.open then
         reaper.defer(function() self:Run() end)
     end
-    if self.gui.refreshMatch then
-        self.gui.refreshMatch = false
-        reaper.Main_OnCommand(self.manager.RefreshMatchAction, 0)
-    end
+    if self.gui.refreshMatch then reaper.Main_OnCommand(self.manager.RefreshMatchAction, 0) end
 end
 
 local app = App:new()
