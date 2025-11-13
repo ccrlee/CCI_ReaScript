@@ -1,3 +1,7 @@
+-- @description VOFX region maker
+-- @author William N. Lowe
+-- @version 0.5
+-- Todo: Make it detect project change so on open the VOFX mode tracks
 local defs = {
     {
         itemText = 'Letters',
