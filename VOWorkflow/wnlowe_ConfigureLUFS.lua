@@ -1,6 +1,6 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.10
+-- @version 1.11
 -- Todo: Make it detect project change so on open the VOFX mode tracks
 local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
 
@@ -162,7 +162,7 @@ function LUFSManager:FindActions()
         local r, name = reaper.kbd_enumerateActions(section, i)
         if r and r ~= 0 and actionNames[name] then actionNames[name](r) end
         i = i + 1
-    until not r or r == 0 or (self.ShoutedLUFSAction and self.SpokenLUFSAction and self.WhisperedLUFSAction and self.YelledLUFSAction)
+    until not r or r == 0 or (self.ShoutedLUFSAction and self.SpokenLUFSAction and self.WhisperedLUFSAction and self.YelledLUFSAction and self.VOFXAction)
 end
 
 function LUFSManager:SerializeMetadata()
@@ -353,7 +353,7 @@ function Gui:DrawMainSection()
     imgui.SameLine(CTX)
     if imgui.Button(CTX, "VOFX", buttonWidth - 5, 25) then
         reaper.Main_OnCommand(manager.VOFXAction, 0)
-        Msg(items[combo_flags.current_selected]['func']('test', 1))
+        -- Msg(items[combo_flags.current_selected]['func']('test', 1))
         self.maintainFocus = false
     end
 
