@@ -1,6 +1,6 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.1
+-- @version 1.10
 -- Todo: Make it detect project change so on open the VOFX mode tracks
 local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
 
