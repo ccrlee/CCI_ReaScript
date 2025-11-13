@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="30c047acd3f9a6dd8cc433536bb1bbda693a6b79">
+<index version="1" name="CCI" commit="69e62c22d7b601775a3c60935d8ed896ef50c9b2">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -298,6 +298,11 @@
       </version>
       <version name="0.92" author="William N. Lowe" time="2025-11-10T19:03:56Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/9627fa406379d444f1b34f64509de03f57572c9d/VOWorkflow/wnlowe_resetMatchFolder.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_VOFXRegions_Illusion.lua" type="script" desc="VOFX region maker">
+      <version name="0.5" author="William N. Lowe" time="2025-11-13T17:06:19Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/69e62c22d7b601775a3c60935d8ed896ef50c9b2/VOWorkflow/wnlowe_VOFXRegions_Illusion.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_VoiceEditSessionCreator.lua" type="script" desc="Universal Import Script for VO Configuration">
