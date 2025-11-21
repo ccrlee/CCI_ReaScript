@@ -1,6 +1,12 @@
 -- @description Universal Import Script for VO Configuration
 -- @author William N. Lowe
--- @version 1.02
+-- @version 1.03
+-- @metapackage
+-- @provides
+--   [main] .
+--   data/*.{py}
+-- @changelog
+--   # Added Python Support file
 
 local VSDEBUG
 local s, r = pcall(function()
@@ -102,7 +108,7 @@ ScriptState.__index = ScriptState
 
 function ScriptState:new()
     local instance = setmetatable({}, ScriptState)
-    instance.ctx = imgui.CreateContext("Excel Item Renamer v2")
+    instance.ctx = imgui.CreateContext("Excel Session Creator v2")
     instance.Open = true
 
     instance.ExcelPath = ''
@@ -123,7 +129,7 @@ function ScriptState:new()
     instance.bShiftPreview = false
 
     instance.ImportFiles = false
-    instance.ImportAlts = false
+    -- instance.ImportAlts = false
 
     instance.FindAndReplace = false
     instance.NumFindAndReplace = 1
@@ -669,13 +675,13 @@ function GUI:DrawActionButton()
 
     if c then state.ImportFiles = val end
 
-    if state.ImportFiles then
-        imgui.SameLine(CTX)
-        imgui.Text(CTX, "Import Alts?")
-        imgui.SameLine(CTX)
-        local c, v = imgui.Checkbox(CTX, "##bAlts", state.ImportAlts)
-        if c then state.ImportAlts = v end
-    end
+    -- if state.ImportFiles then
+    --     imgui.SameLine(CTX)
+    --     imgui.Text(CTX, "Import Alts?")
+    --     imgui.SameLine(CTX)
+    --     local c, v = imgui.Checkbox(CTX, "##bAlts", state.ImportAlts)
+    --     if c then state.ImportAlts = v end
+    -- end
 
     --FIND AND REPLACE
     imgui.Text(CTX, "Find and replace in filenaming?")
