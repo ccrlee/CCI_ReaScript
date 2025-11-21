@@ -1,12 +1,15 @@
 -- @description Universal Import Script for VO Configuration
 -- @author William N. Lowe
--- @version 1.04
+-- @version 1.05
 -- @metapackage
 -- @provides
 --   [main] .
 --   data/*.{py}
 -- @changelog
 --   # Repairing Python Support file
+--   # Updating default window width
+--   # 
+
 
 local VSDEBUG
 local s, r = pcall(function()
@@ -23,7 +26,7 @@ local libPath = SCRIPT_PATH .. "../lib/"
 
 package.path = package.path .. ";" .. libPath .. "?.lua"
 
-local PYTHON_HELPER = libPath .. SLASH .. "data" .. SLASH .. "ExcelToLua.py"
+local PYTHON_HELPER = SCRIPT_PATH .. SLASH .. "data" .. SLASH .. "ExcelToLua.py"
 
 package.path = package.path .. ";" .. reaper.ImGui_GetBuiltinPath() .. '/?.lua'
 local imgui = require 'imgui' '0.10'
@@ -35,7 +38,7 @@ local IMGUI_VERSION, IMGUI_VERSION_NUM, REAIMGUI_VERSION = imgui.GetVersion()
 
 
 
-local WINDOW_SIZE = { width = 400, height = 600 }
+local WINDOW_SIZE = { width = 1200, height = 600 }
 -- local WINDOW_FLAGS = imgui.WindowFlags_NoCollapse(1)
 
 function Msg(msg)
@@ -120,6 +123,8 @@ function ScriptState:new()
     instance.SheetNames = {}
     instance.CurrentSheetIdx = 0
     instance.CurrentSheetData = nil
+
+    instance.RowIntentifyType = 0
 
     instance.ColumnHeaderRow = 1
     instance.ColumnFilter = {}
@@ -420,89 +425,146 @@ function GUI:DrawColumnFilterOpen()
 
     if not state.FullData then return end
 
-    if imgui.Button(state.ctx, "Filter Columns") then
-        self.ColumnWindow = true
-    end
-    imgui.SameLine(state.ctx)
+    imgui.Indent(CTX, 25)
+    imgui.PushStyleVar(CTX, imgui.StyleVar_ChildRounding, 10)
+    imgui.PushStyleColor(CTX, imgui.Col_ChildBg, 0x3A1545FF)
 
-    imgui.Text(state.ctx, "Take/Index Column:")
-    imgui.SameLine(state.ctx)
-
-    imgui.SetNextItemWidth(state.ctx, 100)
-    local changed, newValue = imgui.InputInt(state.ctx, "##IdxColumn", state.IndexColumnIdx)
-    if changed and newValue >= 0 then
-        state.IndexColumnIdx = newValue
-        state.SelectMarkerColumn = state.IndexColumnIdx
-    end
-
-    imgui.SameLine(state.ctx)
-    imgui.Text(CTX, "Has Letters?")
-    imgui.SameLine(CTX)
-
-    local c, bNewValue = imgui.Checkbox(state.ctx, "##bIdxLetters", state.IndexColumnHasLetter)
-    if c then
-        state.IndexColumnHasLetter = bNewValue
-    end
-
-    imgui.SameLine(CTX)
-    imgui.Text(CTX, "Show Marker?")
-    imgui.SameLine(CTX)
-    local c, v = imgui.Checkbox(CTX, "##ShowMarker", state.SelectMarker)
-    if c then state.SelectMarker = v state.SelectMarkerColumn = state.IndexColumnIdx end
-
-    imgui.Indent(CTX, 75)
-
-    imgui.Text(state.ctx, "Filename Column:")
-    imgui.SameLine(state.ctx)
-
-    imgui.SetNextItemWidth(state.ctx, 100)
-    changed, newValue = imgui.InputInt(state.ctx, "##FNames", state.NamesColumnIdx)
-    if changed and newValue >= 0 then
-        state.NamesColumnIdx = newValue
-    end
-    imgui.SameLine(CTX)
-    imgui.Text(CTX,"Embed Line Text?")
-    imgui.SameLine(CTX)
-    local c, v = imgui.Checkbox(CTX, "##LineText", state.LineText)
-    if c then state.LineText = v end
-
-    if state.LineText then
-        imgui.SameLine(CTX)
-        imgui.Text(CTX, "Line Text Column:")
-        imgui.SameLine(CTX)
-        imgui.SetNextItemWidth(CTX, 100)
-        local c, v = imgui.InputInt(CTX, "##LineTextIdx", state.LineTextIdx)
-        if c and v > 0 then state.LineTextIdx = v end
-    end
-
-    imgui.Text(CTX, "Character Filter?")
-    imgui.SameLine(CTX)
-    c,v = imgui.Checkbox(CTX, "##CharFilCB", state.CharacterColumn)
-    if c then state.CharacterColumn = v end
-    if state.CharacterColumn then
-        imgui.SameLine(CTX)
-        imgui.Text(CTX, "Character Name Col:")
-        imgui.SameLine(CTX)
-        imgui.SetNextItemWidth(CTX, 100)
-        local c, v = imgui.InputInt(CTX, "##CharColumn", state.CharacterColumnIdx)
-        if c and v > 0 then
-            state.CharacterColumnIdx = v
-            state.UpdateCharacterList = true
+    if imgui.BeginChild(CTX, "ColumnSettings", 775, 100) then
+        imgui.Dummy(CTX, 10, 10)
+        imgui.Indent(CTX, 20)
+        if imgui.Button(state.ctx, "Filter Columns") then
+            self.ColumnWindow = true
         end
-        --Find all names in the character column
-        if state.CharacterList then
+        
+        imgui.SameLine(state.ctx)
+        imgui.Text(state.ctx, "Row Identify Type:")
+        
+        imgui.SameLine(state.ctx)
+        imgui.SetNextItemWidth(CTX, 130)
+        local comboTable = {"Column with select", "ID column", "Row Index"}
+        local comboStr = table.concat(comboTable, "\0") .. "\0"
+        local c, v = imgui.Combo(CTX, "##RowCombo", state.RowIntentifyType, comboStr)
+        if c then state.RowIntentifyType = v end
+
+        if v ~= 2 then
             imgui.SameLine(CTX)
-            imgui.Text(CTX, "Select Character:")
+            imgui.Text(CTX, "Select/ID Column")
+
+            imgui.SameLine(CTX)
+            imgui.SetNextItemWidth(state.ctx, 100)
+            local changed, newValue = imgui.InputInt(state.ctx, "##IdxColumn", state.IndexColumnIdx)
+            if changed and newValue >= 0 then
+                state.IndexColumnIdx = newValue
+                state.SelectMarkerColumn = state.IndexColumnIdx
+            end
+
+            imgui.SameLine(state.ctx)
+            imgui.Text(CTX, "Has Letters?")
+            imgui.SameLine(CTX)
+
+            local c, bNewValue = imgui.Checkbox(state.ctx, "##bIdxLetters", state.IndexColumnHasLetter)
+            if c then
+                state.IndexColumnHasLetter = bNewValue
+            end
+
+            imgui.SameLine(CTX)
+            imgui.Text(CTX, "Show Marker?")
+            imgui.SameLine(CTX)
+            local c, v = imgui.Checkbox(CTX, "##ShowMarker", state.SelectMarker)
+            if c then 
+                state.SelectMarker = v 
+                state.SelectMarkerColumn = state.IndexColumnIdx 
+            end
+
+
+        else
+            imgui.SameLine(CTX)
+            imgui.Text(CTX, "Show Select Marker?")
+            imgui.SameLine(CTX)
+            local c, v = imgui.Checkbox(CTX, "##ShowMarker", state.SelectMarker)
+            if c then 
+                state.SelectMarker = v
+                state.SelectMarkerColumn = state.IndexColumnIdx 
+            end
+            if v == true then
+                imgui.SameLine(CTX)
+                imgui.Text(CTX, "Select Column")
+                imgui.SameLine(CTX)
+                imgui.SetNextItemWidth(state.ctx, 100)
+                local changed, newValue = imgui.InputInt(state.ctx, "##IdxColumn", state.IndexColumnIdx)
+                if changed and newValue >= 0 then
+                    state.IndexColumnIdx = newValue
+                    state.SelectMarkerColumn = state.IndexColumnIdx
+                end
+            end
+        end
+        
+        imgui.Indent(CTX, 75)
+
+        imgui.Text(state.ctx, "Filename Column:")
+        imgui.SameLine(state.ctx)
+
+        imgui.SetNextItemWidth(state.ctx, 100)
+        local changed, newValue = imgui.InputInt(state.ctx, "##FNames", state.NamesColumnIdx)
+        if changed and newValue >= 0 then
+            state.NamesColumnIdx = newValue
+        end
+        imgui.SameLine(CTX)
+        imgui.Text(CTX,"Embed Line Text?")
+        imgui.SameLine(CTX)
+        local c, v = imgui.Checkbox(CTX, "##LineText", state.LineText)
+        if c then state.LineText = v end
+
+        if state.LineText then
+            imgui.SameLine(CTX)
+            imgui.Text(CTX, "Line Text Column:")
             imgui.SameLine(CTX)
             imgui.SetNextItemWidth(CTX, 100)
-            local comboStr = table.concat(state.CharacterList, "\0") .. "\0"
-            local c, v = imgui.Combo(CTX, "##CharCombo", state.SelectedCharacter, comboStr)
-            if c then state.SelectedCharacter = v end
+            local c, v = imgui.InputInt(CTX, "##LineTextIdx", state.LineTextIdx)
+            if c and v > 0 then state.LineTextIdx = v end
         end
 
+        imgui.Text(CTX, "Character Filter?")
+        imgui.SameLine(CTX)
+        c,v = imgui.Checkbox(CTX, "##CharFilCB", state.CharacterColumn)
+        if c then state.CharacterColumn = v end
+        if state.CharacterColumn then
+            imgui.SameLine(CTX)
+            imgui.Text(CTX, "Character Name Col:")
+            imgui.SameLine(CTX)
+            imgui.SetNextItemWidth(CTX, 100)
+            local c, v = imgui.InputInt(CTX, "##CharColumn", state.CharacterColumnIdx)
+            if c and v > 0 then
+                state.CharacterColumnIdx = v
+                state.UpdateCharacterList = true
+            end
+            --Find all names in the character column
+            if state.CharacterList then
+                imgui.SameLine(CTX)
+                imgui.Text(CTX, "Select Character:")
+                imgui.SameLine(CTX)
+                imgui.SetNextItemWidth(CTX, 100)
+                local comboStr = table.concat(state.CharacterList, "\0") .. "\0"
+                local c, v = imgui.Combo(CTX, "##CharCombo", state.SelectedCharacter, comboStr)
+                if c then state.SelectedCharacter = v end
+            end
+
+        end
+        --Add Line Text column
+        imgui.Unindent(CTX, 75)
+
+        imgui.Unindent(CTX, 20)
+        imgui.EndChild(CTX)
     end
-    --Add Line Text column
-    imgui.Unindent(CTX, 75)
+    imgui.PopStyleColor(CTX)
+    imgui.PopStyleVar(CTX)
+    imgui.Unindent(CTX, 25)
+
+
+    
+
+    
+    
 
 end
 
@@ -580,65 +642,77 @@ function GUI:DrawCurrentSheetDataPreview()
 
     imgui.Text(state.ctx, string.format("Data Preview (%d rows):", #state.CurrentSheetData))
 
+    
+
     -- Try the older BeginChild syntax without ChildFlags_Border
-    if imgui.BeginChild(state.ctx, "Data Preview", 0, 200, 1) then
+    -- local childFlags = imgui.WindowFlags_HorizontalScrollbar
+    if imgui.BeginChild(state.ctx, "Data Preview", 0, 200, 0) then
         local previewRows = math.min(10, #state.CurrentSheetData)
         if previewRows == 10 then previewRows = previewRows + state.ColumnHeaderRow end
 
-        -- Safely determine number of columns
-        local previewCols = 0
-        if state.CurrentSheetData[1] and type(state.CurrentSheetData[1]) == "table" then
-            previewCols = math.min(15, #state.CurrentSheetData[1])
+        local totalCols = 0
+        if state.CurrentSheetData[1] and type(state.CurrentSheetData[1]) == "table" then 
+            totalCols = #state.CurrentSheetData[1]
         end
 
-        for i = state.ColumnHeaderRow, previewRows do
-            local rowColor = 0xFFFFFFFF
-            if i == state.ColumnHeaderRow then
-                rowColor = 0x00FF00FF
-            elseif tonumber(state.IdxOffset) and state.bShiftPreview then
-                i = i + tonumber(state.IdxOffset)
+        local visibleCols = {}
+        for j = 1, totalCols do
+            if state.ColumnFilter[j] == nil or state.ColumnFilter[j] == true then
+                table.insert(visibleCols, j)
+            end
+        end
+
+        imgui.PushStyleColor(CTX, imgui.Col_TableBorderStrong, 0x808080FF)  -- Outer borders
+        imgui.PushStyleColor(CTX, imgui.Col_TableBorderLight, 0x606060FF)
+
+        local flags = imgui.TableFlags_Borders |
+        imgui.TableFlags_RowBg |
+        imgui.TableFlags_SizingFixedFit |
+        imgui.TableFlags_ScrollX
+
+        if imgui.BeginTable(CTX, "PreviewTable", #visibleCols, flags) then
+            imgui.TableNextRow(CTX)
+            for _, j in ipairs(visibleCols) do
+                imgui.TableNextColumn(CTX)
+                imgui.TableSetBgColor(CTX, imgui.TableBgTarget_CellBg, 0x404040FF)  -- Dark gray background
+                imgui.TextColored(CTX, 0xFFFFFFFF, "Col " .. j)
             end
 
-            local values = {}
+            for i = state.ColumnHeaderRow, previewRows do
 
-            -- Safely access row data
-            if state.CurrentSheetData[i] and type(state.CurrentSheetData[i]) == "table" then
-                for j = 1, previewCols do
-                    local cellValue = state.CurrentSheetData[i][j]
-                    if cellValue ~= nil then cellValue = cellValue .. "   |" else cellValue = "   |" end
-                    if state.ColumnFilter[j] ~= nil and not state.ColumnFilter[j] then
-                        cellValue = ""
-                    end
-                    if state.IndexColumnIdx ~= nil and state.IndexColumnIdx == j then
-                        rowColor = 0xFFFF00FF
-                    elseif state.NamesColumnIdx ~= nil and state.NamesColumnIdx == j then
-                        rowColor = 0x00FFFFFF
-                    elseif state.LineTextIdx and state.LineTextIdx == j and state.LineText then
-                        rowColor = 0xFF40FFFF
-                    elseif state.CharacterColumnIdx and state.CharacterColumnIdx == j and state.CharacterColumn then
-                        rowColor = 0xFF4040FF
-                    elseif rowColor == 0xFFFF00FF or rowColor == 0x00FFFFFF or rowColor == 0xFF40FFFF or rowColor == 0xFF4040FF then
-                        if i == state.ColumnHeaderRow then
-                            rowColor = 0x00FF00FF
-                        else
-                            rowColor = 0xFFFFFFFF
+                if state.CurrentSheetData[i] and type(state.CurrentSheetData[i]) == "table" then
+                    imgui.TableNextRow(CTX)
+                    for _, j in ipairs(visibleCols) do
+                        imgui.TableNextColumn(CTX)
+                        local cellValue = state.CurrentSheetData[i][j]
+                        
+                        if cellValue == nil then cellValue = "" end
+                        if i == state.ColumnHeaderRow then imgui.TableSetBgColor(CTX, imgui.TableBgTarget_CellBg, 0x266618FF)
+                        elseif state.IndexColumnIdx and j == state.IndexColumnIdx then imgui.TableSetBgColor(CTX, imgui.TableBgTarget_CellBg, 0x826A10FF)
+                        elseif state.NamesColumnIdx and j == state.NamesColumnIdx then imgui.TableSetBgColor(CTX, imgui.TableBgTarget_CellBg, 0x229C91FF)
+                        elseif state.LineTextIdx and j == state.LineTextIdx then imgui.TableSetBgColor(CTX, imgui.TableBgTarget_CellBg, 0x681273FF)
+                        elseif state.CharacterColumnIdx and state.CharacterColumn and j == state.CharacterColumnIdx then 
+                            imgui.TableSetBgColor(CTX, imgui.TableBgTarget_CellBg, 0x8A2727FF)
                         end
+
+                        
+                        imgui.Text(CTX, tostring(cellValue))
                     end
-                    imgui.TextColored(state.ctx, rowColor, tostring(cellValue))
-                    if j < previewCols then imgui.SameLine(state.ctx) end
-                    -- table.insert(values, tostring(cellValue or ""))
+                    
                 end
             end
-
-            -- local rowText = "Row " .. i .. ": " .. table.concat(values, "")
-           
+            imgui.EndTable(CTX)
         end
+
+        imgui.PopStyleColor(CTX, 2)
 
         if #state.CurrentSheetData > 10 then
             imgui.Text(state.ctx, string.format("... and %d more rows", #state.CurrentSheetData - 10))
         end
+        
+        imgui.EndChild(state.ctx)
     end
-    imgui.EndChild(state.ctx)
+    
 
     imgui.Separator(state.ctx)
 end
@@ -751,7 +825,9 @@ function GUI:Draw()
         self:DrawColumnFilterOpen()
         self:DrawColumnFilterWindow()
         self:DrawCurrentSheetDataPreview()
-        self:DrawIndexOffsetSection()
+        if state.RowIntentifyType == 1 then
+            self:DrawIndexOffsetSection()
+        end
         self:DrawActionButton()
         self:DrawStatusBar()
 
