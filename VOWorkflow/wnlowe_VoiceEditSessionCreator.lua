@@ -1,26 +1,29 @@
 -- @description Universal Import Script for VO Configuration
 -- @author William N. Lowe
--- @version 1.03
+-- @version 1.04
 -- @metapackage
 -- @provides
 --   [main] .
 --   data/*.{py}
 -- @changelog
---   # Added Python Support file
+--   # Repairing Python Support file
 
 local VSDEBUG
 local s, r = pcall(function()
         VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
     end)
 
+
+local USEROSWIN = reaper.GetOS():match("Win")
+local SLASH = USEROSWIN and "\\" or "/"
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
-SCRIPT_PATH = SCRIPT_PATH:gsub("\\", "/")
+SCRIPT_PATH = SCRIPT_PATH:gsub(SLASH, "/")
 local SCRIPT_NAME = ({reaper.get_action_context()})[2]:match("([^/\\_]+)%.lua$")
 local libPath = SCRIPT_PATH .. "../lib/"
 
 package.path = package.path .. ";" .. libPath .. "?.lua"
 
-local PYTHON_HELPER = libPath .. "ExcelToLua.py"
+local PYTHON_HELPER = libPath .. SLASH .. "data" .. SLASH .. "ExcelToLua.py"
 
 package.path = package.path .. ";" .. reaper.ImGui_GetBuiltinPath() .. '/?.lua'
 local imgui = require 'imgui' '0.10'
@@ -30,7 +33,7 @@ local FLT_MIN, FLT_MAX = imgui.NumericLimits_Float()
 local DBL_MIN, DBL_MAX = imgui.NumericLimits_Double()
 local IMGUI_VERSION, IMGUI_VERSION_NUM, REAIMGUI_VERSION = imgui.GetVersion()
 
-local USEROSWIN = reaper.GetOS():match("Win")
+
 
 local WINDOW_SIZE = { width = 400, height = 600 }
 -- local WINDOW_FLAGS = imgui.WindowFlags_NoCollapse(1)
