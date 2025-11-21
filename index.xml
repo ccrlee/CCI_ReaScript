@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="3a26da74cb5fda6d1cfe6232074589c92d8a1933">
+<index version="1" name="CCI" commit="579f642d33b44707fc1bdbd24ebd81515a9e1781">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -317,6 +317,9 @@
     <reapack name="wnlowe_VoiceEditSessionCreator.lua" type="script" desc="Universal Import Script for VO Configuration">
       <version name="1.01" author="William N. Lowe" time="2025-11-06T21:36:09Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/135540280d86cca0c4d087a39790f346db484b9c/VOWorkflow/wnlowe_VoiceEditSessionCreator.lua</source>
+      </version>
+      <version name="1.02" author="William N. Lowe" time="2025-11-21T17:20:52Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/579f642d33b44707fc1bdbd24ebd81515a9e1781/VOWorkflow/wnlowe_VoiceEditSessionCreator.lua</source>
       </version>
     </reapack>
   </category>
