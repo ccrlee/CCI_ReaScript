@@ -1,8 +1,11 @@
 -- @description Universal Import Script for VO Configuration
 -- @author William N. Lowe
--- @version 1.01
+-- @version 1.02
 
--- local VSDEBUG = dofile("c:/Users/ccuts/.vscode/extensions/antoinebalaine.reascript-docs-0.1.14/debugger/LoadDebug.lua")
+local VSDEBUG
+local s, r = pcall(function()
+        VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+    end)
 
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
 SCRIPT_PATH = SCRIPT_PATH:gsub("\\", "/")
@@ -11,7 +14,6 @@ local libPath = SCRIPT_PATH .. "../lib/"
 
 package.path = package.path .. ";" .. libPath .. "?.lua"
 
-local json = require('dkjson')
 local PYTHON_HELPER = libPath .. "ExcelToLua.py"
 
 package.path = package.path .. ";" .. reaper.ImGui_GetBuiltinPath() .. '/?.lua'
