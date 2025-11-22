@@ -1,14 +1,12 @@
 -- @description Universal Import Script for VO Configuration
 -- @author William N. Lowe
--- @version 1.05
+-- @version 1.10
 -- @metapackage
 -- @provides
 --   [main] .
 --   data/*.{py}
 -- @changelog
---   # Repairing Python Support file
---   # Updating default window width
---   # 
+--   # Initial Full Implementation of RowIdentifyType
 
 
 local VSDEBUG
@@ -41,7 +39,7 @@ local IMGUI_VERSION, IMGUI_VERSION_NUM, REAIMGUI_VERSION = imgui.GetVersion()
 local WINDOW_SIZE = { width = 1200, height = 600 }
 -- local WINDOW_FLAGS = imgui.WindowFlags_NoCollapse(1)
 
-function Msg(msg)
+local function Msg(msg)
     debug = true
     if debug then reaper.ShowConsoleMsg(tostring(msg))end
 end
@@ -124,7 +122,7 @@ function ScriptState:new()
     instance.CurrentSheetIdx = 0
     instance.CurrentSheetData = nil
 
-    instance.RowIntentifyType = 0
+    instance.RowIdentifyType = 0
 
     instance.ColumnHeaderRow = 1
     instance.ColumnFilter = {}
@@ -435,16 +433,16 @@ function GUI:DrawColumnFilterOpen()
         if imgui.Button(state.ctx, "Filter Columns") then
             self.ColumnWindow = true
         end
-        
+
         imgui.SameLine(state.ctx)
         imgui.Text(state.ctx, "Row Identify Type:")
-        
+
         imgui.SameLine(state.ctx)
         imgui.SetNextItemWidth(CTX, 130)
         local comboTable = {"Column with select", "ID column", "Row Index"}
         local comboStr = table.concat(comboTable, "\0") .. "\0"
-        local c, v = imgui.Combo(CTX, "##RowCombo", state.RowIntentifyType, comboStr)
-        if c then state.RowIntentifyType = v end
+        local c, v = imgui.Combo(CTX, "##RowCombo", state.RowIdentifyType, comboStr)
+        if c then state.RowIdentifyType = v end
 
         if v ~= 2 then
             imgui.SameLine(CTX)
@@ -575,14 +573,7 @@ function GUI:DrawColumnFilterWindow()
 
     -- Calculate approximate width needed for all checkboxes
     local headerRow = state.CurrentSheetData[state.ColumnHeaderRow]
-    -- local contentWidth = 0
-    -- if headerRow and type(headerRow) == "table" then
-    --     -- Estimate ~100 pixels per checkbox (adjust as needed)
-    --     contentWidth = #headerRow * 300
-    -- end
 
-    -- -- Set content size BEFORE Begin()
-    -- imgui.SetNextWindowContentSize(state.ctx, contentWidth, 0)
     imgui.SetNextWindowSize(state.ctx, 400, 300, imgui.Cond_FirstUseEver)
     
     local visible, open = imgui.Begin(state.ctx, 'Column Filtering', true, 2048)
@@ -752,14 +743,6 @@ function GUI:DrawActionButton()
 
     if c then state.ImportFiles = val end
 
-    -- if state.ImportFiles then
-    --     imgui.SameLine(CTX)
-    --     imgui.Text(CTX, "Import Alts?")
-    --     imgui.SameLine(CTX)
-    --     local c, v = imgui.Checkbox(CTX, "##bAlts", state.ImportAlts)
-    --     if c then state.ImportAlts = v end
-    -- end
-
     --FIND AND REPLACE
     imgui.Text(CTX, "Find and replace in filenaming?")
     imgui.SameLine(CTX)
@@ -825,7 +808,7 @@ function GUI:Draw()
         self:DrawColumnFilterOpen()
         self:DrawColumnFilterWindow()
         self:DrawCurrentSheetDataPreview()
-        if state.RowIntentifyType == 1 then
+        if state.RowIdentifyType == 1 then
             self:DrawIndexOffsetSection()
         end
         self:DrawActionButton()
@@ -865,6 +848,78 @@ function Application:InsertAlt(mediaItem, endTime, track, str)
 
 end
 
+function Application:ImportFiles(fileList)
+    local state = self.state
+    local r, directory = reaper.JS_Dialog_BrowseForFolder("Select a Folder", state.Loader:GetDownloadsFolder())
+    local idx = 0
+    local file = reaper.EnumerateFiles(directory, idx)
+    while file ~= nil do
+        local f = directory .. SLASH .. file
+        table.insert(fileList, f)
+        reaper.InsertMedia(f, 0)
+        reaper.MoveEditCursor(1, false)
+        local item = reaper.GetMediaItem( 0, reaper.CountMediaItems(0) - 1 )
+        reaper.SetMediaItemSelected(item , true )
+        idx = idx + 1
+        file = reaper.EnumerateFiles(directory, idx)
+    end
+    return fileList
+end
+
+function Application:GetItemIndexFromName(i)
+    local item = reaper.GetSelectedMediaItem(0, i)
+    local take = reaper.GetActiveTake(item)
+    local r, sourceName = reaper.GetSetMediaItemTakeInfo_String(take, "P_NAME", "", false)
+    sourceName = tostring(sourceName)
+    local index = sourceName:match("_([^_]*)$")
+    index = string.match(index, "^(%d+)")
+    index = tonumber(index)
+    return index, item
+end
+
+function Application:TakeSelectsRowFinder(numItems, renamed, mediaItems)
+    local state = self.state
+
+    for i = 0, numItems - 1 do
+        
+    end
+
+    return renamed, mediaItems
+end
+
+function Application:IndexRowFinder(numItems, renamed, mediaItems)
+    local state = self.state
+    for i = 0, numItems - 1 do
+        local index, item = self:GetItemIndexFromName(i)
+        if state.IdxOffset and index then
+            local indexOffset = tonumber(state.IdxOffset)
+            if index then
+                if indexOffset ~= 0 then
+                    index = index + indexOffset
+                end
+                mediaItems[index] = item
+                renamed = renamed + 1
+            end
+        end
+    end
+    return renamed, mediaItems
+end
+
+function Application:RowFinderByIndex(numItems, renamed, mediaItems)
+    local state = self.state
+
+    for i = 0, numItems - 1 do
+        local index, item = self:GetItemIndexFromName(i)
+        if index then
+            index = index + 1
+            mediaItems[index] = item
+            renamed = renamed + 1
+        end
+    end
+
+    return renamed, mediaItems
+end
+
 function Application:Rename()
     local mediaItems = {}
     local state = self.state
@@ -874,56 +929,47 @@ function Application:Rename()
 
     state:SaveMetadata()
 
+    -- IMPORT FILES
     if state.ImportFiles then
-        local r, directory = reaper.JS_Dialog_BrowseForFolder("Select a Folder", state.Loader:GetDownloadsFolder())
-        local idx = 0
-        local slash = nil
-        if USEROSWIN then slash = "\\" else slash = "/" end
-        local file = reaper.EnumerateFiles(directory, idx)
-        while file ~= nil do
-            local f = directory .. slash .. file
-            table.insert(fileList, f)
-            reaper.InsertMedia(f, 0)
-            reaper.MoveEditCursor(1, false)
-            local item = reaper.GetMediaItem( 0, reaper.CountMediaItems(0) - 1 )
-            reaper.SetMediaItemSelected(item , true )
-            idx = idx + 1
-            file = reaper.EnumerateFiles(directory, idx)
-        end
-    end
-    numItems = reaper.CountSelectedMediaItems(0)
-    if numItems < 1 then state:SetError("No Items Selected!") return end
-    for i = 0, numItems - 1 do
-        local item = reaper.GetSelectedMediaItem(0, i)
-        local take = reaper.GetActiveTake(item)
-        local r, sourceName = reaper.GetSetMediaItemTakeInfo_String(take, "P_NAME", "", false)
-        sourceName = tostring(sourceName)
-        local index = sourceName:match("_([^_]*)$")
-        index = string.match(index, "^(%d+)")
-        index = tonumber(index)
-        if state.IdxOffset and tonumber(state.IdxOffset) ~= 0 and index then
-            index = index + tonumber(state.IdxOffset)
-        end
-        if index then mediaItems[index] = item renamed = renamed + 1 end
+        fileList = self:ImportFiles(fileList)
     end
 
+    --Get selected media items
+    numItems = reaper.CountSelectedMediaItems(0)
+    if numItems < 1 then state:SetError("No Items Selected!") return end
+
+    --For the items
+    if state.RowIdentifyType == 0 then
+        renamed, mediaItems = self:TakeSelectsRowFinder(numItems, 0, {})
+    elseif state.RowIdentifyType == 1 then
+        renamed, mediaItems = self:IndexRowFinder(numItems, 0, {})
+    elseif state.RowIdentifyType == 2 then
+        renamed, mediaItems = self:RowFinderByIndex(numItems, 0, {})
+    end
+
+
+
     if state.CurrentSheetData == nil then return end
+    --Looping down the spreadsheet rows
     for i = state.ColumnHeaderRow + 1, #state.CurrentSheetData do
         if state.CharacterColumn then
             if state.CurrentSheetData[i][state.CharacterColumnIdx] ~= state.CharacterList[state.SelectedCharacter + 1] then goto continue end
         end
+        --tableValue is the identifier from the table persepctive and should == index
         local tableValue = nil
-        if state.SelectMarker then
+        if state.RowIdentifyType ~= 2 and state.SelectMarker then
             tableValue = state.CurrentSheetData[i][state.SelectMarkerColumn]
             if tableValue then tableValue = string.match(tableValue, "^(%d+)") end
-        else
+        elseif state.RowIdentifyType ~= 2 and not state.SelectMarker then
             tableValue = state.CurrentSheetData[i][state.IndexColumnIdx]
+        elseif state.RowIdentifyType == 2 then
+            tableValue = i
         end
 
-        if tableValue ~= nil and tonumber(tableValue) ~= nil then
+        if tableValue and tonumber(tableValue) then
             tableValue = tonumber(tableValue)
             --Table Value is the index number, if there is a corresponding value we continue. 
-            if mediaItems[tableValue] ~= nil then
+            if mediaItems[tableValue] then
                 local mi = mediaItems[tableValue]
                 local startT, endT
                 startT = reaper.GetMediaItemInfo_Value(mi, "D_POSITION")
