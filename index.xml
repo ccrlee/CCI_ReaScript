@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="de38c9b2b9f1288429a74064aa63366a969e158c">
+<index version="1" name="CCI" commit="65ec392d1a6c6874cedc1798731a7401aacc0668">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -337,6 +337,11 @@
 # ]]></changelog>
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/de38c9b2b9f1288429a74064aa63366a969e158c/VOWorkflow/wnlowe_VoiceEditSessionCreator.lua</source>
         <source file="data/ExcelToLua.py">https://github.com/ccrlee/CCI_ReaScript/raw/de38c9b2b9f1288429a74064aa63366a969e158c/VOWorkflow/data/ExcelToLua.py</source>
+      </version>
+      <version name="1.10" author="William N. Lowe" time="2025-11-22T21:59:50Z">
+        <changelog><![CDATA[# Initial Full Implementation of RowIdentifyType]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/65ec392d1a6c6874cedc1798731a7401aacc0668/VOWorkflow/wnlowe_VoiceEditSessionCreator.lua</source>
+        <source file="data/ExcelToLua.py">https://github.com/ccrlee/CCI_ReaScript/raw/65ec392d1a6c6874cedc1798731a7401aacc0668/VOWorkflow/data/ExcelToLua.py</source>
       </version>
     </reapack>
   </category>
