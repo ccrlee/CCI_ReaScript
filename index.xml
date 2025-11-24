@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="28bece217e484817ad24a7123ba52dd133cf3d91">
+<index version="1" name="CCI" commit="4fd71bf0fd23bc3e58c1211c28412cde49bfbf91">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -153,6 +153,12 @@
       </version>
       <version name="0.6" author="William N. Lowe" time="2023-04-25T16:49:54Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/7f1c4627e3ec96b605938351545b8e3fb6f4e132/Utility/wnlowe_AddVolumePoints_GUI.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_PTMarkerImport.lua" type="script" desc="PT -&gt; Export as TXT -&gt; Markers only import to REAPER">
+      <version name="0.1" author="William N. Lowe" time="2025-11-24T23:42:39Z">
+        <changelog><![CDATA[# Initial Version]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/4fd71bf0fd23bc3e58c1211c28412cde49bfbf91/Utility/wnlowe_PTMarkerImport.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_renderStereoDraft.lua" type="script" desc="Fast Render Window">
