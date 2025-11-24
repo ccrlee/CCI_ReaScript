@@ -1,12 +1,12 @@
 -- @description Universal Import Script for VO Configuration
 -- @author William N. Lowe
--- @version 1.10
+-- @version 1.11
 -- @metapackage
 -- @provides
 --   [main] .
 --   data/*.{py}
 -- @changelog
---   # Initial Full Implementation of RowIdentifyType
+--   # Adding Row Identify to Metadata
 
 
 local VSDEBUG
@@ -53,12 +53,6 @@ function FileLoader:new()
     local instance = setmetatable({}, FileLoader)
     return instance
 end
-
--- function FileLoader:DoesFileExist(path)
---     local f = io.open(path, "r")
---     if f then f:close() end
---     return f ~= nil
--- end
 
 function FileLoader:ConvertExcelToLua(excelPath) --Ouputs Path to Lua file
     local outputPath = excelPath:gsub("%.xlsx?$", ".lua")
@@ -210,6 +204,7 @@ function ScriptState:LoadFile(filePath)
         self.FindAndReplace = metadata.FnR or false
         self.Find = metadata.Find or {}
         self.Replace = metadata.Replace or {}
+        self.RowIdentifyType = metadata.RowIdentify
     end
 
     self:LoadSheet(0)
@@ -255,7 +250,8 @@ function ScriptState:SerializeMetadata()
         ImportFiles = self.ImportFiles,
         FnR = self.FindAndReplace,--
         Find = self.Find,--
-        Replace = self.Replace--
+        Replace = self.Replace,
+        RowIdentify = self.RowIdentifyType
     }
     
     return metadata
@@ -442,7 +438,10 @@ function GUI:DrawColumnFilterOpen()
         local comboTable = {"Column with select", "ID column", "Row Index"}
         local comboStr = table.concat(comboTable, "\0") .. "\0"
         local c, v = imgui.Combo(CTX, "##RowCombo", state.RowIdentifyType, comboStr)
-        if c then state.RowIdentifyType = v end
+        if c then 
+            state.RowIdentifyType = v 
+            state:SaveMetadata()
+        end
 
         if v ~= 2 then
             imgui.SameLine(CTX)
