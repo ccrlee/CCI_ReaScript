@@ -1,6 +1,9 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.15
+-- @version 1.16
+-- @changelog
+--   # Fixed Bugs in loading older settings files
+--   # Implemented handling for nil values from settings file
 
 local VSDEBUG
 local s, r = pcall(function()
@@ -121,15 +124,15 @@ function LUFSManager:LoadMetadata()
     if not status then self.unsavedSession = true Msg(result) end
     if metadata then
         local m = metadata
-        self.TargetOffsets = m["Offsets"]
-        self.CutoffTime = m["CutoffTime"]
-        self.TargetsI = m["TargetsI"]
-        self.TargetsM = m["TargetsM"]
-        self.VOFXModes = m["VOFXModes"]
-        self.VOFXSel = m['VOFXSel']
-        self.LoudnessCategories = m["LoudnessCategories"]
-        self.TargetColors = m["TargetColors"]
-        self.CategoryColors = m["CategoryColors"]
+        self.TargetOffsets = m["Offsets"] or self.TargetOffsets
+        self.CutoffTime = m["CutoffTime"] or self.CutoffTime
+        self.TargetsI = m["TargetsI"] or self.TargetsI
+        self.TargetsM = m["TargetsM"] or self.TargetsM
+        self.VOFXModes = m["VOFXModes"] or self.VOFXModes
+        self.VOFXSel = m['VOFXSel'] or self.VOFXSel
+        self.LoudnessCategories = m["LoudnessCategories"] or self.LoudnessCategories
+        self.TargetColors = m["TargetColors"] or self.TargetColors
+        self.CategoryColors = m["CategoryColors"] or self.CategoryColors
         -- self.WhisperedTargetI, self.SpokenTargetI, self.YelledTargetI = table.unpack(m["TargetsI"])
         -- self.WhisperedTargetM, self.SpokenTargetM, self.YelledTargetM = table.unpack(m["TargetsM"])
         -- self.WhisperedOffset = m["Offsets"][1]
@@ -329,8 +332,10 @@ function Gui:DrawMainSection()
     imgui.Dummy(CTX, remainingSpace - buttonSpace, 25)
 
     --LUFS Buttons
-    imgui.PushStyleColor(CTX, imgui.Col_Button, manager.CategoryColors[1][1])
-    imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, manager.CategoryColors[1][2])
+    local lufsMainColor = (manager.CategoryColors and manager.CategoryColors[1] and manager.CategoryColors[1][1]) or 0x002C87FF
+    local lufsHoverColor = (manager.CategoryColors and manager.CategoryColors[1] and manager.CategoryColors[1][2]) or 0x0055FFFF
+    imgui.PushStyleColor(CTX, imgui.Col_Button, lufsMainColor)
+    imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, lufsHoverColor)
     for i = 1, manager.NumLoudnessCategories do
         imgui.SameLine(CTX)
         local text = string.format("LUFS %s", manager.LoudnessCategories[i] or ("Level " .. i))
@@ -338,7 +343,7 @@ function Gui:DrawMainSection()
         imgui.PushStyleColor(CTX, imgui.Col_Border, manager.TargetColors[i] or 0x000000FF)
         if imgui.Button(CTX, text, textW + 15, buttonHeight) then
             if manager.LUFSAction[i] then 
-                reaper.Main_OnCommand(manager.LUFSAction[i], 0)
+                reaper.Main_OnCommand(manager.LUFSActions[i], 0)
                 self.maintainFocus = false
             else reaper.ShowMessageBox(string.format("Action Not Found for %s!", manager.LoudnessCategories[i] or ("Level " .. i)), "Script Error", 0) end
         end
@@ -347,8 +352,10 @@ function Gui:DrawMainSection()
     imgui.PopStyleColor(CTX, 2)
 
     -- MATCH BUTTONS
-    imgui.PushStyleColor(CTX, imgui.Col_Button, manager.CategoryColors[2][1])
-    imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, manager.CategoryColors[2][2])
+    local matchMainColor = (manager.CategoryColors and manager.CategoryColors[2] and manager.CategoryColors[2][1]) or 0x096E00FF
+    local matchHoverColor = (manager.CategoryColors and manager.CategoryColors[2] and manager.CategoryColors[2][2]) or 0x0ED100FF
+    imgui.PushStyleColor(CTX, imgui.Col_Button, matchMainColor)
+    imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, matchHoverColor)
     for i = 1, manager.NumLoudnessCategories do
         imgui.SameLine(CTX)
         local text = string.format("Match %s", manager.LoudnessCategories[i] or ("Level " .. i))
