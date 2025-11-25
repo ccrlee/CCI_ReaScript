@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="b5b1e968ad05b06ed94b595ca59ab6035a0714a6">
+<index version="1" name="CCI" commit="60da3996cbce32198799f8545a4d0e939b2c09ed">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -236,6 +236,10 @@
 # Implemented handling for nil values from settings file]]></changelog>
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/b5b1e968ad05b06ed94b595ca59ab6035a0714a6/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
       </version>
+      <version name="1.17" author="William N. Lowe" time="2025-11-25T17:59:49Z">
+        <changelog><![CDATA[# Working on fixing VOFX Bugs]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/60da3996cbce32198799f8545a4d0e939b2c09ed/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
+      </version>
     </reapack>
     <reapack name="wnlowe_HandleBreath.lua" type="script" desc="Clip Gain Drop by specified ammount based on time selection">
       <version name="1.01" author="William N. Lowe" time="2025-11-06T21:36:09Z">
@@ -330,6 +334,10 @@
       <version name="0.6" author="William N. Lowe" time="2025-11-24T21:47:22Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/28bece217e484817ad24a7123ba52dd133cf3d91/VOWorkflow/wnlowe_VOFXRegions_Illusion.lua</source>
       </version>
+      <version name="0.7" author="William N. Lowe" time="2025-11-25T17:59:49Z">
+        <changelog><![CDATA[# Fixed linking bugs]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/60da3996cbce32198799f8545a4d0e939b2c09ed/VOWorkflow/wnlowe_VOFXRegions_Illusion.lua</source>
+      </version>
     </reapack>
     <reapack name="wnlowe_VoiceEditSessionCreator.lua" type="script" desc="Universal Import Script for VO Configuration">
       <version name="1.01" author="William N. Lowe" time="2025-11-06T21:36:09Z">
@@ -364,6 +372,11 @@
         <changelog><![CDATA[# Adding Row Identify to Metadata]]></changelog>
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/28bece217e484817ad24a7123ba52dd133cf3d91/VOWorkflow/wnlowe_VoiceEditSessionCreator.lua</source>
         <source file="data/ExcelToLua.py">https://github.com/ccrlee/CCI_ReaScript/raw/28bece217e484817ad24a7123ba52dd133cf3d91/VOWorkflow/data/ExcelToLua.py</source>
+      </version>
+      <version name="1.12" author="William N. Lowe" time="2025-11-25T17:59:49Z">
+        <changelog><![CDATA[# Adding Option under ID Identify for Item Index Identification]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/60da3996cbce32198799f8545a4d0e939b2c09ed/VOWorkflow/wnlowe_VoiceEditSessionCreator.lua</source>
+        <source file="data/ExcelToLua.py">https://github.com/ccrlee/CCI_ReaScript/raw/60da3996cbce32198799f8545a4d0e939b2c09ed/VOWorkflow/data/ExcelToLua.py</source>
       </version>
     </reapack>
   </category>
