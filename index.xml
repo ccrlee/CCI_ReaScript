@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="60da3996cbce32198799f8545a4d0e939b2c09ed">
+<index version="1" name="CCI" commit="10b08bbcef4f25af59876387add1f124c057e35b">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -240,6 +240,10 @@
         <changelog><![CDATA[# Working on fixing VOFX Bugs]]></changelog>
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/60da3996cbce32198799f8545a4d0e939b2c09ed/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
       </version>
+      <version name="1.18" author="William N. Lowe" time="2025-11-25T18:17:18Z">
+        <changelog><![CDATA[# Adding VOFX Spacing Setting]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/10b08bbcef4f25af59876387add1f124c057e35b/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
+      </version>
     </reapack>
     <reapack name="wnlowe_HandleBreath.lua" type="script" desc="Clip Gain Drop by specified ammount based on time selection">
       <version name="1.01" author="William N. Lowe" time="2025-11-06T21:36:09Z">
@@ -337,6 +341,10 @@
       <version name="0.7" author="William N. Lowe" time="2025-11-25T17:59:49Z">
         <changelog><![CDATA[# Fixed linking bugs]]></changelog>
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/60da3996cbce32198799f8545a4d0e939b2c09ed/VOWorkflow/wnlowe_VOFXRegions_Illusion.lua</source>
+      </version>
+      <version name="0.8" author="William N. Lowe" time="2025-11-25T18:17:18Z">
+        <changelog><![CDATA[# Adding support for Spacing setting]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/10b08bbcef4f25af59876387add1f124c057e35b/VOWorkflow/wnlowe_VOFXRegions_Illusion.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_VoiceEditSessionCreator.lua" type="script" desc="Universal Import Script for VO Configuration">
