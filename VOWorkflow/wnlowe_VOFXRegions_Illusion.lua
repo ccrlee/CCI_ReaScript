@@ -1,13 +1,14 @@
 -- @description VOFX region maker
 -- @author William N. Lowe
--- @version 0.8
+-- @version 0.85
 -- @changelog
 --   # Adding support for Spacing setting
+--   # Closing gaps between items
 
--- local VSDEBUG
--- local s, r = pcall(function()
---         VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
---     end)
+local VSDEBUG
+local s, r = pcall(function()
+        VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+    end)
 
 
 local OSWIN = reaper.GetOS():match("Win")
@@ -144,8 +145,18 @@ loadMetadata()
 local numItems = reaper.CountSelectedMediaItems(0)
 local allItems = {}
 local fileName = ""
-for i = 0, numItems do
+for i = 0, numItems - 1 do
     allItems[i] = reaper.GetSelectedMediaItem(0, i)
+end
+
+local lastEndTime = nil
+for i = 0, #allItems do
+    local item = allItems[i]
+    if i ~= 0 then
+        reaper.SetMediaItemInfo_Value(item, "D_POSITION", lastEndTime or reaper.GetMediaItemInfo_Value(item, "D_POSITION"))
+    end
+    local pos = reaper.GetMediaItemInfo_Value(item, "D_POSITION")
+    lastEndTime = reaper.GetMediaItemInfo_Value(item, "D_LENGTH") + pos
 end
 
 local ret, marks, regs = reaper.CountProjectMarkers(0)
