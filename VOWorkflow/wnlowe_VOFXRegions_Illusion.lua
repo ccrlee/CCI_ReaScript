@@ -1,8 +1,8 @@
 -- @description VOFX region maker
 -- @author William N. Lowe
--- @version 0.7
+-- @version 0.8
 -- @changelog
---   # Fixed linking bugs
+--   # Adding support for Spacing setting
 
 -- local VSDEBUG
 -- local s, r = pcall(function()
@@ -161,9 +161,11 @@ fileName = tostring(regName)
 local ltStart, ltEnd = reaper.GetSet_LoopTimeRange( true, false, regEnd + 0.1, regEnd + 0.1 + #allItems, false )
 reaper.Main_OnCommand(40200, 0) -- Time selection: Insert empty space at time selection (moving later items)
 
+local timingSpacing = METADATA["VOFXTiming"] or 1
+
 for j = #allItems, 0, -1 do
     local _start =  reaper.GetMediaItemInfo_Value( allItems[j], "D_POSITION" )
-    reaper.SetMediaItemInfo_Value( allItems[j], "D_POSITION", _start + j )
+    reaper.SetMediaItemInfo_Value( allItems[j], "D_POSITION", _start + (j * timingSpacing) )
 end
 
 RenderTrack = GetRenderTrack(parentRegion)

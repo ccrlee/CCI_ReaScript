@@ -1,8 +1,8 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.17
+-- @version 1.18
 -- @changelog
---   # Working on fixing VOFX Bugs
+--   # Adding VOFX Spacing Setting
 
 -- local VSDEBUG
 -- local s, r = pcall(function()
@@ -58,6 +58,7 @@ function LUFSManager:new()
     instance.VOFXAction = nil
     instance.VOFXSel = 0
     instance.VOFXModes = {"Letters", "Numbers", "Num_Char"}
+    instance.VOFXTiming = 1
 
     instance.NumLoudnessCategories = 3
     return instance
@@ -100,6 +101,7 @@ function LUFSManager:LoadMetadata()
         self.LoudnessCategories = m["LoudnessCategories"] or self.LoudnessCategories
         self.TargetColors = m["TargetColors"] or self.TargetColors
         self.CategoryColors = m["CategoryColors"] or self.CategoryColors
+        self.VOFXTiming = m["VOFXTiming"] or self.VOFXTiming
         -- self.WhisperedTargetI, self.SpokenTargetI, self.YelledTargetI = table.unpack(m["TargetsI"])
         -- self.WhisperedTargetM, self.SpokenTargetM, self.YelledTargetM = table.unpack(m["TargetsM"])
         -- self.WhisperedOffset = m["Offsets"][1]
@@ -149,7 +151,8 @@ function LUFSManager:SerializeMetadata()
         VOFXModes = self.VOFXModes,
         LoudnessCategories = self.LoudnessCategories,
         TargetColors = self.TargetColors,
-        CategoryColors = self.CategoryColors
+        CategoryColors = self.CategoryColors,
+        VOFXTiming = self.VOFXTiming
     }
     return metadata
 end
@@ -380,7 +383,7 @@ function Gui:DrawSettingsWindow()
             if c then manager.character = v end
         end
 
-        if not self.vofxSettings then self.vofxSettings = table.concat(manager.VOFXModes "\0") .. "\0" end
+        if not self.vofxSettings then self.vofxSettings = table.concat(manager.VOFXModes, "\0") .. "\0" end
         local c, v = imgui.Combo(CTX, "VOFX Mode ##CVOFX", manager.VOFXSel, self.vofxSettings)
         if c then manager.VOFXSel = v end
 
@@ -390,6 +393,10 @@ function Gui:DrawSettingsWindow()
         imgui.SetNextItemWidth(CTX, 100)
         local c, v = imgui.SliderInt(CTX, "Number of Loudness Categories ##SNC", manager.NumLoudnessCategories, 3, 5)
         if c then manager.NumLoudnessCategories = v end
+
+        imgui.SetNextItemWidth(CTX, 100)
+        local c, v = imgui.InputDouble(CTX, "Spacing Between VOFX ##VOT", manager.VOFXTiming, 0.1, 0.25, "%.2f")
+        if c then manager.VOFXTiming = v end
 
         imgui.TextDisabled(CTX, "Category Names")
 
