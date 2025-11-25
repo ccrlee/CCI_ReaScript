@@ -1,18 +1,18 @@
 -- @description Universal Import Script for VO Configuration
 -- @author William N. Lowe
--- @version 1.11
+-- @version 1.12
 -- @metapackage
 -- @provides
 --   [main] .
 --   data/*.{py}
 -- @changelog
---   # Adding Row Identify to Metadata
+--   # Adding Option under ID Identify for Item Index Identification
 
 
-local VSDEBUG
-local s, r = pcall(function()
-        VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
-    end)
+-- local VSDEBUG
+-- local s, r = pcall(function()
+--         VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+--     end)
 
 
 local USEROSWIN = reaper.GetOS():match("Win")
@@ -142,6 +142,8 @@ function ScriptState:new()
     instance.LineText = true
     instance.LineTextIdx = nil
 
+    instance.IgnoreSourceName = false
+
     instance.CharacterColumn = false
     instance.CharacterColumnIdx = nil
     instance.UpdateCharacterList = false
@@ -205,6 +207,7 @@ function ScriptState:LoadFile(filePath)
         self.Find = metadata.Find or {}
         self.Replace = metadata.Replace or {}
         self.RowIdentifyType = metadata.RowIdentify
+        self.IgnoreSourceName = metadata.IgnoreSource or false
     end
 
     self:LoadSheet(0)
@@ -251,7 +254,8 @@ function ScriptState:SerializeMetadata()
         FnR = self.FindAndReplace,--
         Find = self.Find,--
         Replace = self.Replace,
-        RowIdentify = self.RowIdentifyType
+        RowIdentify = self.RowIdentifyType,
+        IgnoreSource = self.IgnoreSourceName
     }
     
     return metadata
@@ -519,6 +523,14 @@ function GUI:DrawColumnFilterOpen()
             imgui.SetNextItemWidth(CTX, 100)
             local c, v = imgui.InputInt(CTX, "##LineTextIdx", state.LineTextIdx)
             if c and v > 0 then state.LineTextIdx = v end
+        end
+
+        imgui.SameLine(CTX)
+        imgui.Text(CTX, "No Filename Association?")
+        local c, v = imgui.Checkbox(CTX, "##ISN", state.IgnoreSourceName)
+        if c then
+            state.IgnoreSourceName = v
+            state:SaveMetadata()
         end
 
         imgui.Text(CTX, "Character Filter?")
@@ -888,8 +900,15 @@ end
 
 function Application:IndexRowFinder(numItems, renamed, mediaItems)
     local state = self.state
+    local index, item
     for i = 0, numItems - 1 do
-        local index, item = self:GetItemIndexFromName(i)
+        if not state.IgnoreSourceName then
+            index, item = self:GetItemIndexFromName(i)
+        else
+            index = i
+            item = reaper.GetSelectedMediaItem(0, i)
+        end
+
         if state.IdxOffset and index then
             local indexOffset = tonumber(state.IdxOffset)
             if index then

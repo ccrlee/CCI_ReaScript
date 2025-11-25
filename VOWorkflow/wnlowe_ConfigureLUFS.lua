@@ -1,14 +1,13 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.16
+-- @version 1.17
 -- @changelog
---   # Fixed Bugs in loading older settings files
---   # Implemented handling for nil values from settings file
+--   # Working on fixing VOFX Bugs
 
-local VSDEBUG
-local s, r = pcall(function()
-        VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
-    end)
+-- local VSDEBUG
+-- local s, r = pcall(function()
+--         VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+--     end)
 
 local USEROSWIN = reaper.GetOS():match("Win")
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
@@ -56,41 +55,9 @@ function LUFSManager:new()
     instance.referenceTrack = nil
     instance.character = "All"
 
-    instance.VOFXModes = {
-        ["Letters"] = function(fn, idx)
-            local str = fn:match("([^_]+)$")
-            if not tonumber(str) and #str <= 2 then
-                fn = fn:match("(.*)_")
-            end
-            return string.format("%s_%s", fn, string.char(64 + idx + 1))
-
-        end,
-        ["Numbers"] = function(fn, idx)
-            local fIdx = tonumber(fn:match("_([^_]*)$"))
-            if fIdx then
-                --replace index already at end
-                idx = idx + fIdx
-                local str = fn:match("(.*)_")
-                return string.format("%s_%02d", str, idx)
-            else
-                return string.format("%s_%02d", fn, idx + 1)
-            end
-        end,
-        ["Num_Char"] = function(fn, idx)
-            local charName = fn:match("([^_]+)$")
-            fn = fn:match("(.*)_")
-            local idxOff = tonumber(fn:match("([^_]+)$"))
-            fn = fn:match("(.*)_")
-            if idxOff then
-                return string.format("%s_%02d_%s", fn, idx + idxOff, charName)
-            else
-                return string.format("%s_%02d_%s", fn, idx + 1, charName)
-            end
-        end
-    }
-
     instance.VOFXAction = nil
     instance.VOFXSel = 0
+    instance.VOFXModes = {"Letters", "Numbers", "Num_Char"}
 
     instance.NumLoudnessCategories = 3
     return instance
@@ -147,14 +114,6 @@ function LUFSManager:LoadMetadata()
         self.character = d["character"]
     end
     self:FindActions()
-end
-
-function LUFSManager:GetVOFXKeys()
-    local keys = {}
-    for k, _ in pairs(self.VOFXModes) do
-        table.insert(keys, k)
-    end
-    return table.concat(keys, "\0") .. "\0"
 end
 
 function LUFSManager:FindActions()
@@ -421,7 +380,7 @@ function Gui:DrawSettingsWindow()
             if c then manager.character = v end
         end
 
-        if not self.vofxSettings then self.vofxSettings = manager:GetVOFXKeys() end
+        if not self.vofxSettings then self.vofxSettings = table.concat(manager.VOFXModes "\0") .. "\0" end
         local c, v = imgui.Combo(CTX, "VOFX Mode ##CVOFX", manager.VOFXSel, self.vofxSettings)
         if c then manager.VOFXSel = v end
 

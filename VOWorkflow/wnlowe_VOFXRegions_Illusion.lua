@@ -1,12 +1,20 @@
 -- @description VOFX region maker
 -- @author William N. Lowe
--- @version 0.6
+-- @version 0.7
+-- @changelog
+--   # Fixed linking bugs
 
-local PROJECT = reaper.GetProjectPath("")
-local METAPATH = PROJECT.."/LoudnessSettings.lua"
+-- local VSDEBUG
+-- local s, r = pcall(function()
+--         VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+--     end)
+
+
 local OSWIN = reaper.GetOS():match("Win")
 local SLASH = OSWIN and "\\" or "/"
-local METADATA
+local PROJECT = reaper.GetProjectPath("")
+local METAPATH = PROJECT.. SLASH .."LoudnessSettings.lua"
+local METADATA = nil
 
 ----------------------------------------------------------
 ----------------------------------------------------------
@@ -18,10 +26,44 @@ local function Msg(variable)
     if dbug then reaper.ShowConsoleMsg(tostring (variable).."\n") end
 end
 
-function GetRenderTrack()
-    local ret, isr, regPos, regEnd, regName, MarInx = reaper.EnumProjectMarkers(ParentRegion)
+local function GetRenderTrack(parentRegion)
+    local ret, isr, regPos, regEnd, regName, MarInx = reaper.EnumProjectMarkers(parentRegion)
+
     return  reaper.EnumRegionRenderMatrix( 0, MarInx, 0 )
 end
+
+local VOFX_MODES = {
+    ["Letters"] = function(fn, idx)
+            local str = fn:match("([^_]+)$")
+            if not tonumber(str) and #str <= 2 then
+                fn = fn:match("(.*)_")
+            end
+            return string.format("%s_%s", fn, string.char(64 + idx + 1))
+
+        end,
+        ["Numbers"] = function(fn, idx)
+            local fIdx = tonumber(fn:match("_([^_]*)$"))
+            if fIdx then
+                --replace index already at end
+                idx = idx + fIdx
+                local str = fn:match("(.*)_")
+                return string.format("%s_%02d", str, idx)
+            else
+                return string.format("%s_%02d", fn, idx + 1)
+            end
+        end,
+        ["Num_Char"] = function(fn, idx)
+            local charName = fn:match("([^_]+)$")
+            fn = fn:match("(.*)_")
+            local idxOff = tonumber(fn:match("([^_]+)$"))
+            fn = fn:match("(.*)_")
+            if idxOff then
+                return string.format("%s_%02d_%s", fn, idx + idxOff, charName)
+            else
+                return string.format("%s_%02d_%s", fn, idx + 1, charName)
+            end
+        end
+}
 
 ----------------------------------------------------------
 ----------------------------------------------------------
@@ -82,13 +124,13 @@ local function findRegion(marks, regs, beginning, last)
 end
 
 local function GetRegionName(filename, index)
-    local modesTable = METADATA["VOFXModes"]
+    local modesTable = VOFX_MODES
     local modes = {}
     for k, _ in pairs(modesTable) do
         table.insert(modes, k)
     end
-    local selectedMode = modes[METADATA["VOFXSel"]]
-    return modes[selectedMode](filename, index)
+    local selectedMode = tonumber(METADATA["VOFXSel"]) + 1
+    return VOFX_MODES[METADATA["VOFXModes"][selectedMode]](filename, index)
 end
 
 ----------------------------------------------------------
@@ -124,7 +166,7 @@ for j = #allItems, 0, -1 do
     reaper.SetMediaItemInfo_Value( allItems[j], "D_POSITION", _start + j )
 end
 
-RenderTrack = GetRenderTrack()
+RenderTrack = GetRenderTrack(parentRegion)
 local markRegs = regs + marks
 
 for j = 0, #allItems do
