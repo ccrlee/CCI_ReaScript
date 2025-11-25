@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="10b08bbcef4f25af59876387add1f124c057e35b">
+<index version="1" name="CCI" commit="89321726c8a2c084df13bbe926fbeac2c9e8c770">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -345,6 +345,11 @@
       <version name="0.8" author="William N. Lowe" time="2025-11-25T18:17:18Z">
         <changelog><![CDATA[# Adding support for Spacing setting]]></changelog>
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/10b08bbcef4f25af59876387add1f124c057e35b/VOWorkflow/wnlowe_VOFXRegions_Illusion.lua</source>
+      </version>
+      <version name="0.85" author="William N. Lowe" time="2025-11-25T18:34:53Z">
+        <changelog><![CDATA[# Adding support for Spacing setting
+# Closing gaps between items]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/89321726c8a2c084df13bbe926fbeac2c9e8c770/VOWorkflow/wnlowe_VOFXRegions_Illusion.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_VoiceEditSessionCreator.lua" type="script" desc="Universal Import Script for VO Configuration">
