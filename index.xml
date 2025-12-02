@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="89321726c8a2c084df13bbe926fbeac2c9e8c770">
+<index version="1" name="CCI" commit="dc6bc1399deb4b30124f478cf7d3ff67201ec880">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -244,6 +244,10 @@
         <changelog><![CDATA[# Adding VOFX Spacing Setting]]></changelog>
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/10b08bbcef4f25af59876387add1f124c057e35b/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
       </version>
+      <version name="1.19" author="William N. Lowe" time="2025-12-02T22:24:22Z">
+        <changelog><![CDATA[# Adding VOFX Insert Time Option]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/dc6bc1399deb4b30124f478cf7d3ff67201ec880/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
+      </version>
     </reapack>
     <reapack name="wnlowe_HandleBreath.lua" type="script" desc="Clip Gain Drop by specified ammount based on time selection">
       <version name="1.01" author="William N. Lowe" time="2025-11-06T21:36:09Z">
@@ -350,6 +354,10 @@
         <changelog><![CDATA[# Adding support for Spacing setting
 # Closing gaps between items]]></changelog>
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/89321726c8a2c084df13bbe926fbeac2c9e8c770/VOWorkflow/wnlowe_VOFXRegions_Illusion.lua</source>
+      </version>
+      <version name="0.90" author="William N. Lowe" time="2025-12-02T22:24:22Z">
+        <changelog><![CDATA[# Adding support for not inserting time]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/dc6bc1399deb4b30124f478cf7d3ff67201ec880/VOWorkflow/wnlowe_VOFXRegions_Illusion.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_VoiceEditSessionCreator.lua" type="script" desc="Universal Import Script for VO Configuration">
