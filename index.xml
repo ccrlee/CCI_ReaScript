@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="dc6bc1399deb4b30124f478cf7d3ff67201ec880">
+<index version="1" name="CCI" commit="ba0cb0f886df0b3329fb3db7d0dd50d296367e6d">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -248,6 +248,10 @@
         <changelog><![CDATA[# Adding VOFX Insert Time Option]]></changelog>
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/dc6bc1399deb4b30124f478cf7d3ff67201ec880/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
       </version>
+      <version name="1.20" author="William N. Lowe" time="2025-12-02T23:40:17Z">
+        <changelog><![CDATA[# Adding VOFX Measure time from previous item]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/ba0cb0f886df0b3329fb3db7d0dd50d296367e6d/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
+      </version>
     </reapack>
     <reapack name="wnlowe_HandleBreath.lua" type="script" desc="Clip Gain Drop by specified ammount based on time selection">
       <version name="1.01" author="William N. Lowe" time="2025-11-06T21:36:09Z">
@@ -358,6 +362,10 @@
       <version name="0.90" author="William N. Lowe" time="2025-12-02T22:24:22Z">
         <changelog><![CDATA[# Adding support for not inserting time]]></changelog>
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/dc6bc1399deb4b30124f478cf7d3ff67201ec880/VOWorkflow/wnlowe_VOFXRegions_Illusion.lua</source>
+      </version>
+      <version name="0.95" author="William N. Lowe" time="2025-12-02T23:40:17Z">
+        <changelog><![CDATA[# Adding support for measuring time from start of previous item]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/ba0cb0f886df0b3329fb3db7d0dd50d296367e6d/VOWorkflow/wnlowe_VOFXRegions_Illusion.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_VoiceEditSessionCreator.lua" type="script" desc="Universal Import Script for VO Configuration">
