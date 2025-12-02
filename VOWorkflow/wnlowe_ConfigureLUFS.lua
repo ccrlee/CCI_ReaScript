@@ -414,6 +414,9 @@ function Gui:DrawSettingsWindow()
         local c, v = imgui.Checkbox(CTX, "Insert Time for VOFX Spacing ##VOS", manager.VOFXAddTime)
         if c then manager.VOFXAddTime = v end
 
+        local c, v = imgui.Checkbox(CTX, "Measure time from start of previous item ##VOP", manager.VOFXFromStart)
+        if c then manager.VOFXFromStart = v end
+
         imgui.TextDisabled(CTX, "Category Names")
 
         for i = 1, manager.NumLoudnessCategories do
