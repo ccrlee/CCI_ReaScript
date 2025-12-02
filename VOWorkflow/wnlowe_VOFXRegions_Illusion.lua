@@ -1,8 +1,8 @@
 -- @description VOFX region maker
 -- @author William N. Lowe
--- @version 0.90
+-- @version 0.95
 -- @changelog
---   # Adding support for not inserting time
+--   # Adding support for measuring time from start of previous item
 
 local VSDEBUG
 local s, r = pcall(function()
@@ -168,7 +168,8 @@ local parentRegion = findRegion(marks, regs, beginning, last)
 local ret, isr, regPos, regEnd, regName, MarInx = reaper.EnumProjectMarkers(parentRegion)
 fileName = tostring(regName)
 
-local addTime = METADATA["VOFXAddTime"] or true
+local addTime = METADATA["VOFXAddTime"] == "false" and false or true
+local fromStart = METADATA["VOFXFromStart"] == "true" and true or false
 
 if addTime then
     local ltStart, ltEnd = reaper.GetSet_LoopTimeRange( true, false, regEnd + 0.1, regEnd + 0.1 + #allItems, false )
@@ -177,9 +178,17 @@ end
 
 local timingSpacing = METADATA["VOFXTiming"] or 1
 
-for j = #allItems, 0, -1 do
-    local _start =  reaper.GetMediaItemInfo_Value( allItems[j], "D_POSITION" )
-    reaper.SetMediaItemInfo_Value( allItems[j], "D_POSITION", _start + (j * timingSpacing) )
+if not fromStart then
+    for j = #allItems, 0, -1 do
+        local _start =  reaper.GetMediaItemInfo_Value( allItems[j], "D_POSITION" )
+        reaper.SetMediaItemInfo_Value( allItems[j], "D_POSITION", _start + (j * timingSpacing) )
+    end
+else
+    local startPosition = reaper.GetMediaItemInfo_Value(allItems[0], "D_POSITION") - timingSpacing
+    for j = 0, #allItems do
+        reaper.SetMediaItemInfo_Value(allItems[j], "D_POSITION", startPosition + timingSpacing)
+        startPosition = startPosition + timingSpacing
+    end
 end
 
 RenderTrack = GetRenderTrack(parentRegion)

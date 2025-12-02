@@ -1,8 +1,8 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.19
+-- @version 1.20
 -- @changelog
---   # Adding VOFX Insert Time Option
+--   # Adding VOFX Measure time from previous item
 
 -- local VSDEBUG
 -- local s, r = pcall(function()
@@ -60,9 +60,15 @@ function LUFSManager:new()
     instance.VOFXModes = {"Letters", "Numbers", "Num_Char"}
     instance.VOFXTiming = 1
     instance.VOFXAddTime = true
+    instance.VOFXFromStart = false
 
     instance.NumLoudnessCategories = 3
     return instance
+end
+
+function LUFSManager:EvaluateBoolMetadata(value)
+    if value == nil then return nil end
+    return value == "true" and true or false
 end
 
 function LUFSManager:LoadMetadata()
@@ -103,7 +109,8 @@ function LUFSManager:LoadMetadata()
         self.TargetColors = m["TargetColors"] or self.TargetColors
         self.CategoryColors = m["CategoryColors"] or self.CategoryColors
         self.VOFXTiming = m["VOFXTiming"] or self.VOFXTiming
-        self.VOFXAddTime = m["VOFXAddTime"] or self.VOFXAddTime
+        self.VOFXAddTime = self:EvaluateBoolMetadata(m["VOFXAddTime"]) or self.VOFXAddTime
+        self.VOFXFromStart = self:EvaluateBoolMetadata(m["VOFXFromStart"]) or self.VOFXFromStart
         -- self.WhisperedTargetI, self.SpokenTargetI, self.YelledTargetI = table.unpack(m["TargetsI"])
         -- self.WhisperedTargetM, self.SpokenTargetM, self.YelledTargetM = table.unpack(m["TargetsM"])
         -- self.WhisperedOffset = m["Offsets"][1]
@@ -155,7 +162,8 @@ function LUFSManager:SerializeMetadata()
         TargetColors = self.TargetColors,
         CategoryColors = self.CategoryColors,
         VOFXTiming = self.VOFXTiming,
-        VOFXAddTime = self.VOFXAddTime
+        VOFXAddTime = self.VOFXAddTime,
+        VOFXFromStart = self.VOFXFromStart
     }
     return metadata
 end
@@ -186,6 +194,8 @@ function LUFSManager:SerializeTable(tbl, indent)
         elseif type(value) == "string" then
             local escaped = value:gsub("\\", "\\\\")
             valStr = string.format('"%s"', escaped)
+        elseif type(value) == "boolean" then
+            valStr = tostring(value)
         elseif value == nil then
             valStr = "nil"
         else
