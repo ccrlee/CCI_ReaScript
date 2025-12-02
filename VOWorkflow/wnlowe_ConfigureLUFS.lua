@@ -1,8 +1,9 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.20
+-- @version 1.20.1
 -- @changelog
 --   # Adding VOFX Measure time from previous item
+--   # Adding GUI for new Feature
 
 -- local VSDEBUG
 -- local s, r = pcall(function()
