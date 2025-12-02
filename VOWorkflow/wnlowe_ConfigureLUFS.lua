@@ -1,8 +1,8 @@
 -- @description Custom GUI Bar for VO Configuration
 -- @author William N. Lowe
--- @version 1.18
+-- @version 1.19
 -- @changelog
---   # Adding VOFX Spacing Setting
+--   # Adding VOFX Insert Time Option
 
 -- local VSDEBUG
 -- local s, r = pcall(function()
@@ -59,6 +59,7 @@ function LUFSManager:new()
     instance.VOFXSel = 0
     instance.VOFXModes = {"Letters", "Numbers", "Num_Char"}
     instance.VOFXTiming = 1
+    instance.VOFXAddTime = true
 
     instance.NumLoudnessCategories = 3
     return instance
@@ -102,6 +103,7 @@ function LUFSManager:LoadMetadata()
         self.TargetColors = m["TargetColors"] or self.TargetColors
         self.CategoryColors = m["CategoryColors"] or self.CategoryColors
         self.VOFXTiming = m["VOFXTiming"] or self.VOFXTiming
+        self.VOFXAddTime = m["VOFXAddTime"] or self.VOFXAddTime
         -- self.WhisperedTargetI, self.SpokenTargetI, self.YelledTargetI = table.unpack(m["TargetsI"])
         -- self.WhisperedTargetM, self.SpokenTargetM, self.YelledTargetM = table.unpack(m["TargetsM"])
         -- self.WhisperedOffset = m["Offsets"][1]
@@ -152,7 +154,8 @@ function LUFSManager:SerializeMetadata()
         LoudnessCategories = self.LoudnessCategories,
         TargetColors = self.TargetColors,
         CategoryColors = self.CategoryColors,
-        VOFXTiming = self.VOFXTiming
+        VOFXTiming = self.VOFXTiming,
+        VOFXAddTime = self.VOFXAddTime
     }
     return metadata
 end
@@ -397,6 +400,9 @@ function Gui:DrawSettingsWindow()
         imgui.SetNextItemWidth(CTX, 100)
         local c, v = imgui.InputDouble(CTX, "Spacing Between VOFX ##VOT", manager.VOFXTiming, 0.1, 0.25, "%.2f")
         if c then manager.VOFXTiming = v end
+
+        local c, v = imgui.Checkbox(CTX, "Insert Time for VOFX Spacing ##VOS", manager.VOFXAddTime)
+        if c then manager.VOFXAddTime = v end
 
         imgui.TextDisabled(CTX, "Category Names")
 

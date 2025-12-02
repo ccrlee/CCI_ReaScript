@@ -1,9 +1,8 @@
 -- @description VOFX region maker
 -- @author William N. Lowe
--- @version 0.85
+-- @version 0.90
 -- @changelog
---   # Adding support for Spacing setting
---   # Closing gaps between items
+--   # Adding support for not inserting time
 
 local VSDEBUG
 local s, r = pcall(function()
@@ -169,8 +168,12 @@ local parentRegion = findRegion(marks, regs, beginning, last)
 local ret, isr, regPos, regEnd, regName, MarInx = reaper.EnumProjectMarkers(parentRegion)
 fileName = tostring(regName)
 
-local ltStart, ltEnd = reaper.GetSet_LoopTimeRange( true, false, regEnd + 0.1, regEnd + 0.1 + #allItems, false )
-reaper.Main_OnCommand(40200, 0) -- Time selection: Insert empty space at time selection (moving later items)
+local addTime = METADATA["VOFXAddTime"] or true
+
+if addTime then
+    local ltStart, ltEnd = reaper.GetSet_LoopTimeRange( true, false, regEnd + 0.1, regEnd + 0.1 + #allItems, false )
+    reaper.Main_OnCommand(40200, 0) -- Time selection: Insert empty space at time selection (moving later items)
+end
 
 local timingSpacing = METADATA["VOFXTiming"] or 1
 
