@@ -1,8 +1,8 @@
 -- @description VOFX region maker
 -- @author William N. Lowe
--- @version 0.95
+-- @version 0.96
 -- @changelog
---   # Adding support for measuring time from start of previous item
+--   # Fixing logic bug
 
 local VSDEBUG
 local s, r = pcall(function()
@@ -22,7 +22,7 @@ local METADATA = nil
 ----------------------------------------------------------
 ----------------------------------------------------------
 local function Msg(variable)
-    local dbug = false
+    local dbug = true
     if dbug then reaper.ShowConsoleMsg(tostring (variable).."\n") end
 end
 
@@ -168,8 +168,9 @@ local parentRegion = findRegion(marks, regs, beginning, last)
 local ret, isr, regPos, regEnd, regName, MarInx = reaper.EnumProjectMarkers(parentRegion)
 fileName = tostring(regName)
 
-local addTime = METADATA["VOFXAddTime"] == "false" and false or true
-local fromStart = METADATA["VOFXFromStart"] == "true" and true or false
+Msg(METADATA["VOFXAddTime"])
+local addTime = not (METADATA["VOFXAddTime"] == "false" or METADATA["VOFXAddTime"] == false)
+local fromStart = (METADATA["VOFXFromStart"] == "true" or METADATA["VOFXFromStart"] == true)
 
 if addTime then
     local ltStart, ltEnd = reaper.GetSet_LoopTimeRange( true, false, regEnd + 0.1, regEnd + 0.1 + #allItems, false )
