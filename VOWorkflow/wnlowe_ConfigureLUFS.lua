@@ -1,17 +1,17 @@
 --[[ 
 description: Custom GUI Bar for VO Configuration
 author: William N. Lowe
-version: 1.21.2
+version: 1.21.3
 provides:
-  wnlowe_lufsSet__shouted.lua
-  wnlowe_lufsSet__spoken.lua
-  wnlowe_lufsSet__whisper.lua
-  wnlowe_lufsSet__yelled.lua
-  wnlowe_playMatchFile_shouted.lua
-  wnlowe_playMatchFile_spoken.lua
-  wnlowe_playMatchFile_whispered.lua
-  wnlowe_playMatchFile_yelled.lua
-  wnlowe_resetMatchFolder.lua
+  [main] wnlowe_lufsSet__shouted.lua
+  [main] wnlowe_lufsSet__spoken.lua
+  [main] wnlowe_lufsSet__whisper.lua
+  [main] wnlowe_lufsSet__yelled.lua
+  [main] wnlowe_playMatchFile_shouted.lua
+  [main] wnlowe_playMatchFile_spoken.lua
+  [main] wnlowe_playMatchFile_whispered.lua
+  [main] wnlowe_playMatchFile_yelled.lua
+  [main] wnlowe_resetMatchFolder.lua
 changelog:
    1.21
    # Match File Character Specific Bug
