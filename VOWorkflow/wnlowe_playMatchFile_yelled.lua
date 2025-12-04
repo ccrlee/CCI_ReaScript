@@ -42,7 +42,7 @@ local function loadData()
 
     local character = directories["character"]
     if character ~= "All" then
-        local fileParent = FULL_FILES["characters"][character]
+        local fileParent = FULL_FILES[character]
         FILES = fileParent[LOUDNESS]
     else
         FILES = FULL_FILES[LOUDNESS]

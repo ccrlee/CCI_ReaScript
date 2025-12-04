@@ -1,7 +1,7 @@
 --[[ 
 @description Custom GUI Bar for VO Configuration
 @author William N. Lowe
-@version 1.20.2
+@version 1.21
 @metapackage
 @provides
   wnlowe_lufsSet__shouted.lua
@@ -14,14 +14,14 @@
   wnlowe_playMatchFile_yelled.lua
   wnlowe_resetMatchFolder.lua
 @changelog
+   1.21
+   # Match File Character Specific Bug
+   1.20.2
   # Adding VOFX Measure time from previous item
   # Adding GUI for new Feature
 ]]
--- local VSDEBUG
--- local s, r = pcall(function()
---         VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
---     end)
 
+local DEBUG = true
 local USEROSWIN = reaper.GetOS():match("Win")
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
 SCRIPT_PATH = USEROSWIN and SCRIPT_PATH:gsub("\\", "/") or SCRIPT_PATH
@@ -34,9 +34,15 @@ local CTX
 local WINDOW_SIZE = { width = 400, height = 100 }
 local combo_flags = { current_selected = 1 }
 
+local VSDEBUG
+local s, r = pcall(function()
+        if DEBUG then
+            VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+        end
+    end)
+
 function Msg(msg)
-    debug = true
-    if debug then reaper.ShowConsoleMsg(tostring(msg) .. "\n")end
+    if DEBUG then reaper.ShowConsoleMsg(tostring(msg) .. "\n")end
 end
 
 LUFSManager = {}
@@ -66,7 +72,9 @@ function LUFSManager:new()
     instance.folders = {}
     instance.files = {}
     instance.referenceTrack = nil
+    instance.characterTable = {[1] = "All"}
     instance.character = "All"
+    instance.characterIdx = 0
 
     instance.VOFXAction = nil
     instance.VOFXSel = 0
@@ -136,6 +144,11 @@ function LUFSManager:LoadMetadata()
         self.files = d["files"]
         self.referenceTrack = d["referenceTrack"]
         self.character = d["character"]
+    end
+    local counter = 2
+    for k, v in pairs(self.folders["characters"]) do
+        table.insert(self.characterTable, counter, k)
+        counter = counter + 1
     end
     self:FindActions()
 end
@@ -400,13 +413,21 @@ function Gui:DrawSettingsWindow()
         local c, newV = imgui.InputDouble(CTX, "Cutoff Time between LUFS-M and LUFS-I ##CT", manager.CutoffTime, 0.5, 1.0, "%.2f")
         if c then manager.CutoffTime = newV manager:SaveMetadata() end
 
-        if #manager.folders > 3 then
-            local folderCharacters = {"All"}
-            for k, v in pairs(manager.folders["characters"]) do
-                table.insert(folderCharacters, k)
+        local count = 0
+        local dropdown = false
+        for _ in pairs(manager.folders) do
+            count = count + 1
+            if count > 3 then
+                dropdown = true
+                break
             end
-            local c, v = imgui.Combo(CTX, "Character Match Selection ##CMS", 0, table.concat(folderCharacters, "\0") .. "\0")
-            if c then manager.character = v end
+        end
+        if dropdown then
+            local c, v = imgui.Combo(CTX, "Character Match Selection ##CMS", manager.characterIdx, table.concat(manager.characterTable, "\0") .. "\0")
+            if c then
+                manager.characterIdx = v
+                manager.character = manager.characterTable[v + 1]
+            end
         end
 
         if not self.vofxSettings then self.vofxSettings = table.concat(manager.VOFXModes, "\0") .. "\0" end
@@ -537,7 +558,9 @@ function App:Run()
     end
     if self.gui.refreshMatch then
         self.gui.refreshMatch = false
+        self.manager:SaveMetadata()
         reaper.Main_OnCommand(self.manager.RefreshMatchAction, 0)
+        self.manager:LoadMetadata()
         end
 end
 
