@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="CCI" commit="a65a0eaf1b295156334ea5aaece0c1a10deeefcb">
+<index version="1" name="CCI" commit="95d57d807d363c90b18ddb5c7e75a6d04afbe9d5">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -296,6 +296,20 @@
         <source file="wnlowe_playMatchFile_whispered.lua">https://github.com/ccrlee/CCI_ReaScript/raw/a65a0eaf1b295156334ea5aaece0c1a10deeefcb/VOWorkflow/wnlowe_playMatchFile_whispered.lua</source>
         <source file="wnlowe_playMatchFile_yelled.lua">https://github.com/ccrlee/CCI_ReaScript/raw/a65a0eaf1b295156334ea5aaece0c1a10deeefcb/VOWorkflow/wnlowe_playMatchFile_yelled.lua</source>
         <source file="wnlowe_resetMatchFolder.lua">https://github.com/ccrlee/CCI_ReaScript/raw/a65a0eaf1b295156334ea5aaece0c1a10deeefcb/VOWorkflow/wnlowe_resetMatchFolder.lua</source>
+      </version>
+      <version name="1.21" author="William N. Lowe" time="2025-12-04T16:08:29Z">
+        <changelog><![CDATA[1.21
+# Match File Character Specific Bug
+1.20.2]]></changelog>
+        <source file="wnlowe_lufsSet__shouted.lua">https://github.com/ccrlee/CCI_ReaScript/raw/95d57d807d363c90b18ddb5c7e75a6d04afbe9d5/VOWorkflow/wnlowe_lufsSet__shouted.lua</source>
+        <source file="wnlowe_lufsSet__spoken.lua">https://github.com/ccrlee/CCI_ReaScript/raw/95d57d807d363c90b18ddb5c7e75a6d04afbe9d5/VOWorkflow/wnlowe_lufsSet__spoken.lua</source>
+        <source file="wnlowe_lufsSet__whisper.lua">https://github.com/ccrlee/CCI_ReaScript/raw/95d57d807d363c90b18ddb5c7e75a6d04afbe9d5/VOWorkflow/wnlowe_lufsSet__whisper.lua</source>
+        <source file="wnlowe_lufsSet__yelled.lua">https://github.com/ccrlee/CCI_ReaScript/raw/95d57d807d363c90b18ddb5c7e75a6d04afbe9d5/VOWorkflow/wnlowe_lufsSet__yelled.lua</source>
+        <source file="wnlowe_playMatchFile_shouted.lua">https://github.com/ccrlee/CCI_ReaScript/raw/95d57d807d363c90b18ddb5c7e75a6d04afbe9d5/VOWorkflow/wnlowe_playMatchFile_shouted.lua</source>
+        <source file="wnlowe_playMatchFile_spoken.lua">https://github.com/ccrlee/CCI_ReaScript/raw/95d57d807d363c90b18ddb5c7e75a6d04afbe9d5/VOWorkflow/wnlowe_playMatchFile_spoken.lua</source>
+        <source file="wnlowe_playMatchFile_whispered.lua">https://github.com/ccrlee/CCI_ReaScript/raw/95d57d807d363c90b18ddb5c7e75a6d04afbe9d5/VOWorkflow/wnlowe_playMatchFile_whispered.lua</source>
+        <source file="wnlowe_playMatchFile_yelled.lua">https://github.com/ccrlee/CCI_ReaScript/raw/95d57d807d363c90b18ddb5c7e75a6d04afbe9d5/VOWorkflow/wnlowe_playMatchFile_yelled.lua</source>
+        <source file="wnlowe_resetMatchFolder.lua">https://github.com/ccrlee/CCI_ReaScript/raw/95d57d807d363c90b18ddb5c7e75a6d04afbe9d5/VOWorkflow/wnlowe_resetMatchFolder.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_HandleBreath.lua" type="script" desc="Clip Gain Drop by specified ammount based on time selection">
