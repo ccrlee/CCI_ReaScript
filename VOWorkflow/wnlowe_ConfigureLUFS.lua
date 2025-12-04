@@ -1,7 +1,7 @@
 --[[ 
 description: Custom GUI Bar for VO Configuration
 author: William N. Lowe
-version: 1.21.1
+version: 1.21.2
 provides:
   wnlowe_lufsSet__shouted.lua
   wnlowe_lufsSet__spoken.lua
@@ -145,9 +145,11 @@ function LUFSManager:LoadMetadata()
         self.character = d["character"]
     end
     local counter = 2
-    for k, v in pairs(self.folders["characters"]) do
-        table.insert(self.characterTable, counter, k)
-        counter = counter + 1
+    if self.folders["characters"] then
+        for k, v in pairs(self.folders["characters"]) do
+            table.insert(self.characterTable, counter, k)
+            counter = counter + 1
+        end
     end
     self:FindActions()
 end
