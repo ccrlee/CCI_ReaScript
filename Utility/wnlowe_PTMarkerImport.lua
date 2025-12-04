@@ -1,6 +1,7 @@
--- @description PT -> Export as TXT -> Markers only import to REAPER
+-- @description Pro Tools Markers to REAPER Markers
+-- @about PT -> Export as TXT -> Markers only import to REAPER
 -- @author William N. Lowe
--- @version 0.1
+-- @version 0.1.1
 -- @changelog
 --   # Initial Version
 

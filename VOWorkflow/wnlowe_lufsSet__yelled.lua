@@ -1,9 +1,7 @@
--- @description Sets clip gain on selected item to specified LUFS level in metadata file with offset
--- @author William N. Lowe
--- @version 0.9
-
-
+-- @noindex
 local INDEX = 3
+
+
 
 local function setLUFS(item)
     local projectPath = reaper.GetProjectPath("")

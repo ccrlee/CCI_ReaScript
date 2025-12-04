@@ -1,8 +1,7 @@
--- @description Plays a match file from an assigned folder's "Whispered" subdirectory
--- @author William N. Lowe
--- @version 0.97
-
+-- @noindex
 -- local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+
+
 
 local LOUDNESS = "whispered"
 local PROJECT = reaper.GetProjectPath("")

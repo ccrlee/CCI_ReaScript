@@ -1,10 +1,22 @@
--- @description Custom GUI Bar for VO Configuration
--- @author William N. Lowe
--- @version 1.20.1
--- @changelog
---   # Adding VOFX Measure time from previous item
---   # Adding GUI for new Feature
-
+--[[ 
+@description Custom GUI Bar for VO Configuration
+@author William N. Lowe
+@version 1.20.2
+@metapackage
+@provides
+  wnlowe_lufsSet__shouted.lua
+  wnlowe_lufsSet__spoken.lua
+  wnlowe_lufsSet__whisper.lua
+  wnlowe_lufsSet__yelled.lua
+  wnlowe_playMatchFile_shouted.lua
+  wnlowe_playMatchFile_spoken.lua
+  wnlowe_playMatchFile_whispered.lua
+  wnlowe_playMatchFile_yelled.lua
+  wnlowe_resetMatchFolder.lua
+@changelog
+  # Adding VOFX Measure time from previous item
+  # Adding GUI for new Feature
+]]
 -- local VSDEBUG
 -- local s, r = pcall(function()
 --         VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
