@@ -1,20 +1,24 @@
 -- @description VOFX region maker
 -- @author William N. Lowe
--- @version 0.96
+-- @version 0.96.1
 -- @changelog
 --   # Fixing logic bug
-
-local VSDEBUG
-local s, r = pcall(function()
-        VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
-    end)
+--   # Disabling debug
 
 
+
+local DEBUG = false
 local OSWIN = reaper.GetOS():match("Win")
 local SLASH = OSWIN and "\\" or "/"
 local PROJECT = reaper.GetProjectPath("")
 local METAPATH = PROJECT.. SLASH .."LoudnessSettings.lua"
 local METADATA = nil
+local VSDEBUG
+local s, r = pcall(function()
+        if DEBUG then
+            VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+        end
+    end)
 
 ----------------------------------------------------------
 ----------------------------------------------------------
@@ -22,8 +26,7 @@ local METADATA = nil
 ----------------------------------------------------------
 ----------------------------------------------------------
 local function Msg(variable)
-    local dbug = true
-    if dbug then reaper.ShowConsoleMsg(tostring (variable).."\n") end
+    if DEBUG then reaper.ShowConsoleMsg(tostring (variable).."\n") end
 end
 
 local function GetRenderTrack(parentRegion)
