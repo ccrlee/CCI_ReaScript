@@ -1,7 +1,7 @@
 --[[ 
 description: Custom GUI Bar for VO Configuration
 author: William N. Lowe
-version: 1.21.3
+version: 1.22
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -13,6 +13,8 @@ provides:
   [main] wnlowe_playMatchFile_yelled.lua
   [main] wnlowe_resetMatchFolder.lua
 changelog:
+   1.22
+   # Fixed Action Bugs
    1.21
    # Match File Character Specific Bug
    1.20.2
@@ -344,7 +346,10 @@ function Gui:DrawMainSection()
         local textW, textH = imgui.CalcTextSize(CTX, text)
         imgui.PushStyleColor(CTX, imgui.Col_Border, manager.TargetColors[i] or 0x000000FF)
         if imgui.Button(CTX, text, textW + 15, buttonHeight) then
-            if manager.LUFSAction[i] then 
+            local action = nil
+            local succeed, result = pcall(function() action = manager.LUFSActions[i] end)
+            if not succeed then manager:FindActions() end
+            if manager.LUFSActions[i] then
                 reaper.Main_OnCommand(manager.LUFSActions[i], 0)
                 self.maintainFocus = false
             else reaper.ShowMessageBox(string.format("Action Not Found for %s!", manager.LoudnessCategories[i] or ("Level " .. i)), "Script Error", 0) end
@@ -364,7 +369,10 @@ function Gui:DrawMainSection()
         local textW, textH = imgui.CalcTextSize(CTX, text)
         imgui.PushStyleColor(CTX, imgui.Col_Border, manager.TargetColors[i] or 0x000000FF)
         if imgui.Button(CTX, text, textW + 15, buttonHeight) then
-            if manager.MatchActions[i] then 
+            local action = nil
+            local succeed, result = pcall(function() action = manager.MatchActions[i] end)
+            if not succeed then manager:FindActions() end
+            if manager.MatchActions[i] then
                 reaper.Main_OnCommand(manager.MatchActions[i], 0)
                 self.maintainFocus = false
             else reaper.ShowMessageBox(string.format("Action Not Found for %s!", manager.LoudnessCategories[i] or ("Level " .. i)), "Script Error", 0) end
