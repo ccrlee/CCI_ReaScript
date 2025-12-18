@@ -1,13 +1,28 @@
--- @description Custom GUI Bar for VO Configuration
--- @author William N. Lowe
--- @version 1.12
--- Todo: Make it detect project change so on open the VOFX mode tracks
+--[[ 
+description: Custom GUI Bar for VO Configuration
+author: William N. Lowe
+version: 1.22
+provides:
+  [main] wnlowe_lufsSet__shouted.lua
+  [main] wnlowe_lufsSet__spoken.lua
+  [main] wnlowe_lufsSet__whisper.lua
+  [main] wnlowe_lufsSet__yelled.lua
+  [main] wnlowe_playMatchFile_shouted.lua
+  [main] wnlowe_playMatchFile_spoken.lua
+  [main] wnlowe_playMatchFile_whispered.lua
+  [main] wnlowe_playMatchFile_yelled.lua
+  [main] wnlowe_resetMatchFolder.lua
+changelog:
+   1.22
+   # Fixed Action Bugs
+   1.21
+   # Match File Character Specific Bug
+   1.20.2
+  # Adding VOFX Measure time from previous item
+  # Adding GUI for new Feature
+--]]
 
-local VSDEBUG
-local s, r = pcall(function()
-        VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
-    end)
-
+local DEBUG = true
 local USEROSWIN = reaper.GetOS():match("Win")
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
 SCRIPT_PATH = USEROSWIN and SCRIPT_PATH:gsub("\\", "/") or SCRIPT_PATH
@@ -20,38 +35,15 @@ local CTX
 local WINDOW_SIZE = { width = 400, height = 100 }
 local combo_flags = { current_selected = 1 }
 
-local items = {
-    {
-        itemText = 'Letters',
-        item_selected_idx = 1,
-        item_is_selected = true,
-        func = function(fileName, index) 
-            -- Msg( 'hi' ) 
-            return string.format("%s_%s", fileName, string.char(64 + index + 1))
+local VSDEBUG
+local s, r = pcall(function()
+        if DEBUG then
+            VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
         end
-    }, 
-    {
-        itemText = 'Numbers',
-        item_selected_idx = 2,
-        item_is_selected = false,
-        func = function(fileName, index) 
-            -- Msg( 'hi2' ) 
-            return string.format("%s_%02d", fileName, index + 1)
-        end
-    },
-    {
-        itemText = 'Num_Char',
-        item_selected_idx = 3,
-        item_is_selected = false,
-        func = function () 
-            -- Msg('hi3')        
-        end
-    }
-}
+    end)
 
 function Msg(msg)
-    debug = true
-    if debug then reaper.ShowConsoleMsg(tostring(msg) .. "\n")end
+    if DEBUG then reaper.ShowConsoleMsg(tostring(msg) .. "\n")end
 end
 
 LUFSManager = {}
@@ -64,29 +56,16 @@ function LUFSManager:new()
 
     instance.MetadataFilePath = nil
 
-    instance.WhisperedTargetI = -20
-    instance.WhisperedTargetM = -16
-    instance.WhisperedOffset = 0
-
-    instance.SpokenTargetI = -18
-    instance.SpokenTargetM = -15
-    instance.SpokenOffset = 0
-
-    instance.YelledTargetI = -14
-    instance.YelledTargetM = -11
-    instance.YelledOffset = 0
+    instance.LoudnessCategories = {"Whispered", "Spoken", "Yelled"}
+    instance.TargetsI = {-20, -18, -14}
+    instance.TargetsM = {-16, -15, -11}
+    instance.TargetOffsets = {0, 0, 0}
+    instance.LUFSActions = {}
+    instance.MatchActions = {}
+    instance.TargetColors = {0x893CC3FF, 0xec008cFF, 0xd7e800FF}
+    instance.CategoryColors = {{0x002C87FF, 0x0055FFFF}, {0x096E00FF, 0x0ED100FF}}
 
     instance.CutoffTime = 3
-
-    instance.WhisperedLUFSAction = nil
-    instance.SpokenLUFSAction = nil
-    instance.YelledLUFSAction = nil
-    instance.ShoutedLUFSAction = nil
-
-    instance.WhisperedMatchAction = nil
-    instance.SpokenMatchAction = nil
-    instance.YelledMatchAction = nil
-    instance.ShoutedMatchAction = nil
 
     instance.RefreshMatchAction = nil
     instance.StopMatchAction = nil
@@ -94,11 +73,24 @@ function LUFSManager:new()
     instance.folders = {}
     instance.files = {}
     instance.referenceTrack = nil
+    instance.characterTable = {[1] = "All"}
     instance.character = "All"
+    instance.characterIdx = 0
 
     instance.VOFXAction = nil
-    instance.VOFXMode = nil
+    instance.VOFXSel = 0
+    instance.VOFXModes = {"Letters", "Numbers", "Num_Char"}
+    instance.VOFXTiming = 1
+    instance.VOFXAddTime = true
+    instance.VOFXFromStart = false
+
+    instance.NumLoudnessCategories = 3
     return instance
+end
+
+function LUFSManager:EvaluateBoolMetadata(value)
+    if value == nil then return nil end
+    return value == "true" and true or false
 end
 
 function LUFSManager:LoadMetadata()
@@ -114,7 +106,7 @@ function LUFSManager:LoadMetadata()
 
     local filePath = dir.. SLASH .. "LoudnessSettings.lua"
     local r = reaper.file_exists(filePath)
-    self.MetadataFilePath = filePath
+    if not self.MetadataFilePath then self.MetadataFilePath = filePath end
     if not r then
         self:FindActions()
         self:SaveMetadata()
@@ -129,13 +121,23 @@ function LUFSManager:LoadMetadata()
     if not status then self.unsavedSession = true Msg(result) end
     if metadata then
         local m = metadata
-        self.WhisperedOffset = m["Offsets"][1]
-        self.SpokenOffset = m["Offsets"][2]
-        self.YelledOffset = m["Offsets"][3]
-        self.CutoffTime = m["CutoffTime"]
-        self.WhisperedTargetI, self.SpokenTargetI, self.YelledTargetI = table.unpack(m["TargetsI"])
-        self.WhisperedTargetM, self.SpokenTargetM, self.YelledTargetM = table.unpack(m["TargetsM"])
-        self.VOFXMode = m['VOFXMode']
+        self.TargetOffsets = m["Offsets"] or self.TargetOffsets
+        self.CutoffTime = m["CutoffTime"] or self.CutoffTime
+        self.TargetsI = m["TargetsI"] or self.TargetsI
+        self.TargetsM = m["TargetsM"] or self.TargetsM
+        self.VOFXModes = m["VOFXModes"] or self.VOFXModes
+        self.VOFXSel = m['VOFXSel'] or self.VOFXSel
+        self.LoudnessCategories = m["LoudnessCategories"] or self.LoudnessCategories
+        self.TargetColors = m["TargetColors"] or self.TargetColors
+        self.CategoryColors = m["CategoryColors"] or self.CategoryColors
+        self.VOFXTiming = m["VOFXTiming"] or self.VOFXTiming
+        self.VOFXAddTime = self:EvaluateBoolMetadata(m["VOFXAddTime"]) or self.VOFXAddTime
+        self.VOFXFromStart = self:EvaluateBoolMetadata(m["VOFXFromStart"]) or self.VOFXFromStart
+        -- self.WhisperedTargetI, self.SpokenTargetI, self.YelledTargetI = table.unpack(m["TargetsI"])
+        -- self.WhisperedTargetM, self.SpokenTargetM, self.YelledTargetM = table.unpack(m["TargetsM"])
+        -- self.WhisperedOffset = m["Offsets"][1]
+        -- self.SpokenOffset = m["Offsets"][2]
+        -- self.YelledOffset = m["Offsets"][3]
     end
     if directories then
         local d = directories
@@ -144,19 +146,26 @@ function LUFSManager:LoadMetadata()
         self.referenceTrack = d["referenceTrack"]
         self.character = d["character"]
     end
+    local counter = 2
+    if self.folders["characters"] then
+        for k, v in pairs(self.folders["characters"]) do
+            table.insert(self.characterTable, counter, k)
+            counter = counter + 1
+        end
+    end
     self:FindActions()
 end
 
 function LUFSManager:FindActions()
     local actionNames = {
-        ["Script: wnlowe_lufsSet__shouted.lua"] = function(id) self.ShoutedLUFSAction = id end,
-        ["Script: wnlowe_lufsSet__spoken.lua"] = function(id) self.SpokenLUFSAction = id end,
-        ["Script: wnlowe_lufsSet__whisper.lua"] = function(id) self.WhisperedLUFSAction = id end,
-        ["Script: wnlowe_lufsSet__yelled.lua"] = function(id) self.YelledLUFSAction = id end,
-        ["Script: wnlowe_playMatchFile_shouted.lua"] = function(id) self.ShoutedMatchAction = id end,
-        ["Script: wnlowe_playMatchFile_spoken.lua"] = function(id) self.SpokenMatchAction = id end,
-        ["Script: wnlowe_playMatchFile_whispered.lua"] = function(id) self.WhisperedMatchAction = id end,
-        ["Script: wnlowe_playMatchFile_yelled.lua"] = function(id) self.YelledMatchAction = id end,
+        ["Script: wnlowe_lufsSet__shouted.lua"] = function(id) self.LUFSActions[4] = id end,
+        ["Script: wnlowe_lufsSet__spoken.lua"] = function(id) self.LUFSActions[2] = id end,
+        ["Script: wnlowe_lufsSet__whisper.lua"] = function(id) self.LUFSActions[1] = id end,
+        ["Script: wnlowe_lufsSet__yelled.lua"] = function(id) self.LUFSActions[3] = id end,
+        ["Script: wnlowe_playMatchFile_shouted.lua"] = function(id) self.MatchActions[4] = id end,
+        ["Script: wnlowe_playMatchFile_spoken.lua"] = function(id) self.MatchActions[2] = id end,
+        ["Script: wnlowe_playMatchFile_whispered.lua"] = function(id) self.MatchActions[1] = id end,
+        ["Script: wnlowe_playMatchFile_yelled.lua"] = function(id) self.MatchActions[3] = id end,
         ["Script: wnlowe_resetMatchFolder.lua"] = function(id) self.RefreshMatchAction = id end,
         ["Script: wnlowe_stopAllPreviews.lua"] = function(id) self.StopMatchAction = id end,
         ["Script: wnlowe_VOFXRegions_Illusion.lua"] = function(id) self.VOFXAction = id end,
@@ -172,11 +181,18 @@ end
 
 function LUFSManager:SerializeMetadata()
     local metadata = {
-        TargetsI = {self.WhisperedTargetI, self.SpokenTargetI, self.YelledTargetI},
-        TargetsM = {self.WhisperedTargetM, self.SpokenTargetM, self.YelledTargetM},
-        Offsets = {self.WhisperedOffset, self.SpokenOffset, self.YelledOffset},
+        TargetsI = self.TargetsI,
+        TargetsM = self.TargetsM,
+        Offsets = self.TargetOffsets,
         CutoffTime = self.CutoffTime,
-        VOFXMode = self.VOFXMode
+        VOFXSel = self.VOFXSel,
+        VOFXModes = self.VOFXModes,
+        LoudnessCategories = self.LoudnessCategories,
+        TargetColors = self.TargetColors,
+        CategoryColors = self.CategoryColors,
+        VOFXTiming = self.VOFXTiming,
+        VOFXAddTime = self.VOFXAddTime,
+        VOFXFromStart = self.VOFXFromStart
     }
     return metadata
 end
@@ -207,6 +223,8 @@ function LUFSManager:SerializeTable(tbl, indent)
         elseif type(value) == "string" then
             local escaped = value:gsub("\\", "\\\\")
             valStr = string.format('"%s"', escaped)
+        elseif type(value) == "boolean" then
+            valStr = tostring(value)
         elseif value == nil then
             valStr = "nil"
         else
@@ -256,6 +274,8 @@ function Gui:new(manager)
     instance.stopMatch = false
     instance.maintainFocus = true
 
+    instance.vofxSettings = nil
+
     return instance
 end
 
@@ -267,177 +287,219 @@ end
 
 function Gui:DrawMainSection()
     local manager = self.manager
-    local inputSize = 560
+    local inputSize = ((560 / 3) + 5) * (manager.NumLoudnessCategories)
     local fullSize = imgui.GetContentRegionAvail(CTX)
     local center = fullSize / 2
+    local buttonHeight = 27
+
+    imgui.PushStyleVar(CTX, imgui.StyleVar_FrameRounding, 8)
+    imgui.PushStyleVar(CTX, imgui.StyleVar_FrameBorderSize, 2.0)
+    
+    imgui.PushStyleColor(CTX, imgui.Col_Border, 0xC8C7CBFF)
+    imgui.PushStyleColor(CTX, imgui.Col_Button, 0x4E4E56FF)
+    imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, 0x7C7C83FF)
 
     -------------- SETTINGS BUTTONS
-    if imgui.Button(CTX, "Target Settings", 85, 25) then
+    if imgui.Button(CTX, "Target Settings", 85, buttonHeight) then
         self.showSettings = true
     end
 
     imgui.SameLine(CTX)
-    if imgui.Button(CTX, "Refresh Match", 85, 25) then
+    if imgui.Button(CTX, "Refresh Match", 85, buttonHeight) then
         self.refreshMatch = true
     end
 
     imgui.SameLine(CTX)
-    if imgui.Button(CTX, "Stop Match", 70, 25) then
+    if imgui.Button(CTX, "Stop Match", 70, buttonHeight) then
         reaper.Main_OnCommand(manager.StopMatchAction, 0)
     end
 
+    imgui.PopStyleColor(CTX, 2)
+    imgui.PushStyleColor(CTX, imgui.Col_Button, 0x780000FF)
+    imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, 0xFF8A8AFF)
     if manager.unsavedSession then
         imgui.SameLine(CTX)
-        if imgui.Button(CTX, "Saved Session", 85, 25) then
+        if imgui.Button(CTX, "Saved Session", 85, buttonHeight) then
             self:SavedSession()
         end
     end
+    imgui.PopStyleColor(CTX, 2)
 
     ------------- LUFS BUTTONS
-    local numButtons = self.includeScreamed and 4 or 3 --if we are including scremed, 4 buttons, otherwise 3
+    local numButtons = manager.NumLoudnessCategories + 1
     imgui.SameLine(CTX)
     local remainingSpace = imgui.GetContentRegionAvail(CTX)
     remainingSpace = remainingSpace - center
-    local buttonWidth = 85
-    local buttonSpace = buttonWidth * numButtons
+    local buttonWidth = 85 + 20
+    local buttonSpace = manager.NumLoudnessCategories < 5 and buttonWidth * (numButtons) or buttonWidth * (numButtons + 2) 
+    -- Msg(remainingSpace - buttonSpace)
     imgui.Dummy(CTX, remainingSpace - buttonSpace, 25)
 
-    imgui.SameLine(CTX)
-    if imgui.Button(CTX, "LUFS Whispered", buttonWidth + 10, 25) then
-        if manager.WhisperedLUFSAction then reaper.Main_OnCommand(manager.WhisperedLUFSAction, 0)
-        else reaper.ShowMessageBox("Action Not Found!", "Script Error", 0) end
-        self.maintainFocus = false
-    end
-
-    imgui.SameLine(CTX)
-    if imgui.Button(CTX, "LUFS Spoken", buttonWidth - 5, 25) then
-        if manager.SpokenLUFSAction then reaper.Main_OnCommand(manager.SpokenLUFSAction, 0)
-        else reaper.ShowMessageBox("Action Not Found!", "Script Error", 0) end
-        self.maintainFocus = false
-    end
-
-    imgui.SameLine(CTX)
-    if imgui.Button(CTX, "LUFS Yelled", buttonWidth - 5, 25) then
-        if manager.YelledLUFSAction then reaper.Main_OnCommand(manager.YelledLUFSAction, 0)
-        else reaper.ShowMessageBox("Action Not Found!", "Script Error", 0) end
-        self.maintainFocus = false
-    end
-
-    if self.includeScreamed then
+    --LUFS Buttons
+    local lufsMainColor = (manager.CategoryColors and manager.CategoryColors[1] and manager.CategoryColors[1][1]) or 0x002C87FF
+    local lufsHoverColor = (manager.CategoryColors and manager.CategoryColors[1] and manager.CategoryColors[1][2]) or 0x0055FFFF
+    imgui.PushStyleColor(CTX, imgui.Col_Button, lufsMainColor)
+    imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, lufsHoverColor)
+    for i = 1, manager.NumLoudnessCategories do
         imgui.SameLine(CTX)
-        if imgui.Button(CTX, "LUFS Screamed", buttonWidth, 25) then
-            if manager.ScreamedLUFSAction then reaper.Main_OnCommand(manager.ScreamedLUFSAction, 0)
-            else reaper.ShowMessageBox("Action Not Found!", "Script Error", 0) end
-            self.maintainFocus = false
+        local text = string.format("LUFS %s", manager.LoudnessCategories[i] or ("Level " .. i))
+        local textW, textH = imgui.CalcTextSize(CTX, text)
+        imgui.PushStyleColor(CTX, imgui.Col_Border, manager.TargetColors[i] or 0x000000FF)
+        if imgui.Button(CTX, text, textW + 15, buttonHeight) then
+            local action = nil
+            local succeed, result = pcall(function() action = manager.LUFSActions[i] end)
+            if not succeed then manager:FindActions() end
+            if manager.LUFSActions[i] then
+                reaper.Main_OnCommand(manager.LUFSActions[i], 0)
+                self.maintainFocus = false
+            else reaper.ShowMessageBox(string.format("Action Not Found for %s!", manager.LoudnessCategories[i] or ("Level " .. i)), "Script Error", 0) end
         end
+        imgui.PopStyleColor(CTX, 1)
     end
+    imgui.PopStyleColor(CTX, 2)
 
     -- MATCH BUTTONS
-    imgui.SameLine(CTX)
-    if imgui.Button(CTX, "Match Whispered", buttonWidth + 15, 25) then
-        reaper.Main_OnCommand(manager.WhisperedMatchAction, 0)
-        self.maintainFocus = false
-    end
-
-    imgui.SameLine(CTX)
-    if imgui.Button(CTX, "Match Spoken", buttonWidth, 25) then
-        reaper.Main_OnCommand(manager.SpokenMatchAction, 0)
-        self.maintainFocus = false
-    end
-
-    imgui.SameLine(CTX)
-    if imgui.Button(CTX, "Match Yelled", buttonWidth - 5, 25) then
-        reaper.Main_OnCommand(manager.YelledMatchAction, 0)
-        self.maintainFocus = false
-    end
-
-    if self.includeScreamed then
+    local matchMainColor = (manager.CategoryColors and manager.CategoryColors[2] and manager.CategoryColors[2][1]) or 0x096E00FF
+    local matchHoverColor = (manager.CategoryColors and manager.CategoryColors[2] and manager.CategoryColors[2][2]) or 0x0ED100FF
+    imgui.PushStyleColor(CTX, imgui.Col_Button, matchMainColor)
+    imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, matchHoverColor)
+    for i = 1, manager.NumLoudnessCategories do
         imgui.SameLine(CTX)
-        if imgui.Button(CTX, "Match Screamed", buttonWidth, 25) then
-            reaper.Main_OnCommand(manager.ScreamedLUFSAction, 0)
-            self.maintainFocus = false
+        local text = string.format("Match %s", manager.LoudnessCategories[i] or ("Level " .. i))
+        local textW, textH = imgui.CalcTextSize(CTX, text)
+        imgui.PushStyleColor(CTX, imgui.Col_Border, manager.TargetColors[i] or 0x000000FF)
+        if imgui.Button(CTX, text, textW + 15, buttonHeight) then
+            local action = nil
+            local succeed, result = pcall(function() action = manager.MatchActions[i] end)
+            if not succeed then manager:FindActions() end
+            if manager.MatchActions[i] then
+                reaper.Main_OnCommand(manager.MatchActions[i], 0)
+                self.maintainFocus = false
+            else reaper.ShowMessageBox(string.format("Action Not Found for %s!", manager.LoudnessCategories[i] or ("Level " .. i)), "Script Error", 0) end
         end
+        imgui.PopStyleColor(CTX, 1)
     end
+    imgui.PopStyleColor(CTX, 2)
 
     imgui.SameLine(CTX)
-    if imgui.Button(CTX, "VOFX", buttonWidth - 5, 25) then
+    if imgui.Button(CTX, "VOFX", 75, buttonHeight) then
         reaper.Main_OnCommand(manager.VOFXAction, 0)
         -- Msg(items[combo_flags.current_selected]['func']('test', 1))
         self.maintainFocus = false
     end
 
-------------COMBO BOX
-
-    imgui.SameLine(CTX)
-    -- Define your list items
-
-    -- local current_item = 1  -- Index of currently selected item (1-based in Lua)
-    local preview = items[combo_flags.current_selected].item_selected_idx
-    reaper.ImGui_SetNextItemWidth(CTX, 85)
-    if reaper.ImGui_BeginCombo(CTX, '##My Combo', items[preview].itemText) then
-      -- Loop through all items
-        for i = 1, #items do
-            is_selected = ( combo_flags.current_selected == i )
-            
-            if reaper.ImGui_Selectable(CTX, items[i].itemText, is_selected) then
-                combo_flags.current_selected = i
-                items[combo_flags.current_selected].item_is_selected = true -- Update selection
-                manager.VOFXMode = i
-                manager:SaveMetadata()
-                self.maintainFocus = false
-            end
-        
-        -- Set initial focus on selected item
-            if is_selected then
-                reaper.ImGui_SetItemDefaultFocus(CTX)
-            end
-        end
-      
-      reaper.ImGui_EndCombo(CTX)
-    end
-------------------------
+    imgui.PopStyleVar(CTX, 2)
+    imgui.PopStyleColor(CTX, 1)
 
     ------------ Settings Boxes
     imgui.SameLine(CTX)
     remainingSpace = imgui.GetContentRegionAvail(CTX)
+    -- Msg(remainingSpace - inputSize)
     imgui.Dummy(CTX, remainingSpace - inputSize, 25)
 
-    imgui.SameLine(CTX)
-    imgui.SetNextItemWidth(CTX, 100)
-    local c, newV = imgui.InputDouble(CTX, "Whisper Offset ##WO", manager.WhisperedOffset, 0.5, 1.0, "%.2f")
-    if c then manager.WhisperedOffset = newV manager:SaveMetadata() end
-
-    imgui.SameLine(CTX)
-    imgui.SetNextItemWidth(CTX, 100)
-    c, newV = imgui.InputDouble(CTX, "SpokenOffset ##SO", manager.SpokenOffset, 0.5, 1.0, "%.2f")
-    if c then manager.SpokenOffset = newV manager:SaveMetadata() end
-
-    imgui.SameLine(CTX)
-    imgui.SetNextItemWidth(CTX, 100)
-    c, newV = imgui.InputDouble(CTX, "YelledOffset ##YO", manager.YelledOffset, 0.5, 1.0, "%.2f")
-    if c then manager.YelledOffset = newV manager:SaveMetadata() end
+    for i = 1, manager.NumLoudnessCategories do
+        imgui.SameLine(CTX)
+        imgui.SetNextItemWidth(CTX, 100)
+        local c, newV = imgui.InputDouble(CTX, string.format("%s Offset ##%sO", manager.LoudnessCategories[i] or ("Level " .. i), i), manager.TargetOffsets[i], 0.5, 1.0, "%.2f")
+        if c then
+            manager.TargetOffsets[i] = newV
+            manager:SaveMetadata()
+        end
+    end
 end
+
 
 function Gui:DrawSettingsWindow()
     local manager = self.manager
+    local breakSize = 10
 
-    imgui.SetNextWindowSize(CTX, 400, 300, imgui.Cond_FirstUseEver)
+    imgui.SetNextWindowSize(CTX, 400, 600, imgui.Cond_FirstUseEver)
     local visible, open = imgui.Begin(CTX, "Settings", true, 2048)
 
     if visible then
-        imgui.Text(CTX, "General Settings")
+        imgui.Text(CTX, "Common Settings")
         imgui.SetNextItemWidth(CTX, 100)
         local c, newV = imgui.InputDouble(CTX, "Cutoff Time between LUFS-M and LUFS-I ##CT", manager.CutoffTime, 0.5, 1.0, "%.2f")
         if c then manager.CutoffTime = newV manager:SaveMetadata() end
 
-        if #manager.folders > 3 then
-            local folderCharacters = {"All"}
-            for k, v in pairs(manager.folders["characters"]) do
-                table.insert(folderCharacters, k)
+        local count = 0
+        local dropdown = false
+        for _ in pairs(manager.folders) do
+            count = count + 1
+            if count > 3 then
+                dropdown = true
+                break
             end
-            local c, v = imgui.Combo(CTX, "Character Match Selection ##CMS", 0, table.concat(folderCharacters, "\0") .. "\0")
-            if c then manager.character = v end
         end
+        if dropdown then
+            local c, v = imgui.Combo(CTX, "Character Match Selection ##CMS", manager.characterIdx, table.concat(manager.characterTable, "\0") .. "\0")
+            if c then
+                manager.characterIdx = v
+                manager.character = manager.characterTable[v + 1]
+            end
+        end
+
+        if not self.vofxSettings then self.vofxSettings = table.concat(manager.VOFXModes, "\0") .. "\0" end
+        local c, v = imgui.Combo(CTX, "VOFX Mode ##CVOFX", manager.VOFXSel, self.vofxSettings)
+        if c then manager.VOFXSel = v end
+
+        imgui.Dummy(CTX, 25, breakSize * 2)
+        imgui.Text(CTX, "General Preferences")
+
+        imgui.SetNextItemWidth(CTX, 100)
+        local c, v = imgui.SliderInt(CTX, "Number of Loudness Categories ##SNC", manager.NumLoudnessCategories, 3, 5)
+        if c then manager.NumLoudnessCategories = v end
+
+        imgui.SetNextItemWidth(CTX, 100)
+        local c, v = imgui.InputDouble(CTX, "Spacing Between VOFX ##VOT", manager.VOFXTiming, 0.1, 0.25, "%.2f")
+        if c then manager.VOFXTiming = v end
+
+        local c, v = imgui.Checkbox(CTX, "Insert Time for VOFX Spacing ##VOS", manager.VOFXAddTime)
+        if c then manager.VOFXAddTime = v end
+
+        local c, v = imgui.Checkbox(CTX, "Measure time from start of previous item ##VOP", manager.VOFXFromStart)
+        if c then manager.VOFXFromStart = v end
+
+        imgui.TextDisabled(CTX, "Category Names")
+
+        for i = 1, manager.NumLoudnessCategories do
+            local c, v = imgui.InputText(CTX, string.format("Loudness Level %d ##LL%dL", i, i), manager.LoudnessCategories[i])
+            if c then manager.LoudnessCategories[i] = v end
+        end
+
+        imgui.TextDisabled(CTX, "Integrated Loudness Targets")
+
+        for i = 1, manager.NumLoudnessCategories do
+            imgui.SetNextItemWidth(CTX, 100)
+            local c, v = imgui.InputInt(CTX, string.format("%s LUFS-I", manager.LoudnessCategories[i] or ("Loudness Level " .. i)), manager.TargetsI[i], 1, 5)
+            if c then manager.TargetsI[i] = v end
+        end
+
+        imgui.TextDisabled(CTX, "Momentary-Max Loudness Targets")
+
+        for i = 1, manager.NumLoudnessCategories do
+            imgui.SetNextItemWidth(CTX, 100)
+            local c, v = imgui.InputInt(CTX, string.format("%s LUFS-M", manager.LoudnessCategories[i] or ("Loudness Level " .. i)), manager.TargetsM[i], 1, 5)
+            if c then manager.TargetsM[i] = v end
+        end
+
+        imgui.Dummy(CTX, 25, breakSize * 2)
+        imgui.Text(CTX, "Color Preferences")
+        -- imgui.Dummy(CTX, 25, breakSize)
+        imgui.TextDisabled(CTX, "Level Colors")
+        for i = 1, manager.NumLoudnessCategories do
+            local c, v = imgui.ColorEdit4(CTX, string.format("%s Color", manager.LoudnessCategories[i] or ("Level " .. i)), manager.TargetColors[i] or 0x000000FF)
+            if c then manager.TargetColors = v end
+        end
+        imgui.TextDisabled(CTX, "Category Colors")
+        local categories = {"LUFS", "Match"}
+        for i = 1,  #categories do
+            local c, v = imgui.ColorEdit4(CTX, string.format("%s Main Color", categories[i]), manager.CategoryColors[i][1])
+            if c then manager.CategoryColors = v end
+            local c, v = imgui.ColorEdit4(CTX, string.format("%s Hover Color", categories[i]), manager.CategoryColors[i][2])
+            if c then manager.CategoryColors = v end
+        end
+
     end
     imgui.End(CTX)
     if not open then self.showSettings = false manager:SaveMetadata() self.maintainFocus = false end
@@ -457,7 +519,6 @@ function Gui:Draw()
         end
         if self.firstRun then
             manager:LoadMetadata()
-            current_selected = manager.VOFXMode
             self.firstRun = false
         end
     end
@@ -506,7 +567,9 @@ function App:Run()
     end
     if self.gui.refreshMatch then
         self.gui.refreshMatch = false
+        self.manager:SaveMetadata()
         reaper.Main_OnCommand(self.manager.RefreshMatchAction, 0)
+        self.manager:LoadMetadata()
         end
 end
 

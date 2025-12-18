@@ -1,18 +1,30 @@
 -- @description Universal Import Script for VO Configuration
 -- @author William N. Lowe
--- @version 1.01
+-- @version 1.12
+-- @metapackage
+-- @provides
+--   [main] .
+--   data/*.{py}
+-- @changelog
+--   # Adding Option under ID Identify for Item Index Identification
 
--- local VSDEBUG = dofile("c:/Users/ccuts/.vscode/extensions/antoinebalaine.reascript-docs-0.1.14/debugger/LoadDebug.lua")
 
+-- local VSDEBUG
+-- local s, r = pcall(function()
+--         VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+--     end)
+
+
+local USEROSWIN = reaper.GetOS():match("Win")
+local SLASH = USEROSWIN and "\\" or "/"
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
-SCRIPT_PATH = SCRIPT_PATH:gsub("\\", "/")
+SCRIPT_PATH = SCRIPT_PATH:gsub(SLASH, "/")
 local SCRIPT_NAME = ({reaper.get_action_context()})[2]:match("([^/\\_]+)%.lua$")
 local libPath = SCRIPT_PATH .. "../lib/"
 
 package.path = package.path .. ";" .. libPath .. "?.lua"
 
-local json = require('dkjson')
-local PYTHON_HELPER = libPath .. "ExcelToLua.py"
+local PYTHON_HELPER = SCRIPT_PATH .. SLASH .. "data" .. SLASH .. "ExcelToLua.py"
 
 package.path = package.path .. ";" .. reaper.ImGui_GetBuiltinPath() .. '/?.lua'
 local imgui = require 'imgui' '0.10'
@@ -22,12 +34,12 @@ local FLT_MIN, FLT_MAX = imgui.NumericLimits_Float()
 local DBL_MIN, DBL_MAX = imgui.NumericLimits_Double()
 local IMGUI_VERSION, IMGUI_VERSION_NUM, REAIMGUI_VERSION = imgui.GetVersion()
 
-local USEROSWIN = reaper.GetOS():match("Win")
 
-local WINDOW_SIZE = { width = 400, height = 600 }
+
+local WINDOW_SIZE = { width = 1200, height = 600 }
 -- local WINDOW_FLAGS = imgui.WindowFlags_NoCollapse(1)
 
-function Msg(msg)
+local function Msg(msg)
     debug = true
     if debug then reaper.ShowConsoleMsg(tostring(msg))end
 end
@@ -41,12 +53,6 @@ function FileLoader:new()
     local instance = setmetatable({}, FileLoader)
     return instance
 end
-
--- function FileLoader:DoesFileExist(path)
---     local f = io.open(path, "r")
---     if f then f:close() end
---     return f ~= nil
--- end
 
 function FileLoader:ConvertExcelToLua(excelPath) --Ouputs Path to Lua file
     local outputPath = excelPath:gsub("%.xlsx?$", ".lua")
@@ -100,7 +106,7 @@ ScriptState.__index = ScriptState
 
 function ScriptState:new()
     local instance = setmetatable({}, ScriptState)
-    instance.ctx = imgui.CreateContext("Excel Item Renamer v2")
+    instance.ctx = imgui.CreateContext("Excel Session Creator v2")
     instance.Open = true
 
     instance.ExcelPath = ''
@@ -109,6 +115,8 @@ function ScriptState:new()
     instance.SheetNames = {}
     instance.CurrentSheetIdx = 0
     instance.CurrentSheetData = nil
+
+    instance.RowIdentifyType = 0
 
     instance.ColumnHeaderRow = 1
     instance.ColumnFilter = {}
@@ -121,7 +129,7 @@ function ScriptState:new()
     instance.bShiftPreview = false
 
     instance.ImportFiles = false
-    instance.ImportAlts = false
+    -- instance.ImportAlts = false
 
     instance.FindAndReplace = false
     instance.NumFindAndReplace = 1
@@ -133,6 +141,8 @@ function ScriptState:new()
 
     instance.LineText = true
     instance.LineTextIdx = nil
+
+    instance.IgnoreSourceName = false
 
     instance.CharacterColumn = false
     instance.CharacterColumnIdx = nil
@@ -196,6 +206,8 @@ function ScriptState:LoadFile(filePath)
         self.FindAndReplace = metadata.FnR or false
         self.Find = metadata.Find or {}
         self.Replace = metadata.Replace or {}
+        self.RowIdentifyType = metadata.RowIdentify
+        self.IgnoreSourceName = metadata.IgnoreSource or false
     end
 
     self:LoadSheet(0)
@@ -241,7 +253,9 @@ function ScriptState:SerializeMetadata()
         ImportFiles = self.ImportFiles,
         FnR = self.FindAndReplace,--
         Find = self.Find,--
-        Replace = self.Replace--
+        Replace = self.Replace,
+        RowIdentify = self.RowIdentifyType,
+        IgnoreSource = self.IgnoreSourceName
     }
     
     return metadata
@@ -409,89 +423,157 @@ function GUI:DrawColumnFilterOpen()
 
     if not state.FullData then return end
 
-    if imgui.Button(state.ctx, "Filter Columns") then
-        self.ColumnWindow = true
-    end
-    imgui.SameLine(state.ctx)
+    imgui.Indent(CTX, 25)
+    imgui.PushStyleVar(CTX, imgui.StyleVar_ChildRounding, 10)
+    imgui.PushStyleColor(CTX, imgui.Col_ChildBg, 0x3A1545FF)
 
-    imgui.Text(state.ctx, "Take/Index Column:")
-    imgui.SameLine(state.ctx)
-
-    imgui.SetNextItemWidth(state.ctx, 100)
-    local changed, newValue = imgui.InputInt(state.ctx, "##IdxColumn", state.IndexColumnIdx)
-    if changed and newValue >= 0 then
-        state.IndexColumnIdx = newValue
-        state.SelectMarkerColumn = state.IndexColumnIdx
-    end
-
-    imgui.SameLine(state.ctx)
-    imgui.Text(CTX, "Has Letters?")
-    imgui.SameLine(CTX)
-
-    local c, bNewValue = imgui.Checkbox(state.ctx, "##bIdxLetters", state.IndexColumnHasLetter)
-    if c then
-        state.IndexColumnHasLetter = bNewValue
-    end
-
-    imgui.SameLine(CTX)
-    imgui.Text(CTX, "Show Marker?")
-    imgui.SameLine(CTX)
-    local c, v = imgui.Checkbox(CTX, "##ShowMarker", state.SelectMarker)
-    if c then state.SelectMarker = v state.SelectMarkerColumn = state.IndexColumnIdx end
-
-    imgui.Indent(CTX, 75)
-
-    imgui.Text(state.ctx, "Filename Column:")
-    imgui.SameLine(state.ctx)
-
-    imgui.SetNextItemWidth(state.ctx, 100)
-    changed, newValue = imgui.InputInt(state.ctx, "##FNames", state.NamesColumnIdx)
-    if changed and newValue >= 0 then
-        state.NamesColumnIdx = newValue
-    end
-    imgui.SameLine(CTX)
-    imgui.Text(CTX,"Embed Line Text?")
-    imgui.SameLine(CTX)
-    local c, v = imgui.Checkbox(CTX, "##LineText", state.LineText)
-    if c then state.LineText = v end
-
-    if state.LineText then
-        imgui.SameLine(CTX)
-        imgui.Text(CTX, "Line Text Column:")
-        imgui.SameLine(CTX)
-        imgui.SetNextItemWidth(CTX, 100)
-        local c, v = imgui.InputInt(CTX, "##LineTextIdx", state.LineTextIdx)
-        if c and v > 0 then state.LineTextIdx = v end
-    end
-
-    imgui.Text(CTX, "Character Filter?")
-    imgui.SameLine(CTX)
-    c,v = imgui.Checkbox(CTX, "##CharFilCB", state.CharacterColumn)
-    if c then state.CharacterColumn = v end
-    if state.CharacterColumn then
-        imgui.SameLine(CTX)
-        imgui.Text(CTX, "Character Name Col:")
-        imgui.SameLine(CTX)
-        imgui.SetNextItemWidth(CTX, 100)
-        local c, v = imgui.InputInt(CTX, "##CharColumn", state.CharacterColumnIdx)
-        if c and v > 0 then
-            state.CharacterColumnIdx = v
-            state.UpdateCharacterList = true
+    if imgui.BeginChild(CTX, "ColumnSettings", 775, 100) then
+        imgui.Dummy(CTX, 10, 10)
+        imgui.Indent(CTX, 20)
+        if imgui.Button(state.ctx, "Filter Columns") then
+            self.ColumnWindow = true
         end
-        --Find all names in the character column
-        if state.CharacterList then
+
+        imgui.SameLine(state.ctx)
+        imgui.Text(state.ctx, "Row Identify Type:")
+
+        imgui.SameLine(state.ctx)
+        imgui.SetNextItemWidth(CTX, 130)
+        local comboTable = {"Column with select", "ID column", "Row Index"}
+        local comboStr = table.concat(comboTable, "\0") .. "\0"
+        local c, v = imgui.Combo(CTX, "##RowCombo", state.RowIdentifyType, comboStr)
+        if c then 
+            state.RowIdentifyType = v 
+            state:SaveMetadata()
+        end
+
+        if v ~= 2 then
             imgui.SameLine(CTX)
-            imgui.Text(CTX, "Select Character:")
+            imgui.Text(CTX, "Select/ID Column")
+
+            imgui.SameLine(CTX)
+            imgui.SetNextItemWidth(state.ctx, 100)
+            local changed, newValue = imgui.InputInt(state.ctx, "##IdxColumn", state.IndexColumnIdx)
+            if changed and newValue >= 0 then
+                state.IndexColumnIdx = newValue
+                state.SelectMarkerColumn = state.IndexColumnIdx
+            end
+
+            imgui.SameLine(state.ctx)
+            imgui.Text(CTX, "Has Letters?")
+            imgui.SameLine(CTX)
+
+            local c, bNewValue = imgui.Checkbox(state.ctx, "##bIdxLetters", state.IndexColumnHasLetter)
+            if c then
+                state.IndexColumnHasLetter = bNewValue
+            end
+
+            imgui.SameLine(CTX)
+            imgui.Text(CTX, "Show Marker?")
+            imgui.SameLine(CTX)
+            local c, v = imgui.Checkbox(CTX, "##ShowMarker", state.SelectMarker)
+            if c then 
+                state.SelectMarker = v 
+                state.SelectMarkerColumn = state.IndexColumnIdx 
+            end
+
+
+        else
+            imgui.SameLine(CTX)
+            imgui.Text(CTX, "Show Select Marker?")
+            imgui.SameLine(CTX)
+            local c, v = imgui.Checkbox(CTX, "##ShowMarker", state.SelectMarker)
+            if c then 
+                state.SelectMarker = v
+                state.SelectMarkerColumn = state.IndexColumnIdx 
+            end
+            if v == true then
+                imgui.SameLine(CTX)
+                imgui.Text(CTX, "Select Column")
+                imgui.SameLine(CTX)
+                imgui.SetNextItemWidth(state.ctx, 100)
+                local changed, newValue = imgui.InputInt(state.ctx, "##IdxColumn", state.IndexColumnIdx)
+                if changed and newValue >= 0 then
+                    state.IndexColumnIdx = newValue
+                    state.SelectMarkerColumn = state.IndexColumnIdx
+                end
+            end
+        end
+        
+        imgui.Indent(CTX, 75)
+
+        imgui.Text(state.ctx, "Filename Column:")
+        imgui.SameLine(state.ctx)
+
+        imgui.SetNextItemWidth(state.ctx, 100)
+        local changed, newValue = imgui.InputInt(state.ctx, "##FNames", state.NamesColumnIdx)
+        if changed and newValue >= 0 then
+            state.NamesColumnIdx = newValue
+        end
+        imgui.SameLine(CTX)
+        imgui.Text(CTX,"Embed Line Text?")
+        imgui.SameLine(CTX)
+        local c, v = imgui.Checkbox(CTX, "##LineText", state.LineText)
+        if c then state.LineText = v end
+
+        if state.LineText then
+            imgui.SameLine(CTX)
+            imgui.Text(CTX, "Line Text Column:")
             imgui.SameLine(CTX)
             imgui.SetNextItemWidth(CTX, 100)
-            local comboStr = table.concat(state.CharacterList, "\0") .. "\0"
-            local c, v = imgui.Combo(CTX, "##CharCombo", state.SelectedCharacter, comboStr)
-            if c then state.SelectedCharacter = v end
+            local c, v = imgui.InputInt(CTX, "##LineTextIdx", state.LineTextIdx)
+            if c and v > 0 then state.LineTextIdx = v end
         end
 
+        imgui.SameLine(CTX)
+        imgui.Text(CTX, "No Filename Association?")
+        local c, v = imgui.Checkbox(CTX, "##ISN", state.IgnoreSourceName)
+        if c then
+            state.IgnoreSourceName = v
+            state:SaveMetadata()
+        end
+
+        imgui.Text(CTX, "Character Filter?")
+        imgui.SameLine(CTX)
+        c,v = imgui.Checkbox(CTX, "##CharFilCB", state.CharacterColumn)
+        if c then state.CharacterColumn = v end
+        if state.CharacterColumn then
+            imgui.SameLine(CTX)
+            imgui.Text(CTX, "Character Name Col:")
+            imgui.SameLine(CTX)
+            imgui.SetNextItemWidth(CTX, 100)
+            local c, v = imgui.InputInt(CTX, "##CharColumn", state.CharacterColumnIdx)
+            if c and v > 0 then
+                state.CharacterColumnIdx = v
+                state.UpdateCharacterList = true
+            end
+            --Find all names in the character column
+            if state.CharacterList then
+                imgui.SameLine(CTX)
+                imgui.Text(CTX, "Select Character:")
+                imgui.SameLine(CTX)
+                imgui.SetNextItemWidth(CTX, 100)
+                local comboStr = table.concat(state.CharacterList, "\0") .. "\0"
+                local c, v = imgui.Combo(CTX, "##CharCombo", state.SelectedCharacter, comboStr)
+                if c then state.SelectedCharacter = v end
+            end
+
+        end
+        --Add Line Text column
+        imgui.Unindent(CTX, 75)
+
+        imgui.Unindent(CTX, 20)
+        imgui.EndChild(CTX)
     end
-    --Add Line Text column
-    imgui.Unindent(CTX, 75)
+    imgui.PopStyleColor(CTX)
+    imgui.PopStyleVar(CTX)
+    imgui.Unindent(CTX, 25)
+
+
+    
+
+    
+    
 
 end
 
@@ -502,14 +584,7 @@ function GUI:DrawColumnFilterWindow()
 
     -- Calculate approximate width needed for all checkboxes
     local headerRow = state.CurrentSheetData[state.ColumnHeaderRow]
-    -- local contentWidth = 0
-    -- if headerRow and type(headerRow) == "table" then
-    --     -- Estimate ~100 pixels per checkbox (adjust as needed)
-    --     contentWidth = #headerRow * 300
-    -- end
 
-    -- -- Set content size BEFORE Begin()
-    -- imgui.SetNextWindowContentSize(state.ctx, contentWidth, 0)
     imgui.SetNextWindowSize(state.ctx, 400, 300, imgui.Cond_FirstUseEver)
     
     local visible, open = imgui.Begin(state.ctx, 'Column Filtering', true, 2048)
@@ -569,65 +644,77 @@ function GUI:DrawCurrentSheetDataPreview()
 
     imgui.Text(state.ctx, string.format("Data Preview (%d rows):", #state.CurrentSheetData))
 
+    
+
     -- Try the older BeginChild syntax without ChildFlags_Border
-    if imgui.BeginChild(state.ctx, "Data Preview", 0, 200, 1) then
+    -- local childFlags = imgui.WindowFlags_HorizontalScrollbar
+    if imgui.BeginChild(state.ctx, "Data Preview", 0, 200, 0) then
         local previewRows = math.min(10, #state.CurrentSheetData)
         if previewRows == 10 then previewRows = previewRows + state.ColumnHeaderRow end
 
-        -- Safely determine number of columns
-        local previewCols = 0
-        if state.CurrentSheetData[1] and type(state.CurrentSheetData[1]) == "table" then
-            previewCols = math.min(15, #state.CurrentSheetData[1])
+        local totalCols = 0
+        if state.CurrentSheetData[1] and type(state.CurrentSheetData[1]) == "table" then 
+            totalCols = #state.CurrentSheetData[1]
         end
 
-        for i = state.ColumnHeaderRow, previewRows do
-            local rowColor = 0xFFFFFFFF
-            if i == state.ColumnHeaderRow then
-                rowColor = 0x00FF00FF
-            elseif tonumber(state.IdxOffset) and state.bShiftPreview then
-                i = i + tonumber(state.IdxOffset)
+        local visibleCols = {}
+        for j = 1, totalCols do
+            if state.ColumnFilter[j] == nil or state.ColumnFilter[j] == true then
+                table.insert(visibleCols, j)
+            end
+        end
+
+        imgui.PushStyleColor(CTX, imgui.Col_TableBorderStrong, 0x808080FF)  -- Outer borders
+        imgui.PushStyleColor(CTX, imgui.Col_TableBorderLight, 0x606060FF)
+
+        local flags = imgui.TableFlags_Borders |
+        imgui.TableFlags_RowBg |
+        imgui.TableFlags_SizingFixedFit |
+        imgui.TableFlags_ScrollX
+
+        if imgui.BeginTable(CTX, "PreviewTable", #visibleCols, flags) then
+            imgui.TableNextRow(CTX)
+            for _, j in ipairs(visibleCols) do
+                imgui.TableNextColumn(CTX)
+                imgui.TableSetBgColor(CTX, imgui.TableBgTarget_CellBg, 0x404040FF)  -- Dark gray background
+                imgui.TextColored(CTX, 0xFFFFFFFF, "Col " .. j)
             end
 
-            local values = {}
+            for i = state.ColumnHeaderRow, previewRows do
 
-            -- Safely access row data
-            if state.CurrentSheetData[i] and type(state.CurrentSheetData[i]) == "table" then
-                for j = 1, previewCols do
-                    local cellValue = state.CurrentSheetData[i][j]
-                    if cellValue ~= nil then cellValue = cellValue .. "   |" else cellValue = "   |" end
-                    if state.ColumnFilter[j] ~= nil and not state.ColumnFilter[j] then
-                        cellValue = ""
-                    end
-                    if state.IndexColumnIdx ~= nil and state.IndexColumnIdx == j then
-                        rowColor = 0xFFFF00FF
-                    elseif state.NamesColumnIdx ~= nil and state.NamesColumnIdx == j then
-                        rowColor = 0x00FFFFFF
-                    elseif state.LineTextIdx and state.LineTextIdx == j and state.LineText then
-                        rowColor = 0xFF40FFFF
-                    elseif state.CharacterColumnIdx and state.CharacterColumnIdx == j and state.CharacterColumn then
-                        rowColor = 0xFF4040FF
-                    elseif rowColor == 0xFFFF00FF or rowColor == 0x00FFFFFF or rowColor == 0xFF40FFFF or rowColor == 0xFF4040FF then
-                        if i == state.ColumnHeaderRow then
-                            rowColor = 0x00FF00FF
-                        else
-                            rowColor = 0xFFFFFFFF
+                if state.CurrentSheetData[i] and type(state.CurrentSheetData[i]) == "table" then
+                    imgui.TableNextRow(CTX)
+                    for _, j in ipairs(visibleCols) do
+                        imgui.TableNextColumn(CTX)
+                        local cellValue = state.CurrentSheetData[i][j]
+                        
+                        if cellValue == nil then cellValue = "" end
+                        if i == state.ColumnHeaderRow then imgui.TableSetBgColor(CTX, imgui.TableBgTarget_CellBg, 0x266618FF)
+                        elseif state.IndexColumnIdx and j == state.IndexColumnIdx then imgui.TableSetBgColor(CTX, imgui.TableBgTarget_CellBg, 0x826A10FF)
+                        elseif state.NamesColumnIdx and j == state.NamesColumnIdx then imgui.TableSetBgColor(CTX, imgui.TableBgTarget_CellBg, 0x229C91FF)
+                        elseif state.LineTextIdx and j == state.LineTextIdx then imgui.TableSetBgColor(CTX, imgui.TableBgTarget_CellBg, 0x681273FF)
+                        elseif state.CharacterColumnIdx and state.CharacterColumn and j == state.CharacterColumnIdx then 
+                            imgui.TableSetBgColor(CTX, imgui.TableBgTarget_CellBg, 0x8A2727FF)
                         end
+
+                        
+                        imgui.Text(CTX, tostring(cellValue))
                     end
-                    imgui.TextColored(state.ctx, rowColor, tostring(cellValue))
-                    if j < previewCols then imgui.SameLine(state.ctx) end
-                    -- table.insert(values, tostring(cellValue or ""))
+                    
                 end
             end
-
-            -- local rowText = "Row " .. i .. ": " .. table.concat(values, "")
-           
+            imgui.EndTable(CTX)
         end
+
+        imgui.PopStyleColor(CTX, 2)
 
         if #state.CurrentSheetData > 10 then
             imgui.Text(state.ctx, string.format("... and %d more rows", #state.CurrentSheetData - 10))
         end
+        
+        imgui.EndChild(state.ctx)
     end
-    imgui.EndChild(state.ctx)
+    
 
     imgui.Separator(state.ctx)
 end
@@ -666,14 +753,6 @@ function GUI:DrawActionButton()
     local c, val = imgui.Checkbox(CTX, "##bImport", state.ImportFiles)
 
     if c then state.ImportFiles = val end
-
-    if state.ImportFiles then
-        imgui.SameLine(CTX)
-        imgui.Text(CTX, "Import Alts?")
-        imgui.SameLine(CTX)
-        local c, v = imgui.Checkbox(CTX, "##bAlts", state.ImportAlts)
-        if c then state.ImportAlts = v end
-    end
 
     --FIND AND REPLACE
     imgui.Text(CTX, "Find and replace in filenaming?")
@@ -740,7 +819,9 @@ function GUI:Draw()
         self:DrawColumnFilterOpen()
         self:DrawColumnFilterWindow()
         self:DrawCurrentSheetDataPreview()
-        self:DrawIndexOffsetSection()
+        if state.RowIdentifyType == 1 then
+            self:DrawIndexOffsetSection()
+        end
         self:DrawActionButton()
         self:DrawStatusBar()
 
@@ -778,6 +859,85 @@ function Application:InsertAlt(mediaItem, endTime, track, str)
 
 end
 
+function Application:ImportFiles(fileList)
+    local state = self.state
+    local r, directory = reaper.JS_Dialog_BrowseForFolder("Select a Folder", state.Loader:GetDownloadsFolder())
+    local idx = 0
+    local file = reaper.EnumerateFiles(directory, idx)
+    while file ~= nil do
+        local f = directory .. SLASH .. file
+        table.insert(fileList, f)
+        reaper.InsertMedia(f, 0)
+        reaper.MoveEditCursor(1, false)
+        local item = reaper.GetMediaItem( 0, reaper.CountMediaItems(0) - 1 )
+        reaper.SetMediaItemSelected(item , true )
+        idx = idx + 1
+        file = reaper.EnumerateFiles(directory, idx)
+    end
+    return fileList
+end
+
+function Application:GetItemIndexFromName(i)
+    local item = reaper.GetSelectedMediaItem(0, i)
+    local take = reaper.GetActiveTake(item)
+    local r, sourceName = reaper.GetSetMediaItemTakeInfo_String(take, "P_NAME", "", false)
+    sourceName = tostring(sourceName)
+    local index = sourceName:match("_([^_]*)$")
+    index = string.match(index, "^(%d+)")
+    index = tonumber(index)
+    return index, item
+end
+
+function Application:TakeSelectsRowFinder(numItems, renamed, mediaItems)
+    local state = self.state
+
+    for i = 0, numItems - 1 do
+        
+    end
+
+    return renamed, mediaItems
+end
+
+function Application:IndexRowFinder(numItems, renamed, mediaItems)
+    local state = self.state
+    local index, item
+    for i = 0, numItems - 1 do
+        if not state.IgnoreSourceName then
+            index, item = self:GetItemIndexFromName(i)
+        else
+            index = i
+            item = reaper.GetSelectedMediaItem(0, i)
+        end
+
+        if state.IdxOffset and index then
+            local indexOffset = tonumber(state.IdxOffset)
+            if index then
+                if indexOffset ~= 0 then
+                    index = index + indexOffset
+                end
+                mediaItems[index] = item
+                renamed = renamed + 1
+            end
+        end
+    end
+    return renamed, mediaItems
+end
+
+function Application:RowFinderByIndex(numItems, renamed, mediaItems)
+    local state = self.state
+
+    for i = 0, numItems - 1 do
+        local index, item = self:GetItemIndexFromName(i)
+        if index then
+            index = index + 1
+            mediaItems[index] = item
+            renamed = renamed + 1
+        end
+    end
+
+    return renamed, mediaItems
+end
+
 function Application:Rename()
     local mediaItems = {}
     local state = self.state
@@ -787,56 +947,47 @@ function Application:Rename()
 
     state:SaveMetadata()
 
+    -- IMPORT FILES
     if state.ImportFiles then
-        local r, directory = reaper.JS_Dialog_BrowseForFolder("Select a Folder", state.Loader:GetDownloadsFolder())
-        local idx = 0
-        local slash = nil
-        if USEROSWIN then slash = "\\" else slash = "/" end
-        local file = reaper.EnumerateFiles(directory, idx)
-        while file ~= nil do
-            local f = directory .. slash .. file
-            table.insert(fileList, f)
-            reaper.InsertMedia(f, 0)
-            reaper.MoveEditCursor(1, false)
-            local item = reaper.GetMediaItem( 0, reaper.CountMediaItems(0) - 1 )
-            reaper.SetMediaItemSelected(item , true )
-            idx = idx + 1
-            file = reaper.EnumerateFiles(directory, idx)
-        end
-    end
-    numItems = reaper.CountSelectedMediaItems(0)
-    if numItems < 1 then state:SetError("No Items Selected!") return end
-    for i = 0, numItems - 1 do
-        local item = reaper.GetSelectedMediaItem(0, i)
-        local take = reaper.GetActiveTake(item)
-        local r, sourceName = reaper.GetSetMediaItemTakeInfo_String(take, "P_NAME", "", false)
-        sourceName = tostring(sourceName)
-        local index = sourceName:match("_([^_]*)$")
-        index = string.match(index, "^(%d+)")
-        index = tonumber(index)
-        if state.IdxOffset and tonumber(state.IdxOffset) ~= 0 and index then
-            index = index + tonumber(state.IdxOffset)
-        end
-        if index then mediaItems[index] = item renamed = renamed + 1 end
+        fileList = self:ImportFiles(fileList)
     end
 
+    --Get selected media items
+    numItems = reaper.CountSelectedMediaItems(0)
+    if numItems < 1 then state:SetError("No Items Selected!") return end
+
+    --For the items
+    if state.RowIdentifyType == 0 then
+        renamed, mediaItems = self:TakeSelectsRowFinder(numItems, 0, {})
+    elseif state.RowIdentifyType == 1 then
+        renamed, mediaItems = self:IndexRowFinder(numItems, 0, {})
+    elseif state.RowIdentifyType == 2 then
+        renamed, mediaItems = self:RowFinderByIndex(numItems, 0, {})
+    end
+
+
+
     if state.CurrentSheetData == nil then return end
+    --Looping down the spreadsheet rows
     for i = state.ColumnHeaderRow + 1, #state.CurrentSheetData do
         if state.CharacterColumn then
             if state.CurrentSheetData[i][state.CharacterColumnIdx] ~= state.CharacterList[state.SelectedCharacter + 1] then goto continue end
         end
+        --tableValue is the identifier from the table persepctive and should == index
         local tableValue = nil
-        if state.SelectMarker then
+        if state.RowIdentifyType ~= 2 and state.SelectMarker then
             tableValue = state.CurrentSheetData[i][state.SelectMarkerColumn]
             if tableValue then tableValue = string.match(tableValue, "^(%d+)") end
-        else
+        elseif state.RowIdentifyType ~= 2 and not state.SelectMarker then
             tableValue = state.CurrentSheetData[i][state.IndexColumnIdx]
+        elseif state.RowIdentifyType == 2 then
+            tableValue = i
         end
 
-        if tableValue ~= nil and tonumber(tableValue) ~= nil then
+        if tableValue and tonumber(tableValue) then
             tableValue = tonumber(tableValue)
             --Table Value is the index number, if there is a corresponding value we continue. 
-            if mediaItems[tableValue] ~= nil then
+            if mediaItems[tableValue] then
                 local mi = mediaItems[tableValue]
                 local startT, endT
                 startT = reaper.GetMediaItemInfo_Value(mi, "D_POSITION")

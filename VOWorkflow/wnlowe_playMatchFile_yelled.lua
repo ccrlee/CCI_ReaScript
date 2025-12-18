@@ -1,8 +1,7 @@
--- @description Plays a match file from an assigned folder's "Yelled" subdirectory
--- @author William N. Lowe
--- @version 0.97
-
+-- @noindex
 -- local VSDEBUG = dofile("C:\\Users\\ccuts\\.vscode\\extensions\\antoinebalaine.reascript-docs-0.1.15\\debugger\\LoadDebug.lua")
+
+
 
 local LOUDNESS = "yelled"
 local PROJECT = reaper.GetProjectPath("")
@@ -43,7 +42,7 @@ local function loadData()
 
     local character = directories["character"]
     if character ~= "All" then
-        local fileParent = FULL_FILES["characters"][character]
+        local fileParent = FULL_FILES[character]
         FILES = fileParent[LOUDNESS]
     else
         FILES = FULL_FILES[LOUDNESS]
