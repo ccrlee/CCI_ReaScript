@@ -50,7 +50,7 @@ about:
     - Save to project
 --]]
 
-local VSDEBUG = dofile("c:/Users/ccuts/.vscode/extensions/antoinebalaine.reascript-docs-0.1.16/debugger/LoadDebug.lua")
+-- local VSDEBUG = dofile("c:/Users/ccuts/.vscode/extensions/antoinebalaine.reascript-docs-0.1.16/debugger/LoadDebug.lua")
 -- local VSDEBUG = dofile("c:/Users/rocle/.vscode/extensions/antoinebalaine.reascript-docs-0.1.16/debugger/LoadDebug.lua")
 -- ============================================================================
 -- MODULE SETUP
