@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" commit="9762c542fc4c032303de741bb5022d6000478433" name="CCI Scripts">
+<index version="1" commit="1eeface041c809e2f67cd1c4648579ac1d59b3ae" name="CCI Scripts">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -147,15 +147,6 @@
       </version>
       <version name="0.6" author="Roc Lee" time="2023-04-26T17:08:49Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/9ae09a7d2bffa073bd747ba92e5ce1ede47a3d0c/Utility/RL_rtk_TopTailGui.lua</source>
-      </version>
-    </reapack>
-    <reapack name="SourceExplorerIMGUI_RL.lua" type="script" desc="Source Explorer for managing large amounts of sound design source">
-      <version name="0.2" author="Roc Lee" time="2025-12-18T21:00:38Z">
-        <changelog><![CDATA[0.2
-# Import Export ability, save to project, double click to insert
-0.1
-# Store items from project]]></changelog>
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/47b5e4b087fe5a79d2cb7ae3f16cc81a6610ff14/Utility/SourceExplorerIMGUI_RL.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_AddVolumePoints.lua" type="script" desc="Add Volume Points">
