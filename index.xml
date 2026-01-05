@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" commit="1651f6f4046a84f902df5c02bc975076df4d3b58" name="CCI Scripts">
+<index version="1" commit="9762c542fc4c032303de741bb5022d6000478433" name="CCI Scripts">
   <category name="ArkansasVO">
     <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
       <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
@@ -54,6 +54,63 @@
     <reapack name="NBA_GetFilesFromFolder.lua" type="script" desc="NBA Get Files From Folder">
       <version name="0.9" author="Roc Lee" time="2024-11-07T14:43:19Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/f0f555c62ac9a120ff90aaf60b62d264c2de11df/NBAWorkflow/NBA_GetFilesFromFolder.lua</source>
+      </version>
+    </reapack>
+  </category>
+  <category name="SourceExplorer">
+    <reapack name="RL_SourceExplorer.lua" type="script" desc="Source Explorer - Audio clip library and browser">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Source Explorer helps you manage and organize audio clips. Features:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Store clips from your project\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Visual waveform display\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Audio preview with click-to-play\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Search and filter\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Import/Export libraries\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Save to project\sa180\par}
+}
+]]></description>
+      </metadata>
+      <version name="1.0" author="Roc Lee" time="2026-01-05T14:51:18Z">
+        <changelog><![CDATA[1.5
+# Basic UCS Features
+# Batch operations
+# Spectral WaveformViewer
+# Various UX improvements
+1.0
+# Complete modular rewrite
+# Improved waveform display with fades
+# Better preview system
+# Clean architecture]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/RL_SourceExplorer.lua</source>
+        <source file="modules/AudioItem.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/AudioItem.lua</source>
+        <source file="modules/BatchExport.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/BatchExport.lua</source>
+        <source file="modules/BatchInsert.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/BatchInsert.lua</source>
+        <source file="modules/BatchOperations.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/BatchOperations.lua</source>
+        <source file="modules/BatchRename.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/BatchRename.lua</source>
+        <source file="modules/Collection.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/Collection.lua</source>
+        <source file="modules/CollectionManager.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/CollectionManager.lua</source>
+        <source file="modules/CollectionPicker.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/CollectionPicker.lua</source>
+        <source file="modules/CollectionTree.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/CollectionTree.lua</source>
+        <source file="modules/Colorutils.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/Colorutils.lua</source>
+        <source file="modules/config.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/config.lua</source>
+        <source file="modules/ContextMenu.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/ContextMenu.lua</source>
+        <source file="modules/ItemTable.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/ItemTable.lua</source>
+        <source file="modules/PreviewPlayer.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/PreviewPlayer.lua</source>
+        <source file="modules/RegionCreator.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/RegionCreator.lua</source>
+        <source file="modules/Storage.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/Storage.lua</source>
+        <source file="modules/Theme.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/Theme.lua</source>
+        <source file="modules/UCSCategoryPicker.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/UCSCategoryPicker.lua</source>
+        <source file="modules/UCSColumnSettings.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/UCSColumnSettings.lua</source>
+        <source file="modules/UCSDatabase.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/UCSDatabase.lua</source>
+        <source file="modules/UCSEditor.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/UCSEditor.lua</source>
+        <source file="modules/UCSMetadata.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/UCSMetadata.lua</source>
+        <source file="modules/Utils.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/Utils.lua</source>
+        <source file="modules/WaveformViewer.lua">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/WaveformViewer.lua</source>
+        <source file="modules/UCS_v8_2_1_Full_List.csv">https://github.com/ccrlee/CCI_ReaScript/raw/9762c542fc4c032303de741bb5022d6000478433/SourceExplorer/modules/UCS_v8_2_1_Full_List.csv</source>
       </version>
     </reapack>
   </category>
