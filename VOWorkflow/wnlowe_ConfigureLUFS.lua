@@ -62,8 +62,8 @@ function LUFSManager:new()
     instance.TargetOffsets = {0, 0, 0}
     instance.LUFSActions = {}
     instance.MatchActions = {}
-    instance.TargetColors = {0x893CC3FF, 0xec008cFF, 0xd7e800FF}
-    instance.CategoryColors = {{0x002C87FF, 0x0055FFFF}, {0x096E00FF, 0x0ED100FF}}
+    instance.TargetColors = {0x36BA8FF, 0x1B4281FF, 0x002258FF}
+    instance.CategoryColors = {{0xA5D4EEFF, 0x0055FFFF}, {0xFFB2F8FF, 0x0ED100FF}}
 
     instance.CutoffTime = 3
 
@@ -336,15 +336,15 @@ function Gui:DrawMainSection()
     imgui.Dummy(CTX, remainingSpace - buttonSpace, 25)
 
     --LUFS Buttons
-    local lufsMainColor = (manager.CategoryColors and manager.CategoryColors[1] and manager.CategoryColors[1][1]) or 0x002C87FF
-    local lufsHoverColor = (manager.CategoryColors and manager.CategoryColors[1] and manager.CategoryColors[1][2]) or 0x0055FFFF
-    imgui.PushStyleColor(CTX, imgui.Col_Button, lufsMainColor)
-    imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, lufsHoverColor)
+    local lufsOutlineColor = (manager.CategoryColors and manager.CategoryColors[1] and manager.CategoryColors[1][1]) or 0x002C87FF
+    imgui.PushStyleColor(CTX, imgui.Col_Border, lufsOutlineColor)
+    imgui.PushStyleColor(CTX, imgui.Col_BorderShadow, 0x000000FF)
     for i = 1, manager.NumLoudnessCategories do
         imgui.SameLine(CTX)
         local text = string.format("LUFS %s", manager.LoudnessCategories[i] or ("Level " .. i))
         local textW, textH = imgui.CalcTextSize(CTX, text)
-        imgui.PushStyleColor(CTX, imgui.Col_Border, manager.TargetColors[i] or 0x000000FF)
+        imgui.PushStyleColor(CTX, imgui.Col_Button, manager.TargetColors[i] or 0x000000FF)
+        imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, math.floor((manager.TargetColors[i]-70)) or 0x000000FF)
         if imgui.Button(CTX, text, textW + 15, buttonHeight) then
             local action = nil
             local succeed, result = pcall(function() action = manager.LUFSActions[i] end)
@@ -354,20 +354,20 @@ function Gui:DrawMainSection()
                 self.maintainFocus = false
             else reaper.ShowMessageBox(string.format("Action Not Found for %s!", manager.LoudnessCategories[i] or ("Level " .. i)), "Script Error", 0) end
         end
-        imgui.PopStyleColor(CTX, 1)
+        imgui.PopStyleColor(CTX, 2)
     end
     imgui.PopStyleColor(CTX, 2)
 
     -- MATCH BUTTONS
-    local matchMainColor = (manager.CategoryColors and manager.CategoryColors[2] and manager.CategoryColors[2][1]) or 0x096E00FF
-    local matchHoverColor = (manager.CategoryColors and manager.CategoryColors[2] and manager.CategoryColors[2][2]) or 0x0ED100FF
-    imgui.PushStyleColor(CTX, imgui.Col_Button, matchMainColor)
-    imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, matchHoverColor)
+    local matchOutlineColor = (manager.CategoryColors and manager.CategoryColors[2] and manager.CategoryColors[2][1]) or 0x096E00FF
+    imgui.PushStyleColor(CTX, imgui.Col_Border, matchOutlineColor)
+    imgui.PushStyleColor(CTX, imgui.Col_BorderShadow, 0x000000FF)
     for i = 1, manager.NumLoudnessCategories do
         imgui.SameLine(CTX)
         local text = string.format("Match %s", manager.LoudnessCategories[i] or ("Level " .. i))
         local textW, textH = imgui.CalcTextSize(CTX, text)
-        imgui.PushStyleColor(CTX, imgui.Col_Border, manager.TargetColors[i] or 0x000000FF)
+        imgui.PushStyleColor(CTX, imgui.Col_Button, manager.TargetColors[i] or 0x000000FF)
+        imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, (manager.TargetColors[i]-70) or 0x000000FF)
         if imgui.Button(CTX, text, textW + 15, buttonHeight) then
             local action = nil
             local succeed, result = pcall(function() action = manager.MatchActions[i] end)
@@ -377,7 +377,7 @@ function Gui:DrawMainSection()
                 self.maintainFocus = false
             else reaper.ShowMessageBox(string.format("Action Not Found for %s!", manager.LoudnessCategories[i] or ("Level " .. i)), "Script Error", 0) end
         end
-        imgui.PopStyleColor(CTX, 1)
+        imgui.PopStyleColor(CTX, 2)
     end
     imgui.PopStyleColor(CTX, 2)
 
@@ -489,15 +489,15 @@ function Gui:DrawSettingsWindow()
         imgui.TextDisabled(CTX, "Level Colors")
         for i = 1, manager.NumLoudnessCategories do
             local c, v = imgui.ColorEdit4(CTX, string.format("%s Color", manager.LoudnessCategories[i] or ("Level " .. i)), manager.TargetColors[i] or 0x000000FF)
-            if c then manager.TargetColors = v end
+            if c then manager.TargetColors[i] = v end
         end
         imgui.TextDisabled(CTX, "Category Colors")
         local categories = {"LUFS", "Match"}
         for i = 1,  #categories do
             local c, v = imgui.ColorEdit4(CTX, string.format("%s Main Color", categories[i]), manager.CategoryColors[i][1])
-            if c then manager.CategoryColors = v end
-            local c, v = imgui.ColorEdit4(CTX, string.format("%s Hover Color", categories[i]), manager.CategoryColors[i][2])
-            if c then manager.CategoryColors = v end
+            if c then manager.CategoryColors[i][1] = v end
+            --local c, v = imgui.ColorEdit4(CTX, string.format("%s Hover Color", categories[i]), manager.CategoryColors[i][2])
+            --if c then manager.CategoryColors = v end
         end
 
     end
