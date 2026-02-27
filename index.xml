@@ -1,62 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" commit="1eeface041c809e2f67cd1c4648579ac1d59b3ae" name="CCI Scripts">
-  <category name="ArkansasVO">
-    <reapack name="wnlowe_createArkansasVOSession.lua" type="script" desc="Project Arkansas VO Session Creation">
-      <version name="2.3" author="William N. Lowe" time="2025-03-12T20:58:52Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/39263363dcda8508b267603e94fe3d42025a3c84/ArkansasVO/wnlowe_createArkansasVOSession.lua</source>
-      </version>
-      <version name="2.3.1" author="William N. Lowe" time="2025-03-27T14:09:45Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/16b87683977c2cbb5ddbe063ef6d79c5a6e32321/ArkansasVO/wnlowe_createArkansasVOSession.lua</source>
-      </version>
-    </reapack>
-    <reapack name="wnlowe_VOFXRegions_Arkansas.lua" type="script" desc="Project Arkansas VO Pipeline">
-      <version name="1.5" author="William N. Lowe" time="2025-03-12T20:36:30Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/67fa1be517be89da37e9e45b8744def6c162770c/ArkansasVO/wnlowe_VOFXRegions_Arkansas.lua</source>
-      </version>
-      <version name="1.5.1" author="William N. Lowe" time="2025-03-12T20:46:14Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/cc8a4dfde2c9581a0e5b9909ac105f6b3b83d485/ArkansasVO/wnlowe_VOFXRegions_Arkansas.lua</source>
-      </version>
-      <version name="1.5.2" author="William N. Lowe" time="2025-03-12T21:03:51Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/67ad7f6f536e5d7bf85354a701d0474b78d65f41/ArkansasVO/wnlowe_VOFXRegions_Arkansas.lua</source>
-        <source main="main" file="wnlowe_noItemOverrun.lua">https://github.com/ccrlee/CCI_ReaScript/raw/67ad7f6f536e5d7bf85354a701d0474b78d65f41/ArkansasVO/wnlowe_noItemOverrun.lua</source>
-      </version>
-    </reapack>
-  </category>
-  <category name="HelperFunctions">
-    <reapack name="RL_SampleBufferReader.lua" type="script" desc="Helper Functions for Top Tail Script">
-      <version name="0.5" author="Roc Lee" time="2023-04-26T16:51:06Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/a5d23c30e49ca31cc353135ccc7d20bdb331265e/HelperFunctions/RL_SampleBufferReader.lua</source>
-      </version>
-      <version name="0.6" author="Roc Lee" time="2023-04-26T17:08:49Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/9ae09a7d2bffa073bd747ba92e5ce1ede47a3d0c/HelperFunctions/RL_SampleBufferReader.lua</source>
-      </version>
-    </reapack>
-    <reapack name="RL_VariableTopTail.lua" type="script" desc="Helper Functions for Top Tail Script 2">
-      <version name="0.5" author="Roc Lee" time="2023-04-26T16:51:06Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/a5d23c30e49ca31cc353135ccc7d20bdb331265e/HelperFunctions/RL_VariableTopTail.lua</source>
-      </version>
-      <version name="0.6" author="Roc Lee" time="2023-04-26T17:08:49Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/9ae09a7d2bffa073bd747ba92e5ce1ede47a3d0c/HelperFunctions/RL_VariableTopTail.lua</source>
-      </version>
-    </reapack>
-  </category>
-  <category name="NBAWorkflow">
-    <reapack name="NBA_ConsolidateItemsOnSameTrackKeepingName.lua" type="script" desc="NBA Consolidate Items on Same Track Keeping Name">
-      <version name="0.9" author="Roc Lee" time="2024-11-07T14:43:19Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/f0f555c62ac9a120ff90aaf60b62d264c2de11df/NBAWorkflow/NBA_ConsolidateItemsOnSameTrackKeepingName.lua</source>
-      </version>
-    </reapack>
-    <reapack name="NBA_ConsolidateSelectedInRegionKeepingTakeName.lua" type="script" desc="NBA Consolidate Selected In Region Keeping Take Name">
-      <version name="0.9" author="Roc Lee" time="2024-11-07T14:43:19Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/f0f555c62ac9a120ff90aaf60b62d264c2de11df/NBAWorkflow/NBA_ConsolidateSelectedInRegionKeepingTakeName.lua</source>
-      </version>
-    </reapack>
-    <reapack name="NBA_GetFilesFromFolder.lua" type="script" desc="NBA Get Files From Folder">
-      <version name="0.9" author="Roc Lee" time="2024-11-07T14:43:19Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/f0f555c62ac9a120ff90aaf60b62d264c2de11df/NBAWorkflow/NBA_GetFilesFromFolder.lua</source>
-      </version>
-    </reapack>
-  </category>
+<index version="1" commit="e71f70ca3b27a1776213c3cf4987463ca8df8e37" name="CCI Scripts">
   <category name="SourceExplorer">
     <reapack name="RL_SourceExplorer.lua" type="script" desc="Source Explorer - Audio clip library and browser">
       <metadata>
@@ -115,104 +58,7 @@
     </reapack>
   </category>
   <category name="Utility">
-    <reapack name="RL - DeselectFirstItemInSelection.lua" type="script" desc="Deselect First Item">
-      <version name="1.0" author="Roc Lee" time="2023-04-26T20:28:36Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/66224008e333d3321a33234ccc0e87b58ed82aa1/Utility/RL%20-%20DeselectFirstItemInSelection.lua</source>
-      </version>
-    </reapack>
-    <reapack name="RL - SelectDummyTrack.lua" type="script" desc="Select Dummy Track">
-      <version name="0.1" author="Roc Lee" time="2024-06-05T21:04:41Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/ed16bac9749ad7c2e0c202090a755ba073c4f64a/Utility/RL%20-%20SelectDummyTrack.lua</source>
-      </version>
-    </reapack>
-    <reapack name="RL - SelectNextEmptyTrack.lua" type="script" desc="Select Next Empty Track">
-      <version name="0.1" author="Roc Lee" time="2024-06-05T21:04:41Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/ed16bac9749ad7c2e0c202090a755ba073c4f64a/Utility/RL%20-%20SelectNextEmptyTrack.lua</source>
-      </version>
-    </reapack>
-    <reapack name="RL - SetSelectionToItemsAndInsertEmptyItem.lua" type="script" desc="Set Selection to Items and INsert Empty Item">
-      <version name="0.1" author="Roc Lee" time="2024-06-05T21:04:41Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/ed16bac9749ad7c2e0c202090a755ba073c4f64a/Utility/RL%20-%20SetSelectionToItemsAndInsertEmptyItem.lua</source>
-      </version>
-    </reapack>
-    <reapack name="RL_CreatePreFaderSend.lua" type="script" desc="RL_CreatePreFaderSend">
-      <version name="1.0" author="Roc Lee" time="2023-04-14T17:12:54Z">
-        <changelog><![CDATA[+ Initial Release]]></changelog>
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/eb788f6a2288bbae81f8cc9350dfcdf67216ee27/Utility/RL_CreatePreFaderSend.lua</source>
-      </version>
-    </reapack>
-    <reapack name="RL_rtk_TopTailGui.lua" type="script" desc="Top Tail Gui">
-      <version name="0.5" author="Roc Lee" time="2023-04-26T16:59:14Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/03d4b3c9b438a7053f8ffb9838928f7bb1588247/Utility/RL_rtk_TopTailGui.lua</source>
-      </version>
-      <version name="0.6" author="Roc Lee" time="2023-04-26T17:08:49Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/9ae09a7d2bffa073bd747ba92e5ce1ede47a3d0c/Utility/RL_rtk_TopTailGui.lua</source>
-      </version>
-    </reapack>
-    <reapack name="wnlowe_AddVolumePoints.lua" type="script" desc="Add Volume Points">
-      <metadata>
-        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
-{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
-\widowctrl\hyphauto
-
-{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Add Volume Points\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 Sets a point at edit cursor for selected item or first item under edit cursor. Then sets a point before and after. Uses the GUI companion script to set new times.\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Must have this and GUI script in same folder\par}
-}
-]]></description>
-      </metadata>
-      <version name="0.5" author="William N. Lowe" time="2023-04-25T14:51:38Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/18a6551d835dd0059e267269eae909d6dde01202/Utility/wnlowe_AddVolumePoints.lua</source>
-      </version>
-      <version name="0.6" author="William N. Lowe" time="2023-04-25T15:11:28Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/7130449cc64d811fd198fd9eaeb9c0c6e17fa0aa/Utility/wnlowe_AddVolumePoints.lua</source>
-      </version>
-      <version name="0.8" author="William N. Lowe" time="2023-04-25T15:55:18Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/4d3c19288eb3023de27670f5747be7d59984bb33/Utility/wnlowe_AddVolumePoints.lua</source>
-      </version>
-      <version name="0.9" author="William N. Lowe" time="2023-04-25T16:49:54Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/7f1c4627e3ec96b605938351545b8e3fb6f4e132/Utility/wnlowe_AddVolumePoints.lua</source>
-      </version>
-      <version name="0.91" author="William N. Lowe" time="2023-04-26T19:42:25Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/287576fd515ff46deb5c84c0e7ddbd1eddd44036/Utility/wnlowe_AddVolumePoints.lua</source>
-      </version>
-      <version name="0.92" author="William N. Lowe" time="2023-04-26T19:43:52Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/f391d2cee2d87b04e7035ad66333a8a7fb7acaf8/Utility/wnlowe_AddVolumePoints.lua</source>
-      </version>
-      <version name="0.93" author="William N. Lowe" time="2023-04-26T19:52:30Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/a0bc1c7a1a07292937db2bda4306da45e8a4ce50/Utility/wnlowe_AddVolumePoints.lua</source>
-      </version>
-      <version name="0.95" author="William N. Lowe" time="2023-04-26T20:03:19Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/f45325bed6998d51ccdd32c5c5ea3aeed8439225/Utility/wnlowe_AddVolumePoints.lua</source>
-      </version>
-      <version name="0.97" author="William N. Lowe" time="2023-04-27T21:16:17Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/692f1465b0070fe7f5a7a141de35c8468b17eed8/Utility/wnlowe_AddVolumePoints.lua</source>
-      </version>
-      <version name="0.98" author="William N. Lowe" time="2023-04-28T14:04:59Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/a0c98b1850e8747b24e58e8224be40d5f8feb48d/Utility/wnlowe_AddVolumePoints.lua</source>
-      </version>
-    </reapack>
-    <reapack name="wnlowe_AddVolumePoints_GUI.lua" type="script" desc="Add Volume Points GUI">
-      <metadata>
-        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
-{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
-\widowctrl\hyphauto
-
-{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Add Volume Points GUI\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 Sets pre and post times for Add Volume Points script. Can also execute function script from this script.\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Must have GUI and function script in same folder\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Must install rtk dependency\par}
-}
-]]></description>
-      </metadata>
-      <version name="0.5" author="William N. Lowe" time="2023-04-25T15:55:18Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/4d3c19288eb3023de27670f5747be7d59984bb33/Utility/wnlowe_AddVolumePoints_GUI.lua</source>
-      </version>
-      <version name="0.6" author="William N. Lowe" time="2023-04-25T16:49:54Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/7f1c4627e3ec96b605938351545b8e3fb6f4e132/Utility/wnlowe_AddVolumePoints_GUI.lua</source>
-      </version>
-    </reapack>
-    <reapack name="wnlowe_FilenameFixer.lua" type="script" desc="wnlowe Filename Fixer">
+    <reapack name="wnlowe_FilenameFixer.lua" type="script" desc="Mass Region Name Fixer">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
@@ -224,6 +70,9 @@
       </metadata>
       <version name="0.10" author="William N. Lowe" time="2025-12-04T14:28:50Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/a65a0eaf1b295156334ea5aaece0c1a10deeefcb/Utility/wnlowe_FilenameFixer.lua</source>
+      </version>
+      <version name="0.11" author="William N. Lowe" time="2026-02-27T15:08:05Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/Utility/wnlowe_FilenameFixer.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_PTMarkerImport.lua" type="script" desc="Pro Tools Markers to REAPER Markers">
@@ -245,37 +94,30 @@
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/a65a0eaf1b295156334ea5aaece0c1a10deeefcb/Utility/wnlowe_PTMarkerImport.lua</source>
       </version>
     </reapack>
-    <reapack name="wnlowe_renderStereoDraft.lua" type="script" desc="Fast Render Window">
+  </category>
+  <category name="VOWorkflow">
+    <reapack name="RL_rtk_TopTailGui.lua" type="script" desc="Top Tail Gui">
+      <version name="0.6" author="Roc Lee" time="2026-02-27T15:08:05Z">
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/RL_rtk_TopTailGui.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_AddLineToClipboard.lua" type="script" desc="Add Line to Clipboard">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Fast Render Window\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 Script to render audio in a more streamlined manner for very specific workflows.\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Must have RTK installed\par}
-{\pard \ql \f0 \sa180 \li0 \fi0 wnlsounddesign.com\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Adds the note of the selected item to the system clipboard\par}
 }
 ]]></description>
       </metadata>
-      <version name="0.5" author="William N. Lowe" time="2023-05-05T18:39:40Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/6f339257135e8d228b1b1e863f1f141767b25197/Utility/wnlowe_renderStereoDraft.lua</source>
+      <version name="1.00" author="William N. Lowe" time="2026-02-27T15:08:05Z">
+        <changelog><![CDATA[v 1.0
+# Initial Script Release]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/wnlowe_AddLineToClipboard.lua</source>
       </version>
     </reapack>
-  </category>
-  <category name="VOWorkflow">
-    <reapack name="RL_PrepSessionFromCSV.lua" type="script" desc="DISC Session Prep script">
-      <version name="0.9" author="Roc Lee / William Loewe" time="2024-11-07T14:39:17Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/b6af3f8a92477df302f0af52caf85b06f722ecb0/VOWorkflow/RL_PrepSessionFromCSV.lua</source>
-      </version>
-      <version name="0.9a" author="Roc Lee / William Loewe" time="2024-11-07T14:59:15Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/4e2277524f9968c7ddcd6d4f85577b22799c16f7/VOWorkflow/RL_PrepSessionFromCSV.lua</source>
-      </version>
-      <version name="1.0" author="Roc Lee / William Loewe" time="2024-11-07T15:04:53Z">
-        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/21430cab8eb86c618e2d0309bd27ed405ca41e84/VOWorkflow/RL_PrepSessionFromCSV.lua</source>
-      </version>
-    </reapack>
-    <reapack name="wnlowe_ConfigureLUFS.lua" type="script" desc="Custom GUI Bar for VO Configuration">
+    <reapack name="wnlowe_ConfigureLUFS.lua" type="script" desc="VO GUI Bar">
       <version name="1.01" author="William N. Lowe" time="2025-11-06T21:36:09Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/135540280d86cca0c4d087a39790f346db484b9c/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
       </version>
@@ -430,6 +272,20 @@
         <source main="main" file="wnlowe_playMatchFile_yelled.lua">https://github.com/ccrlee/CCI_ReaScript/raw/6aba424f3d224385dadcf30866092a4ef3e00662/VOWorkflow/wnlowe_playMatchFile_yelled.lua</source>
         <source main="main" file="wnlowe_resetMatchFolder.lua">https://github.com/ccrlee/CCI_ReaScript/raw/6aba424f3d224385dadcf30866092a4ef3e00662/VOWorkflow/wnlowe_resetMatchFolder.lua</source>
       </version>
+      <version name="1.22.1" author="William N. Lowe" time="2026-02-27T15:08:05Z">
+        <changelog><![CDATA[1.22.1
+# Renaming Script]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
+        <source main="main" file="wnlowe_lufsSet__shouted.lua">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/wnlowe_lufsSet__shouted.lua</source>
+        <source main="main" file="wnlowe_lufsSet__spoken.lua">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/wnlowe_lufsSet__spoken.lua</source>
+        <source main="main" file="wnlowe_lufsSet__whisper.lua">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/wnlowe_lufsSet__whisper.lua</source>
+        <source main="main" file="wnlowe_lufsSet__yelled.lua">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/wnlowe_lufsSet__yelled.lua</source>
+        <source main="main" file="wnlowe_playMatchFile_shouted.lua">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/wnlowe_playMatchFile_shouted.lua</source>
+        <source main="main" file="wnlowe_playMatchFile_spoken.lua">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/wnlowe_playMatchFile_spoken.lua</source>
+        <source main="main" file="wnlowe_playMatchFile_whispered.lua">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/wnlowe_playMatchFile_whispered.lua</source>
+        <source main="main" file="wnlowe_playMatchFile_yelled.lua">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/wnlowe_playMatchFile_yelled.lua</source>
+        <source main="main" file="wnlowe_resetMatchFolder.lua">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/wnlowe_resetMatchFolder.lua</source>
+      </version>
     </reapack>
     <reapack name="wnlowe_HandleBreath.lua" type="script" desc="Clip Gain Drop by specified ammount based on time selection">
       <version name="1.01" author="William N. Lowe" time="2025-11-06T21:36:09Z">
@@ -437,6 +293,13 @@
       </version>
       <version name="1.02" author="William N. Lowe" time="2025-11-10T22:03:08Z">
         <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/fef9cf71f0a57902290fbc8174bdc87bdd3bfd3c/VOWorkflow/wnlowe_HandleBreath.lua</source>
+      </version>
+    </reapack>
+    <reapack name="wnlowe_multiItemRegionResize.lua" type="script" desc="Resizing regions to selected item(s)">
+      <version name="2.0" author="William N. Lowe" time="2026-02-27T15:08:05Z">
+        <changelog><![CDATA[2.0
+# Initial reapack integration]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/e71f70ca3b27a1776213c3cf4987463ca8df8e37/VOWorkflow/wnlowe_multiItemRegionResize.lua</source>
       </version>
     </reapack>
     <reapack name="wnlowe_VOFXRegions_Illusion.lua" type="script" desc="VOFX region maker">
