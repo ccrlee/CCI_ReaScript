@@ -1,3 +1,4 @@
+-- @noindex
 -- @version 1.0
 --[[
  * ReaScript Name: RL_CreatePreFaderSend

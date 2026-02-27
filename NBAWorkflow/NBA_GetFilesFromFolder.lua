@@ -1,3 +1,4 @@
+-- @noindex
 -- @description NBA Get Files From Folder
 -- @author Roc Lee
 -- @version 0.9

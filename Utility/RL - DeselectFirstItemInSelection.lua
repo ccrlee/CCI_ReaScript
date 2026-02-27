@@ -1,3 +1,4 @@
+-- @noindex
 -- @description Deselect First Item
 -- @author Roc Lee
 -- @version 1.0

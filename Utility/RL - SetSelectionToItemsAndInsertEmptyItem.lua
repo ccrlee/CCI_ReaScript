@@ -1,3 +1,4 @@
+-- @noindex
 -- @description Set Selection to Items and INsert Empty Item
 -- @author Roc Lee
 -- @version 0.1

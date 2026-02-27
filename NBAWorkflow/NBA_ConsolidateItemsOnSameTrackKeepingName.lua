@@ -1,3 +1,4 @@
+-- @noindex
 -- @description NBA Consolidate Items on Same Track Keeping Name
 -- @author Roc Lee
 -- @version 0.9

@@ -1,3 +1,4 @@
+-- @noindex
 --[[
 Description: Project Arkansas VO Session Creation
 Version: 2.3.1

@@ -1,3 +1,4 @@
+-- @noindex
 -- @description DISC Session Prep script
 -- @author Roc Lee / William Loewe
 -- @version 1.0

@@ -1,3 +1,4 @@
+-- @noindex
 -- @description NBA Consolidate Selected In Region Keeping Take Name
 -- @author Roc Lee
 -- @version 0.9

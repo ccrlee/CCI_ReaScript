@@ -1,3 +1,4 @@
+-- @noindex
 -- @description Select Dummy Track
 -- @author Roc Lee
 -- @version 0.1

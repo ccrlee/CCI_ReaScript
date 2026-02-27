@@ -1,7 +1,7 @@
--- @description wnlowe Filename Fixer
+-- @description Mass Region Name Fixer
 -- @about Creates a directory with txt files that share filenames with your project region names to use Power Rename to rename regions
 -- @author William N. Lowe
--- @version 0.10
+-- @version 0.11
 
 local USEROSWIN = reaper.GetOS():match("Win")
 local SLASH = USEROSWIN and "\\" or "/"

@@ -1,3 +1,4 @@
+-- @noindex
 --[[
 Description: Project Arkansas VO Pipeline
 Version: 1.5.2

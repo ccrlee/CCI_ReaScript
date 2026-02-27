@@ -1,3 +1,4 @@
+-- @noindex
 -- @description Select Next Empty Track
 -- @author Roc Lee
 -- @version 0.1

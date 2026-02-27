@@ -1,3 +1,4 @@
+-- @noindex
 -- @description Helper Functions for Top Tail Script 2
 -- @author Roc Lee
 -- @version 0.6

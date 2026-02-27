@@ -1,7 +1,7 @@
 --[[ 
-description: Custom GUI Bar for VO Configuration
+description: VO GUI Bar
 author: William N. Lowe
-version: 1.22
+version: 1.22.1
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -13,14 +13,13 @@ provides:
   [main] wnlowe_playMatchFile_yelled.lua
   [main] wnlowe_resetMatchFolder.lua
 changelog:
+    1.22.1
+    # Renaming Script
    1.22
    # Fixed Action Bugs
    1.21
    # Match File Character Specific Bug
-   1.20.2
-  # Adding VOFX Measure time from previous item
-  # Adding GUI for new Feature
---]]
+]]
 
 local DEBUG = true
 local USEROSWIN = reaper.GetOS():match("Win")
