@@ -1,14 +1,13 @@
 --[[
-description: Auto Heads/Tails Trimming
+description: Auto Heads-Tails Trimming
 author: R. Lee, W.N. Lowe, E. Shannon
-version: 2.0
+version: 2.1
 provides:
     [main] RL_SampleBufferReader.lua
     [main] RL_VariableTopTail.lua
-    [main] RL_rtk_TopTailGui.lua
     [main] RL_SampleBufferReaderTest.lua
 changelog:
-    2.0
+    2.1
     # Initial reapack integration
 ]]
 
