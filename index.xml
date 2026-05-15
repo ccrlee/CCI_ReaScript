@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" commit="38b003533192efed72e65a0a4c58fc2af32e23fc" name="CCI Scripts">
+<index version="1" commit="537a5af06309704cb7ab014b66f62fb8d92fb972" name="CCI Scripts">
   <category name="SourceExplorer">
     <reapack name="RL_SourceExplorer.lua" type="script" desc="Source Explorer - Audio clip library and browser">
       <metadata>
@@ -349,6 +349,28 @@
         <source main="main" file="wnlowe_addAltRegion.lua">https://github.com/ccrlee/CCI_ReaScript/raw/38b003533192efed72e65a0a4c58fc2af32e23fc/VOWorkflow/wnlowe_addAltRegion.lua</source>
         <source file="../../../FXChains/monitor.RfxChain">https://github.com/ccrlee/CCI_ReaScript/raw/38b003533192efed72e65a0a4c58fc2af32e23fc/VOWorkflow/data/monitor.RfxChain</source>
         <source file="../../../FXChains/voBase.RfxChain">https://github.com/ccrlee/CCI_ReaScript/raw/38b003533192efed72e65a0a4c58fc2af32e23fc/VOWorkflow/data/voBase.RfxChain</source>
+      </version>
+      <version name="1.32" author="William N. Lowe" time="2026-05-15T14:06:09Z">
+        <changelog><![CDATA[1.32
+# added move file logic for the FX Chains
+1.31
+# attempting to relocate the FX Chains to the correct directory
+1.30
+# fixed nil value bugs
+# initial attempt at including FX Chains in the repo]]></changelog>
+        <source main="main">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/wnlowe_ConfigureLUFS.lua</source>
+        <source main="main" file="wnlowe_lufsSet__shouted.lua">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/wnlowe_lufsSet__shouted.lua</source>
+        <source main="main" file="wnlowe_lufsSet__spoken.lua">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/wnlowe_lufsSet__spoken.lua</source>
+        <source main="main" file="wnlowe_lufsSet__whisper.lua">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/wnlowe_lufsSet__whisper.lua</source>
+        <source main="main" file="wnlowe_lufsSet__yelled.lua">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/wnlowe_lufsSet__yelled.lua</source>
+        <source main="main" file="wnlowe_playMatchFile_shouted.lua">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/wnlowe_playMatchFile_shouted.lua</source>
+        <source main="main" file="wnlowe_playMatchFile_spoken.lua">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/wnlowe_playMatchFile_spoken.lua</source>
+        <source main="main" file="wnlowe_playMatchFile_whispered.lua">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/wnlowe_playMatchFile_whispered.lua</source>
+        <source main="main" file="wnlowe_playMatchFile_yelled.lua">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/wnlowe_playMatchFile_yelled.lua</source>
+        <source main="main" file="wnlowe_resetMatchFolder.lua">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/wnlowe_resetMatchFolder.lua</source>
+        <source main="main" file="wnlowe_addAltRegion.lua">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/wnlowe_addAltRegion.lua</source>
+        <source file="data/monitor.RfxChain">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/data/monitor.RfxChain</source>
+        <source file="data/voBase.RfxChain">https://github.com/ccrlee/CCI_ReaScript/raw/537a5af06309704cb7ab014b66f62fb8d92fb972/VOWorkflow/data/voBase.RfxChain</source>
       </version>
     </reapack>
     <reapack name="wnlowe_HandleBreath.lua" type="script" desc="Clip Gain Drop by specified ammount based on time selection">
