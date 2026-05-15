@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.33
+version: 1.34
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -16,7 +16,9 @@ provides:
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
-    1.33
+    1.34
+    # move file logic bugs
+    1.32
     # added move file logic for the FX Chains
     1.31
     # attempting to relocate the FX Chains to the correct directory
@@ -98,6 +100,9 @@ if reaper.file_exists(fxDir) then
         ::next::
     end
 else
+    if USEROSWIN then os.execute('mkdir "' .. fxDir .. '"')
+    else os.execute('mkdir -p "' .. fxDir .. '"')
+    end
     local _, files = FindFiles(srcDir)
     for _,file in ipairs(files) do
         MoveFile(srcDir, fxDir, file)
