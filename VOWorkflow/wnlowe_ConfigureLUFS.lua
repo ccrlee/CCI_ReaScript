@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.30
+version: 1.31
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -13,9 +13,11 @@ provides:
   [main] wnlowe_playMatchFile_yelled.lua
   [main] wnlowe_resetMatchFolder.lua
   [main] wnlowe_addAltRegion.lua
-  [nomain] data/monitor.RfxChain > FXChains/monitor.RfxChain
-  [nomain] data/voBase.RfxChain > FXChains/voBase.RfxChain
+  [nomain] data/monitor.RfxChain > ../../../FXChains/monitor.RfxChain
+  [nomain] data/voBase.RfxChain > ../../../FXChains/voBase.RfxChain
 changelog:
+    1.31
+    # attempting to relocate the FX Chains to the correct directory
     1.30
     # fixed nil value bugs
     # initial attempt at including FX Chains in the repo
