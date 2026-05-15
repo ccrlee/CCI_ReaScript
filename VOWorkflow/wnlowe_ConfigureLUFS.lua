@@ -13,9 +13,11 @@ provides:
   [main] wnlowe_playMatchFile_yelled.lua
   [main] wnlowe_resetMatchFolder.lua
   [main] wnlowe_addAltRegion.lua
-  [nomain] data/monitor.RfxChain > ../../../FXChains/monitor.RfxChain
-  [nomain] data/voBase.RfxChain > ../../../FXChains/voBase.RfxChain
+  [nomain] data/monitor.RfxChain
+  [nomain] data/voBase.RfxChain
 changelog:
+    1.32
+    # added move file logic for the FX Chains
     1.31
     # attempting to relocate the FX Chains to the correct directory
     1.30
@@ -25,6 +27,7 @@ changelog:
 
 local DEBUG = true
 local USEROSWIN = reaper.GetOS():match("Win")
+local REAPATH = reaper.GetResourcePath()
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
 SCRIPT_PATH = USEROSWIN and SCRIPT_PATH:gsub("\\", "/") or SCRIPT_PATH
 local SLASH = USEROSWIN and "\\" or "/"
@@ -45,6 +48,60 @@ local s, r = pcall(function()
 
 function Msg(msg)
     if DEBUG then reaper.ShowConsoleMsg(tostring(msg) .. "\n")end
+end
+
+function FindFiles(directory)
+    local count = 0
+    local allFiles = {}
+    local file = reaper.EnumerateFiles(directory, count)
+    while file ~= nil do
+        allFiles[count] = file
+        count = count + 1
+        file = reaper.EnumerateFiles(directory, count)
+    end
+    return count, allFiles
+end
+
+function TableIncludes(t, value)
+    for i, v  in ipairs(t) do
+        if v == value then return true, i end
+    end
+end
+
+function MoveFile(source, destination, file)
+    source = source .. SLASH .. file
+    destination = destination .. SLASH .. file
+    local src = io.open(source, "rb")
+    if src == nil then return end
+    local contents = src:read("*all")
+    src:close()
+    local dst = io.open(destination, "wb")
+    dst:write(contents)
+    dst:close()
+end
+
+local fxDir = REAPATH .. SLASH .. "FXChains" .. SLASH .. "VO-Workflow"
+local srcDir = SCRIPT_PATH .. SLASH .. "data"
+local missingFiles = {}
+if reaper.file_exists(fxDir) then
+    local destCount, destFiles = FindFiles(fxDir)
+    local sourceCount, sourceFiles = FindFiles(srcDir)
+    for i, v in ipairs(sourceFiles) do
+        if v == "ExcelToLua.py" then
+            table.remove(sourceFiles, i)
+            goto next
+        end
+        local r, idx = TableIncludes(destFiles, v)
+        if not r then
+            MoveFile(srcDir, fxDir, v)
+        end
+        ::next::
+    end
+else
+    local _, files = FindFiles(srcDir)
+    for file in files do
+        MoveFile(srcDir, fxDir, file)
+    end
 end
 
 LUFSManager = {}
