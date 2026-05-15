@@ -34,4 +34,5 @@ for i = 0, regs + marks do
 end
 
 ret, isr, regPos, regEnd, regName, MarInx = reaper.EnumProjectMarkers(compSel)
+
 reaper.AddProjectMarker(0, true, beginning, last, string.format("%s_%s", tostring(regName), "ALT"), 1)

@@ -75,6 +75,9 @@ for idx, line in ipairs(lines) do
         -- Msg(line)
         startingElement = idx
         break
+    else
+        Msg("NOT FOUND")
+        return
     end
 end
 

@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.23
+version: 1.30
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -12,15 +12,13 @@ provides:
   [main] wnlowe_playMatchFile_whispered.lua
   [main] wnlowe_playMatchFile_yelled.lua
   [main] wnlowe_resetMatchFolder.lua
+  [main] wnlowe_addAltRegion.lua
+  [nomain] data/monitor.RfxChain > FXChains/monitor.RfxChain
+  [nomain] data/voBase.RfxChain > FXChains/voBase.RfxChain
 changelog:
-    1.23
-    # Updating colors and color logic
-    1.22.1
-    # Renaming Script
-   1.22
-   # Fixed Action Bugs
-   1.21
-   # Match File Character Specific Bug
+    1.30
+    # fixed nil value bugs
+    # initial attempt at including FX Chains in the repo
 ]]
 
 local DEBUG = true
@@ -86,6 +84,8 @@ function LUFSManager:new()
     instance.VOFXFromStart = false
 
     instance.NumLoudnessCategories = 3
+
+    instance.AltAction = nil
     return instance
 end
 
@@ -134,11 +134,6 @@ function LUFSManager:LoadMetadata()
         self.VOFXTiming = m["VOFXTiming"] or self.VOFXTiming
         self.VOFXAddTime = self:EvaluateBoolMetadata(m["VOFXAddTime"]) or self.VOFXAddTime
         self.VOFXFromStart = self:EvaluateBoolMetadata(m["VOFXFromStart"]) or self.VOFXFromStart
-        -- self.WhisperedTargetI, self.SpokenTargetI, self.YelledTargetI = table.unpack(m["TargetsI"])
-        -- self.WhisperedTargetM, self.SpokenTargetM, self.YelledTargetM = table.unpack(m["TargetsM"])
-        -- self.WhisperedOffset = m["Offsets"][1]
-        -- self.SpokenOffset = m["Offsets"][2]
-        -- self.YelledOffset = m["Offsets"][3]
     end
     if directories then
         local d = directories
@@ -170,6 +165,7 @@ function LUFSManager:FindActions()
         ["Script: wnlowe_resetMatchFolder.lua"] = function(id) self.RefreshMatchAction = id end,
         ["Script: wnlowe_stopAllPreviews.lua"] = function(id) self.StopMatchAction = id end,
         ["Script: wnlowe_VOFXRegions_Illusion.lua"] = function(id) self.VOFXAction = id end,
+        ["Script: wnlowe_addAltRegion.lua"] = function(id) self.AltAction = id end
     }
     local section = 0
     local i = 0
@@ -177,7 +173,7 @@ function LUFSManager:FindActions()
         local r, name = reaper.kbd_enumerateActions(section, i)
         if r and r ~= 0 and actionNames[name] then actionNames[name](r) end
         i = i + 1
-    until not r or r == 0 or (self.ShoutedLUFSAction and self.SpokenLUFSAction and self.WhisperedLUFSAction and self.YelledLUFSAction and self.VOFXAction)
+    until not r or r == 0
 end
 
 function LUFSManager:SerializeMetadata()
@@ -345,8 +341,8 @@ function Gui:DrawMainSection()
         local text = string.format("LUFS %s", manager.LoudnessCategories[i] or ("Level " .. i))
         local textW, textH = imgui.CalcTextSize(CTX, text)
         imgui.PushStyleColor(CTX, imgui.Col_Button, manager.TargetColors[i] or 0x000000FF)
-        imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, math.floor((manager.TargetColors[i]-70)) or 0x000000FF)
-        if imgui.Button(CTX, text, textW + 15, buttonHeight) then
+        imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, math.floor(((manager.TargetColors[i] or 0x000000FF)-70)) or 0x000000FF)
+        if imgui.Button(CTX, text, (textW or 50) + 15, buttonHeight) then
             local action = nil
             local succeed, result = pcall(function() action = manager.LUFSActions[i] end)
             if not succeed then manager:FindActions() end
@@ -368,7 +364,7 @@ function Gui:DrawMainSection()
         local text = string.format("Match %s", manager.LoudnessCategories[i] or ("Level " .. i))
         local textW, textH = imgui.CalcTextSize(CTX, text)
         imgui.PushStyleColor(CTX, imgui.Col_Button, manager.TargetColors[i] or 0x000000FF)
-        imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, (manager.TargetColors[i]-70) or 0x000000FF)
+        imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, ((manager.TargetColors[i] or 0x000000FF)-70) or 0x000000FF)
         if imgui.Button(CTX, text, textW + 15, buttonHeight) then
             local action = nil
             local succeed, result = pcall(function() action = manager.MatchActions[i] end)
@@ -385,7 +381,12 @@ function Gui:DrawMainSection()
     imgui.SameLine(CTX)
     if imgui.Button(CTX, "VOFX", 75, buttonHeight) then
         reaper.Main_OnCommand(manager.VOFXAction, 0)
-        -- Msg(items[combo_flags.current_selected]['func']('test', 1))
+        self.maintainFocus = false
+    end
+
+    imgui.SameLine(CTX)
+    if imgui.Button(CTX, "Alt", 75, buttonHeight) then
+        reaper.Main_OnCommand(manager.AltAction, 0)
         self.maintainFocus = false
     end
 
