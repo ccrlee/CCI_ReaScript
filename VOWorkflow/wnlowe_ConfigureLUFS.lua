@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.34
+version: 1.35
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -16,6 +16,8 @@ provides:
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
+    1.35
+    # Attempting to fix Mac bugs
     1.34
     # move file logic bugs
     1.32
@@ -27,7 +29,7 @@ changelog:
     # initial attempt at including FX Chains in the repo
 ]]
 
-local DEBUG = true
+local DEBUG = false
 local USEROSWIN = reaper.GetOS():match("Win")
 local REAPATH = reaper.GetResourcePath()
 local SCRIPT_PATH = debug.getinfo(1,'S').source:match[[^@?(.*[\/])[^\/]-$]]
@@ -39,7 +41,6 @@ package.path = package.path .. ";" .. reaper.ImGui_GetBuiltinPath() .. '/?.lua'
 local imgui = require 'imgui' '0.10'
 local CTX
 local WINDOW_SIZE = { width = 400, height = 100 }
-local combo_flags = { current_selected = 1 }
 
 local VSDEBUG
 local s, r = pcall(function()
@@ -71,20 +72,26 @@ function TableIncludes(t, value)
 end
 
 function MoveFile(source, destination, file)
-    source = source .. SLASH .. file
-    destination = destination .. SLASH .. file
-    local src = io.open(source, "rb")
+    local sourceFile = source .. SLASH .. file
+    local destinationFile = destination .. SLASH .. file
+    local src = io.open(sourceFile, "rb")
     if src == nil then return end
     local contents = src:read("*all")
     src:close()
-    local dst = io.open(destination, "wb")
+    local dst = io.open(destinationFile, "wb")
+    if dst == nil then
+        if USEROSWIN then os.execute('mkdir "' .. destination .. '"')
+        else os.execute('mkdir -p "' .. destination .. '"')
+        end
+        dst = io.open(destinationFile, "wb")
+        if dst == nil then return end
+    end
     dst:write(contents)
     dst:close()
 end
 
 local fxDir = REAPATH .. SLASH .. "FXChains" .. SLASH .. "VO-Workflow"
-local srcDir = SCRIPT_PATH .. SLASH .. "data"
-local missingFiles = {}
+local srcDir = SCRIPT_PATH .. "data"
 if reaper.file_exists(fxDir) then
     local destCount, destFiles = FindFiles(fxDir)
     local sourceCount, sourceFiles = FindFiles(srcDir)
@@ -159,15 +166,13 @@ function LUFSManager:EvaluateBoolMetadata(value)
 end
 
 function LUFSManager:LoadMetadata()
-    local projectPath = reaper.GetProjectPath()
-    local dir = nil
-    if projectPath ~= "" and projectPath ~= "C:\\Users\\ccuts\\Documents\\REAPER Media" then
-        dir = projectPath
-    else
+    local _, projectFile = reaper.EnumProjects(-1)
+    if projectFile == "" then
         self.unsavedSession = true
         self:FindActions()
         return false
     end
+    local dir = reaper.GetProjectPath()
 
     local filePath = dir.. SLASH .. "LoudnessSettings.lua"
     local r = reaper.file_exists(filePath)
