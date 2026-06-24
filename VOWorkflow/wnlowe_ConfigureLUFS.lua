@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.35
+version: 1.36
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -16,6 +16,8 @@ provides:
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
+    1.36
+    # Fixing Settings Window Collapse
     1.35
     # Attempting to fix Mac bugs
     1.34
@@ -570,9 +572,9 @@ function Gui:DrawSettingsWindow()
             --local c, v = imgui.ColorEdit4(CTX, string.format("%s Hover Color", categories[i]), manager.CategoryColors[i][2])
             --if c then manager.CategoryColors = v end
         end
-
+        imgui.End(CTX)
     end
-    imgui.End(CTX)
+    
     if not open then self.showSettings = false manager:SaveMetadata() self.maintainFocus = false end
 end
 

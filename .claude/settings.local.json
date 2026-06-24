@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebSearch",
+      "WebFetch(domain:gitlab.com)",
+      "WebFetch(domain:forums.cockos.com)",
+      "WebFetch(domain:group.reaget.com)",
+      "WebFetch(domain:forum.cockos.com)"
+    ]
+  }
+}
