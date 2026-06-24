@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.36
+version: 1.37
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -16,6 +16,8 @@ provides:
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
+    1.37
+    # Updating naming logic for match file playing
     1.36
     # Fixing Settings Window Collapse
     1.35

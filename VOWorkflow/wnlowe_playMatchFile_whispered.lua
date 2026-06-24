@@ -3,30 +3,15 @@
 
 
 
-local LOUDNESS = "whispered"
+local INDEX = 1
 local PROJECT = reaper.GetProjectPath("")
 local METADATA = PROJECT.."/LoudnessSettings.lua"
-local OSWIN = reaper.GetOS():match("Win")
-local SLASH = OSWIN and "\\" or "/"
-local FOLDERS, FULL_FILES, REF_TRACK, FILES
+local FOLDERS, FULL_FILES, REF_TRACK, FILES, NAMES
 
 
 --HELPER FUNCTIONS
-local ifdebug = true
+local ifdebug = false
 function Msg(variable) if ifdebug then reaper.ShowConsoleMsg(tostring(variable) .. "\n") end end
-
---
-local function FindAction(actionName)
-    local section = 0
-    local i = 0
-    repeat
-        local r, name = reaper.kbd_enumerateActions(section, i)
-        if r and r ~= 0 and actionName == name then return r end
-        i = i + 1
-    until not r or r == 0
-
-    reaper.ShowMessageBox("Action " .. actionName .. " Could Not be Found!", "Script Error", 0) return 0
-end
 
 -- MAIN FUNCTIONS
 local function loadData()
@@ -34,7 +19,7 @@ local function loadData()
     if not r then reaper.ShowMessageBox("Loudness Settings file not found!", "Script Error", 0) return false end
 
     local m, directories = dofile(METADATA)
-
+    NAMES = m["LoudnessCategories"]
     -- FOLDERS = directories["folders"]
     FULL_FILES = directories["files"]
     local trackGUID = directories["referenceTrack"]
@@ -43,9 +28,9 @@ local function loadData()
     local character = directories["character"]
     if character ~= "All" then
         local fileParent = FULL_FILES[character]
-        FILES = fileParent[LOUDNESS]
+        FILES = fileParent[NAMES[INDEX]]
     else
-        FILES = FULL_FILES[LOUDNESS]
+        FILES = FULL_FILES[NAMES[INDEX]]
     end
 
 end
@@ -58,10 +43,10 @@ local lineSelection = math.random(#FILES)
 Msg("Selected file: " .. FILES[lineSelection])
 
 Msg("File exists: " .. tostring(reaper.file_exists(FILES[lineSelection])))
-if not FILES[lineSelection] then return end
+
 local source = reaper.PCM_Source_CreateFromFile( FILES[lineSelection] )
 Msg("Source: " .. tostring(source))
-
+if not FILES[lineSelection] then return end
 if not source then
     reaper.ShowMessageBox("Failed to create PCM source from file!", "Error", 0)
     return
