@@ -5,6 +5,7 @@ function Msg(variable)
 end
 
 numItems = reaper.CountSelectedMediaItems(0)
+if numItems < 1 then return end
 allItems = {}
 fileName = ""
 for i = 0, numItems do

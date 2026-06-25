@@ -38,6 +38,8 @@ end
 reaper.CF_Preview_StopAll()
 loadData()
 
+if FILES == nil then return end
+
 local lineSelection = math.random(#FILES)
 
 Msg("Selected file: " .. FILES[lineSelection])

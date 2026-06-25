@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.37
+version: 1.38
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -16,21 +16,14 @@ provides:
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
+    1.38
+    # Misc crash fixes
     1.37
     # Updating naming logic for match file playing
     1.36
     # Fixing Settings Window Collapse
     1.35
     # Attempting to fix Mac bugs
-    1.34
-    # move file logic bugs
-    1.32
-    # added move file logic for the FX Chains
-    1.31
-    # attempting to relocate the FX Chains to the correct directory
-    1.30
-    # fixed nil value bugs
-    # initial attempt at including FX Chains in the repo
 ]]
 
 local DEBUG = false

@@ -1,12 +1,15 @@
 --[[
 description: Resizing regions to selected item(s)
 author: William N. Lowe
-version: 2.0
+version: 2.1
 changelog:
+    2.1
+    # Fixing crash if no item selected
     2.0
     # Initial reapack integration
 ]]
 numItems = reaper.CountSelectedMediaItems(0)
+if numItems < 1 then return end
 allItems = {}
 
 for i = 0, numItems do

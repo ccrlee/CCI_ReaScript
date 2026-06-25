@@ -152,6 +152,7 @@ for i = 0, numItems - 1 do
 end
 
 local lastEndTime = nil
+if #allItems == 0 then return end
 for i = 0, #allItems do
     local item = allItems[i]
     if i ~= 0 then

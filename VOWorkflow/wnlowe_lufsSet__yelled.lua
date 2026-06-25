@@ -36,8 +36,13 @@ end
 
 local numItems = reaper.CountSelectedMediaItems(0)
 if numItems > 1 then
-   for i = 0, numItems do
+   for i = 0, numItems - 1 do
     local item = reaper.GetSelectedMediaItem(0, i)
+    if item == nil then
+        reaper.ShowMessageBox("Item not found", "Error", 0)
+        reaper.ThemeLayout_RefreshAll()
+        return
+     end
     setLUFS(item)
    end
 elseif numItems == 1 then setLUFS(reaper.GetSelectedMediaItem(0, 0))
