@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.39
+version: 1.40
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -16,6 +16,8 @@ provides:
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
+    1.40
+    # Fixed mismatched action button alignment for yelled & shouted
     1.39
     # Misc crash fixes
     1.37
@@ -220,14 +222,14 @@ end
 
 function LUFSManager:FindActions()
     local actionNames = {
-        ["Script: wnlowe_lufsSet__shouted.lua"] = function(id) self.LUFSActions[4] = id end,
+        ["Script: wnlowe_lufsSet__yelled.lua"] = function(id) self.LUFSActions[4] = id end,
         ["Script: wnlowe_lufsSet__spoken.lua"] = function(id) self.LUFSActions[2] = id end,
         ["Script: wnlowe_lufsSet__whisper.lua"] = function(id) self.LUFSActions[1] = id end,
-        ["Script: wnlowe_lufsSet__yelled.lua"] = function(id) self.LUFSActions[3] = id end,
-        ["Script: wnlowe_playMatchFile_shouted.lua"] = function(id) self.MatchActions[4] = id end,
+        ["Script: wnlowe_lufsSet__shouted.lua"] = function(id) self.LUFSActions[3] = id end,
+        ["Script: wnlowe_playMatchFile_yelled.lua"] = function(id) self.MatchActions[4] = id end,
         ["Script: wnlowe_playMatchFile_spoken.lua"] = function(id) self.MatchActions[2] = id end,
         ["Script: wnlowe_playMatchFile_whispered.lua"] = function(id) self.MatchActions[1] = id end,
-        ["Script: wnlowe_playMatchFile_yelled.lua"] = function(id) self.MatchActions[3] = id end,
+        ["Script: wnlowe_playMatchFile_shouted.lua"] = function(id) self.MatchActions[3] = id end,
         ["Script: wnlowe_resetMatchFolder.lua"] = function(id) self.RefreshMatchAction = id end,
         ["Script: wnlowe_stopAllPreviews.lua"] = function(id) self.StopMatchAction = id end,
         ["Script: wnlowe_VOFXRegions_Illusion.lua"] = function(id) self.VOFXAction = id end,
