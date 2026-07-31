@@ -80,7 +80,7 @@ local function findDirectory(dir)
 
     local directories = {}
     for k,v in pairs(META_INFO["LoudnessCategories"]) do
-        directories[v] = true
+        directories[v:lower()] = true
     end
     directories["characters"] = {}
     for _, f in ipairs(folders) do
@@ -116,7 +116,7 @@ local function getFiles(subTable)
             for key2, value2 in pairs(value) do
                 files[key2] = getFiles(value2)
             end
-        elseif value then
+        elseif type(value) == "string" then
             files[key] = FindFiles(value)
         end
     end
@@ -134,16 +134,14 @@ local function findRefTrack()
     end
 end
 
+LoadMetadata()
+
 FOLDERS = findDirectory()
 FULL_FILES = getFiles()
-
-LoadMetadata()
 
 local directory_info = {folders = FOLDERS, files = FULL_FILES, referenceTrack = findRefTrack(), character = "All"}
 
 local strDirectory = SerializeTable(directory_info)
-
-
 
 local strMetadata = META_INFO and SerializeTable(META_INFO) or "{}"
 

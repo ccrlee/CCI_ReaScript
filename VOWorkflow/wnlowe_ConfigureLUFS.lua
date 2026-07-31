@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.41
+version: 1.42
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -16,6 +16,8 @@ provides:
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
+    1.42
+    # Making all level names lowercase
     1.41
     # Fixed match file logic in playMatchFile files and
         settings menu display
@@ -128,7 +130,7 @@ function LUFSManager:new()
 
     instance.MetadataFilePath = nil
 
-    instance.LoudnessCategories = {"Whispered", "Spoken", "Yelled"}
+    instance.LoudnessCategories = {"whispered", "spoken", "yelled"}
     instance.TargetsI = {-20, -18, -14}
     instance.TargetsM = {-16, -15, -11}
     instance.TargetOffsets = {0, 0, 0}
@@ -200,6 +202,9 @@ function LUFSManager:LoadMetadata()
         self.VOFXModes = m["VOFXModes"] or self.VOFXModes
         self.VOFXSel = m['VOFXSel'] or self.VOFXSel
         self.LoudnessCategories = m["LoudnessCategories"] or self.LoudnessCategories
+        for i, v in ipairs(self.LoudnessCategories) do
+            self.LoudnessCategories[i] = v:lower()
+        end
         self.TargetColors = m["TargetColors"] or self.TargetColors
         self.CategoryColors = m["CategoryColors"] or self.CategoryColors
         self.VOFXTiming = m["VOFXTiming"] or self.VOFXTiming
@@ -354,6 +359,10 @@ function Gui:SavedSession()
     manager:SaveMetadata()
 end
 
+function Gui:MakeSentenceCase(word)
+    return word:sub(1,1):upper() .. word:sub(2)
+end
+
 function Gui:DrawMainSection()
     local manager = self.manager
     local inputSize = ((560 / 3) + 5) * (manager.NumLoudnessCategories)
@@ -410,7 +419,7 @@ function Gui:DrawMainSection()
     imgui.PushStyleColor(CTX, imgui.Col_BorderShadow, 0x000000FF)
     for i = 1, manager.NumLoudnessCategories do
         imgui.SameLine(CTX)
-        local text = string.format("LUFS %s", manager.LoudnessCategories[i] or ("Level " .. i))
+        local text = string.format("LUFS %s", self.MakeSentenceCase(manager.LoudnessCategories[i]) or ("Level " .. i))
         local textW, textH = imgui.CalcTextSize(CTX, text)
         imgui.PushStyleColor(CTX, imgui.Col_Button, manager.TargetColors[i] or 0x000000FF)
         imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, math.floor(((manager.TargetColors[i] or 0x000000FF)-70)) or 0x000000FF)
@@ -433,7 +442,7 @@ function Gui:DrawMainSection()
     imgui.PushStyleColor(CTX, imgui.Col_BorderShadow, 0x000000FF)
     for i = 1, manager.NumLoudnessCategories do
         imgui.SameLine(CTX)
-        local text = string.format("Match %s", manager.LoudnessCategories[i] or ("Level " .. i))
+        local text = string.format("Match %s", self.MakeSentenceCase(manager.LoudnessCategories[i]) or ("Level " .. i))
         local textW, textH = imgui.CalcTextSize(CTX, text)
         imgui.PushStyleColor(CTX, imgui.Col_Button, manager.TargetColors[i] or 0x000000FF)
         imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, ((manager.TargetColors[i] or 0x000000FF)-70) or 0x000000FF)
@@ -527,7 +536,7 @@ function Gui:DrawSettingsWindow()
 
         for i = 1, manager.NumLoudnessCategories do
             local c, v = imgui.InputText(CTX, string.format("Loudness Level %d ##LL%dL", i, i), manager.LoudnessCategories[i])
-            if c then manager.LoudnessCategories[i] = v end
+            if c then manager.LoudnessCategories[i] = v:lower() end
         end
 
         imgui.TextDisabled(CTX, "Integrated Loudness Targets")
