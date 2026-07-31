@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.40
+version: 1.41
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -16,6 +16,9 @@ provides:
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
+    1.41
+    # Fixed match file logic in playMatchFile files and
+        settings menu display
     1.40
     # Fixed mismatched action button alignment for yelled & shouted
     1.39
@@ -210,6 +213,7 @@ function LUFSManager:LoadMetadata()
         self.referenceTrack = d["referenceTrack"]
         self.character = d["character"]
     end
+    self.characterTable = {[1] = "All"}
     local counter = 2
     if self.folders["characters"] then
         for k, v in pairs(self.folders["characters"]) do
@@ -492,22 +496,11 @@ function Gui:DrawSettingsWindow()
         local c, newV = imgui.InputDouble(CTX, "Cutoff Time between LUFS-M and LUFS-I ##CT", manager.CutoffTime, 0.5, 1.0, "%.2f")
         if c then manager.CutoffTime = newV manager:SaveMetadata() end
 
-        local count = 0
-        local dropdown = false
-        for _ in pairs(manager.folders) do
-            count = count + 1
-            if count > 3 then
-                dropdown = true
-                break
-            end
-        end
-        if dropdown then
-            local c, v = imgui.Combo(CTX, "Character Match Selection ##CMS", manager.characterIdx, table.concat(manager.characterTable, "\0") .. "\0")
+        local c, v = imgui.Combo(CTX, "Character Match Selection ##CMS", manager.characterIdx, table.concat(manager.characterTable, "\0") .. "\0")
             if c then
                 manager.characterIdx = v
                 manager.character = manager.characterTable[v + 1]
             end
-        end
 
         if not self.vofxSettings then self.vofxSettings = table.concat(manager.VOFXModes, "\0") .. "\0" end
         local c, v = imgui.Combo(CTX, "VOFX Mode ##CVOFX", manager.VOFXSel, self.vofxSettings)

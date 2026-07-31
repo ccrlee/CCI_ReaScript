@@ -78,7 +78,11 @@ local function findDirectory(dir)
     until not folder
 
 
-    local directories = { whispered = false, spoken = false, yelled = false, shouted = false, characters = {} }
+    local directories = {}
+    for k,v in pairs(META_INFO["LoudnessCategories"]) do
+        directories[v] = true
+    end
+    directories["characters"] = {}
     for _, f in ipairs(folders) do
         if directories[string.lower(f)] ~= nil then
             directories[string.lower(f)] = directory .. SLASH .. f

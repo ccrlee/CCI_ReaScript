@@ -13,6 +13,18 @@ local FOLDERS, FULL_FILES, REF_TRACK, FILES, NAMES
 local ifdebug = false
 function Msg(variable) if ifdebug then reaper.ShowConsoleMsg(tostring(variable) .. "\n") end end
 
+local function collectCategoryFiles(tbl, category, out)
+    for key, value in pairs(tbl) do
+        if type(value) == "table" then
+            if key == category and #value > 0 then
+                table.move(value, 1, #value, #out + 1, out)
+            else
+                collectCategoryFiles(value, category, out)
+            end
+        end
+    end
+end
+
 -- MAIN FUNCTIONS
 local function loadData()
     local r = reaper.file_exists(METADATA)
@@ -31,16 +43,31 @@ local function loadData()
         FILES = fileParent[NAMES[INDEX]]
     else
         FILES = FULL_FILES[NAMES[INDEX]]
+        if FILES == nil then
+            local all_files = {}
+            collectCategoryFiles(FULL_FILES, NAMES[INDEX], all_files)
+            FILES = all_files
+        end
     end
 
 end
 
+
+
 reaper.CF_Preview_StopAll()
 loadData()
 
-if FILES == nil then return end
+if FILES == nil then
+    reaper.ShowMessageBox("FILES are not found\nTry running Refresh Match", "Error", 0)
+    return
+end
 
 local lineSelection = math.random(#FILES)
+
+if not FILES[lineSelection] then
+    reaper.ShowMessageBox("FILES[lineSelection] is not found\nTry running Refresh Match", "Error", 0)
+    return
+end
 
 Msg("Selected file: " .. FILES[lineSelection])
 
@@ -48,7 +75,7 @@ Msg("File exists: " .. tostring(reaper.file_exists(FILES[lineSelection])))
 
 local source = reaper.PCM_Source_CreateFromFile( FILES[lineSelection] )
 Msg("Source: " .. tostring(source))
-if not FILES[lineSelection] then return end
+
 if not source then
     reaper.ShowMessageBox("Failed to create PCM source from file!", "Error", 0)
     return
