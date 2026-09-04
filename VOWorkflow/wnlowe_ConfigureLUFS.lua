@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.42
+version: 1.43
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -16,6 +16,8 @@ provides:
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
+    1.43
+    # Unhandled empty name bug fixed
     1.42
     # Making all level names lowercase
     1.41
@@ -360,6 +362,7 @@ function Gui:SavedSession()
 end
 
 function Gui:MakeSentenceCase(word)
+    if not word or word == "" then return word end
     return word:sub(1,1):upper() .. word:sub(2)
 end
 
@@ -642,7 +645,7 @@ function App:Run()
         self.manager:SaveMetadata()
         reaper.Main_OnCommand(self.manager.RefreshMatchAction, 0)
         self.manager:LoadMetadata()
-        end
+    end
 end
 
 local app = App:new()
