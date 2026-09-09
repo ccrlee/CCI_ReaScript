@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.43
+version: 1.44
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -16,23 +16,14 @@ provides:
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
+    1.44
+    # Fixed boot crash with misplaced End
+    # Aligned all Shouted and Yelled actions
+    # Fixed name display bug
     1.43
     # Unhandled empty name bug fixed
     1.42
     # Making all level names lowercase
-    1.41
-    # Fixed match file logic in playMatchFile files and
-        settings menu display
-    1.40
-    # Fixed mismatched action button alignment for yelled & shouted
-    1.39
-    # Misc crash fixes
-    1.37
-    # Updating naming logic for match file playing
-    1.36
-    # Fixing Settings Window Collapse
-    1.35
-    # Attempting to fix Mac bugs
 ]]
 
 local DEBUG = false
@@ -132,7 +123,7 @@ function LUFSManager:new()
 
     instance.MetadataFilePath = nil
 
-    instance.LoudnessCategories = {"whispered", "spoken", "yelled"}
+    instance.LoudnessCategories = {"whispered", "spoken", "shouted"}
     instance.TargetsI = {-20, -18, -14}
     instance.TargetsM = {-16, -15, -11}
     instance.TargetOffsets = {0, 0, 0}
@@ -233,14 +224,14 @@ end
 
 function LUFSManager:FindActions()
     local actionNames = {
-        ["Script: wnlowe_lufsSet__yelled.lua"] = function(id) self.LUFSActions[4] = id end,
+        ["Script: wnlowe_lufsSet__yelled.lua"] = function(id) self.LUFSActions[3] = id end,
         ["Script: wnlowe_lufsSet__spoken.lua"] = function(id) self.LUFSActions[2] = id end,
         ["Script: wnlowe_lufsSet__whisper.lua"] = function(id) self.LUFSActions[1] = id end,
-        ["Script: wnlowe_lufsSet__shouted.lua"] = function(id) self.LUFSActions[3] = id end,
-        ["Script: wnlowe_playMatchFile_yelled.lua"] = function(id) self.MatchActions[4] = id end,
+        ["Script: wnlowe_lufsSet__shouted.lua"] = function(id) self.LUFSActions[4] = id end,
+        ["Script: wnlowe_playMatchFile_yelled.lua"] = function(id) self.MatchActions[3] = id end,
         ["Script: wnlowe_playMatchFile_spoken.lua"] = function(id) self.MatchActions[2] = id end,
         ["Script: wnlowe_playMatchFile_whispered.lua"] = function(id) self.MatchActions[1] = id end,
-        ["Script: wnlowe_playMatchFile_shouted.lua"] = function(id) self.MatchActions[3] = id end,
+        ["Script: wnlowe_playMatchFile_shouted.lua"] = function(id) self.MatchActions[4] = id end,
         ["Script: wnlowe_resetMatchFolder.lua"] = function(id) self.RefreshMatchAction = id end,
         ["Script: wnlowe_stopAllPreviews.lua"] = function(id) self.StopMatchAction = id end,
         ["Script: wnlowe_VOFXRegions_Illusion.lua"] = function(id) self.VOFXAction = id end,
@@ -362,7 +353,8 @@ function Gui:SavedSession()
 end
 
 function Gui:MakeSentenceCase(word)
-    if not word or word == "" then return word end
+    Msg(word)
+    if word == nil or word == "" then return word end
     return word:sub(1,1):upper() .. word:sub(2)
 end
 
@@ -422,7 +414,9 @@ function Gui:DrawMainSection()
     imgui.PushStyleColor(CTX, imgui.Col_BorderShadow, 0x000000FF)
     for i = 1, manager.NumLoudnessCategories do
         imgui.SameLine(CTX)
-        local text = string.format("LUFS %s", self.MakeSentenceCase(manager.LoudnessCategories[i]) or ("Level " .. i))
+        -- Msg(manager.LoudnessCategories[i])
+        -- Msg(self.MakeSentenceCase(manager.LoudnessCategories[i]))
+        local text = string.format("LUFS %s", self:MakeSentenceCase(manager.LoudnessCategories[i]) or ("Level " .. i))
         local textW, textH = imgui.CalcTextSize(CTX, text)
         imgui.PushStyleColor(CTX, imgui.Col_Button, manager.TargetColors[i] or 0x000000FF)
         imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, math.floor(((manager.TargetColors[i] or 0x000000FF)-70)) or 0x000000FF)
@@ -445,7 +439,7 @@ function Gui:DrawMainSection()
     imgui.PushStyleColor(CTX, imgui.Col_BorderShadow, 0x000000FF)
     for i = 1, manager.NumLoudnessCategories do
         imgui.SameLine(CTX)
-        local text = string.format("Match %s", self.MakeSentenceCase(manager.LoudnessCategories[i]) or ("Level " .. i))
+        local text = string.format("Match %s", self:MakeSentenceCase(manager.LoudnessCategories[i]) or ("Level " .. i))
         local textW, textH = imgui.CalcTextSize(CTX, text)
         imgui.PushStyleColor(CTX, imgui.Col_Button, manager.TargetColors[i] or 0x000000FF)
         imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, ((manager.TargetColors[i] or 0x000000FF)-70) or 0x000000FF)
@@ -596,8 +590,9 @@ function Gui:Draw()
             manager:LoadMetadata()
             self.firstRun = false
         end
+        imgui.End(CTX)
     end
-    imgui.End(CTX)
+
 
     manager.open = open
     if not manager.open then

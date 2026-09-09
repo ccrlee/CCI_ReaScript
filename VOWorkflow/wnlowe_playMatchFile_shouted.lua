@@ -3,7 +3,7 @@
 
 
 
-local INDEX = 3
+local INDEX = 4
 local PROJECT = reaper.GetProjectPath("")
 local METADATA = PROJECT.."/LoudnessSettings.lua"
 local FOLDERS, FULL_FILES, REF_TRACK, FILES, NAMES
