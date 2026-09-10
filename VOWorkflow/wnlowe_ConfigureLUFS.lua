@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.44
+version: 1.45
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -16,14 +16,12 @@ provides:
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
+    1.45
+    # Lingering Shouted/Yelled mismatch repaired
     1.44
     # Fixed boot crash with misplaced End
     # Aligned all Shouted and Yelled actions
     # Fixed name display bug
-    1.43
-    # Unhandled empty name bug fixed
-    1.42
-    # Making all level names lowercase
 ]]
 
 local DEBUG = false
@@ -123,7 +121,7 @@ function LUFSManager:new()
 
     instance.MetadataFilePath = nil
 
-    instance.LoudnessCategories = {"whispered", "spoken", "shouted"}
+    instance.LoudnessCategories = {"whispered", "spoken", "yelled"}
     instance.TargetsI = {-20, -18, -14}
     instance.TargetsM = {-16, -15, -11}
     instance.TargetOffsets = {0, 0, 0}
