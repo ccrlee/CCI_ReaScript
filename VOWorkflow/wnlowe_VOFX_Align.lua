@@ -21,11 +21,21 @@ function RetCheck(ret, msg)
 end
 
 function SerializeTable(tableVar)
-
+    if type(tableVar) == "table" then
+        local parts = {}
+        for k, v in pairs(tableVar) do
+            table.insert(parts, string.format("[%s] = %s", SerializeTable(k), SerializeTable(v)))
+        end
+        return "{" .. table.concat(parts, ",") .. "}"
+    else
+        return string.format("%q", tableVar)
+    end
 end
 
 function DeserializeTable(str)
-
+    local ret, err = load("return " .. str)
+    if ret then return ret() end
+    reaper.ReaScriptError("!" .. err)
 end
 
 function UpdateState()
