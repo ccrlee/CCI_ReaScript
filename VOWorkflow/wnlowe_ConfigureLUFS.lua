@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.45
+version: 1.46
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -16,12 +16,8 @@ provides:
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
-    1.45
-    # Lingering Shouted/Yelled mismatch repaired
-    1.44
-    # Fixed boot crash with misplaced End
-    # Aligned all Shouted and Yelled actions
-    # Fixed name display bug
+    1.46
+    # Trying new uppercase bug fix
 ]]
 
 local DEBUG = false
@@ -414,7 +410,7 @@ function Gui:DrawMainSection()
         imgui.SameLine(CTX)
         -- Msg(manager.LoudnessCategories[i])
         -- Msg(self.MakeSentenceCase(manager.LoudnessCategories[i]))
-        local text = string.format("LUFS %s", self:MakeSentenceCase(manager.LoudnessCategories[i]) or ("Level " .. i))
+        local text = string.format("LUFS %s", manager.LoudnessCategories[i] or ("Level " .. i))
         local textW, textH = imgui.CalcTextSize(CTX, text)
         imgui.PushStyleColor(CTX, imgui.Col_Button, manager.TargetColors[i] or 0x000000FF)
         imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, math.floor(((manager.TargetColors[i] or 0x000000FF)-70)) or 0x000000FF)
@@ -437,7 +433,7 @@ function Gui:DrawMainSection()
     imgui.PushStyleColor(CTX, imgui.Col_BorderShadow, 0x000000FF)
     for i = 1, manager.NumLoudnessCategories do
         imgui.SameLine(CTX)
-        local text = string.format("Match %s", self:MakeSentenceCase(manager.LoudnessCategories[i]) or ("Level " .. i))
+        local text = string.format("Match %s", manager.LoudnessCategories[i] or ("Level " .. i))
         local textW, textH = imgui.CalcTextSize(CTX, text)
         imgui.PushStyleColor(CTX, imgui.Col_Button, manager.TargetColors[i] or 0x000000FF)
         imgui.PushStyleColor(CTX, imgui.Col_ButtonHovered, ((manager.TargetColors[i] or 0x000000FF)-70) or 0x000000FF)
