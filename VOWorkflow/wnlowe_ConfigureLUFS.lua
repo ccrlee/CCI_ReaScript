@@ -13,7 +13,7 @@ provides:
   [main] wnlowe_playMatchFile_yelled.lua
   [main] wnlowe_resetMatchFolder.lua
   [main] wnlowe_addAltRegion.lua
-  [main] wnlowe_VOFX_align.lua
+  [main] wnlowe_VOFX_Align.lua
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
