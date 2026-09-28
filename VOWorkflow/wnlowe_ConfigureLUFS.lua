@@ -1,7 +1,7 @@
 --[[ 
 description: VO GUI Bar
 author: William N. Lowe
-version: 1.46
+version: 1.47
 provides:
   [main] wnlowe_lufsSet__shouted.lua
   [main] wnlowe_lufsSet__spoken.lua
@@ -13,11 +13,12 @@ provides:
   [main] wnlowe_playMatchFile_yelled.lua
   [main] wnlowe_resetMatchFolder.lua
   [main] wnlowe_addAltRegion.lua
+  [main] wnlowe_VOFX_align.lua
   [nomain] data/monitor.RfxChain
   [nomain] data/voBase.RfxChain
 changelog:
-    1.46
-    # Trying new uppercase bug fix
+    1.47
+    # Adding VOFX_Align script
 ]]
 
 local DEBUG = false

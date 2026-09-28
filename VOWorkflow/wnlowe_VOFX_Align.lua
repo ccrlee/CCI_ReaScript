@@ -1,8 +1,12 @@
+-- @noindex
+
 local  DEBUG = true
 local STATE = -1
 local ITEMS = {}        --List of Items Key = Base 1 Index; Value = MediaItem
 local REGIONS = {}
 local ALIGNMENT = {}
+local TRACKS = {}
+local START_TIME
 local SETTINGS = {
     destination = -1
 }
@@ -38,16 +42,23 @@ function DeserializeTable(str)
     reaper.ReaScriptError("!" .. err)
 end
 
+function GetState()
+    local is_new, scriptname, section, command, mode, resolution, val, context = reaper.get_action_context()
+
+    STATE = reaper.GetToggleCommandStateEx(section, command)
+end
+
 function UpdateState()
     local is_new, scriptname, section, command, mode, resolution, val, context = reaper.get_action_context()
 
     local state = reaper.GetToggleCommandStateEx(section, command)
-
     if state ~= 1 then
         STATE = 1
     else
         STATE = 0
     end
+    reaper.SetToggleCommandState(section, command, STATE)
+    reaper.RefreshToolbar2(section, command)
 end
 
 function SetSettings()
@@ -57,7 +68,9 @@ function SetSettings()
                         "Time (-1 for Playhead)", -- Row Title Values (CSV)
                         "-1" -- Default Values (CSV)
                     )
-    if ret then Msg(data) end
+    if ret then
+        SETTINGS.destination = data[1]
+    end
 end
 
 function GetItems()
@@ -66,9 +79,11 @@ function GetItems()
 
 
     local num_items = reaper.CountSelectedMediaItems(0)
+    if num_items == 0 then reaper.ReaScriptError("!No Items are Selected!") end
     local items = {}
-    for i = 1, num_items do
+    for i = 0, num_items - 1 do
         local item = reaper.GetSelectedMediaItem(0, i)
+        local r, itemGUID = reaper.GetSetMediaItemInfo_String(item, "GUID", "", false)
 
         local position = reaper.GetMediaItemInfo_Value(item, "D_POSITION")
         if position < earliestItem or earliestItem == -1 then
@@ -81,14 +96,14 @@ function GetItems()
             latestItem = endPos
         end
 
-        items[item] = {start = position, stop = position + length}
+        items[itemGUID] = {start = position, stop = position + length}
 
     end
     ITEMS = items
 
     local num_regions = reaper.GetNumRegionsOrMarkers( 0 )
-    for i = 1, num_regions do
-        local region = reaper.GetRegionOrMarker( 0, i)
+    for i = 0, num_regions - 1 do
+        local region = reaper.GetRegionOrMarker( 0, i, "")
         local isRegion = reaper.GetRegionOrMarkerInfo_Value(0, region, "B_ISREGION" )
         if isRegion == 1 then
             local ret, guid = reaper.GetSetRegionOrMarkerInfo_String( 0, region, "GUID", "", false )
@@ -112,43 +127,136 @@ function GetItems()
         end
     end
 
+    --ALIGNMENT Key = Region GUID; Value = Table of item GUIDs
+
     local track = reaper.GetSelectedTrack( 0, 0 )
+    if track == nil then
+        reaper.ReaScriptError("!No Track is selected.")
+        return
+    end
     local trackIdx = reaper.GetMediaTrackInfo_Value(track, "IP_TRACKNUMBER")
 
-    local i = 1
+    local i = 0
+    local startTime = -1
+    if tonumber(SETTINGS.destination) < 0 then
+        startTime = reaper.GetCursorPosition()
+    else
+        startTime = tonumber(SETTINGS.destination)
+    end
+    START_TIME = startTime
+
+    local regionColor = reaper.ColorToNative(255, 255, 0) + 0x1000000
+    local tempRegion = reaper.AddRegionOrMarker(0, false, startTime, 0, "TEMP: VOFX Align", 999999, regionColor)
+    local _, tempGUID = reaper.GetSetRegionOrMarkerInfo_String( 0, tempRegion, "GUID", "", false )
     for region, items in pairs(ALIGNMENT) do
         local newTrackIdx = i + trackIdx
         reaper.InsertTrackAtIndex(newTrackIdx, true)
         local newTrack = reaper.GetTrack(0, newTrackIdx)
-        reaper.GetSetMediaTrackInfo_String(newTrack, "P_NAME", string.format("[VOFX] %s", region.name), true)
+        reaper.GetSetMediaTrackInfo_String(newTrack, "P_NAME", string.format("[VOFX] %s", REGIONS[region].name), true)
+        local r, tguid = reaper.GetSetMediaTrackInfo_String(newTrack, "GUID", "", false)
 
-        local startTime = -1
-        if SETTINGS.destination < 0 then
-            startTime = reaper.GetCursorPosition()
-        else
-            startTime = SETTINGS.destination
-        end
+        TRACKS[tguid] = region
 
-        local originReference
-        for j, item in ipairs(items) do
-            local offset
+        local regionStart = REGIONS[region].start
+        for _, itemGUID in ipairs(items) do
+            local item = reaper.BR_GetMediaItemByGUID( 0, itemGUID )
             reaper.MoveMediaItemToTrack( item, newTrack )
-            if j == 1 then
-                originReference = item.start
-            end
-
-            offset = item.start - originReference
-
-            reaper.SetMediaItemInfo_Value(item, "D_POSITION", startTime + offset)
-
+            reaper.SetMediaItemInfo_Value(item, "D_POSITION", startTime + (ITEMS[itemGUID].start - regionStart))
         end
+        i = i + 1
     end
-
+    reaper.SetProjExtState(0, "VOFX_Align", "Edit_Point", tostring(START_TIME))
+    reaper.SetProjExtState(0, "VOFX_Align", "Tracks_Alignment", SerializeTable(TRACKS))
+    local r, guid = reaper.GetSetMediaTrackInfo_String(track, "GUID", "", false)
+    reaper.SetProjExtState(0, "VOFX_Align", "Edit_Track", guid)
+    reaper.SetProjExtState(0, "VOFX_Align", "Temp_Region", tempGUID)
 end
 
-SetSettings()
+reaper.Undo_BeginBlock()
+reaper.PreventUIRefresh(1)
 
 
+GetState()
+
+if STATE ~= 1 then
+    GetItems()
+else
+    local stateValues = {}
+    local count = 0
+    local i = 0
+    while true do
+        local exists, key, value = reaper.EnumProjExtState(0, "VOFX_Align", i)
+        if not exists then break end
+        stateValues[key] = value
+        count = count + 1
+        i = i + 1
+    end
+
+    if count < 4 then
+        reaper.ReaScriptError("!State Recall Failed! Found " .. count .. " keys")
+        return
+    end
+    if stateValues["TRACKS_ALIGNMENT"] ~= nil then
+        local value = stateValues["TRACKS_ALIGNMENT"]
+        TRACKS = DeserializeTable(value)
+
+        local numSelected = reaper.CountSelectedMediaItems(0)
+        if numSelected > 0 then
+            reaper.Main_OnCommand(40289, 0)
+        end
+
+        local editTrack
+        if stateValues["EDIT_TRACK"] ~= nil then
+            editTrack = reaper.BR_GetMediaTrackByGUID( 0, stateValues["EDIT_TRACK"] )
+        end
+
+        for trackGUID, regionGUID in pairs(TRACKS) do
+            local track = reaper.BR_GetMediaTrackByGUID( 0, trackGUID )
+            local region = reaper.GetRegionOrMarker( 0, -1, regionGUID )
+            local items = {}
+            local numItems = reaper.CountTrackMediaItems(track)
+            local locationZero = 0
+            for i = 0, numItems - 1 do
+                local item = reaper.GetTrackMediaItem(track, i)
+                local itemTime = reaper.GetMediaItemInfo_Value(item, "D_POSITION")
+                table.insert(items, {item, itemTime})
+            end
+            
+            local markerTime = 0
+            if stateValues["EDIT_POINT"] ~= nil then
+                markerTime = tonumber(stateValues["EDIT_POINT"]) or 0
+            end
+
+            local offset = reaper.GetRegionOrMarkerInfo_Value(0, region, "D_STARTPOS") - markerTime
+
+            for _,set in pairs(items) do
+                local item = set[1]
+                local time = set[2]
+
+                reaper.SetMediaItemInfo_Value(item, "D_POSITION", time + offset)
+                reaper.MoveMediaItemToTrack(item, editTrack)
+            end
+            reaper.DeleteTrack( track )
+        end
+        if stateValues["TEMP_REGION"] ~= nil then
+                local tempGUID = stateValues["TEMP_REGION"]
+                local tempMarker = reaper.GetRegionOrMarker(0, -1, tempGUID)
+                local tempIdx = reaper.GetRegionOrMarkerInfo_Value(0, tempMarker, "I_NUMBER")
+                reaper.DeleteProjectMarker(0, tempIdx, false)
+            else
+                reaper.ReaScriptError("We could not delete the temp marker, please do so manually.")
+            end
+    else
+        if key ~= nil then reaper.ReaScriptError("!State Error!\n"..tostring(exists).."\n"..key.."\n"..value)
+        else reaper.ReaScriptError("!State Error!\n"..tostring(exists).."\n")
+        end
+        
+    end
+end
+
+UpdateState()
+reaper.PreventUIRefresh(-1)
+reaper.Undo_EndBlock("VOFX Align", -1)
 
 
 
